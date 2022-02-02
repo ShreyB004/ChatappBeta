@@ -2925,8 +2925,9 @@ function setDBThemes() {
 	toggleButton.addEventListener("click", () => {
 	    document.body.classList.toggle("dark-mode");
 	    if (document.body.classList.contains("dark-mode")) dbTheme = 'dark';
-	    else dbTheme = 'light';
+	    else { dbTheme = 'light';
 		dbUsrsSettings.update({appTheme: dbTheme});
+		}
 	});
 	userBgImg.forEach(function(dpChg) {
 		dpChg.addEventListener("click", function() {
