@@ -3,10 +3,9 @@
 <head>
     <title>Chat</title>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
-	<link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat+Alternates&display=swap" rel="stylesheet" />
     <meta charset="utf-8" />
 </head>
-
 <style>
 
 :root {
@@ -240,32 +239,25 @@ html {
         transform: translateY(100%);
     }
 } 
+@keyframes incWidth {
+    100%{
+        width: 100%;
+    }
+}
 @keyframes top_loading {
     to{
         width: 100%;
     }   
 }  
-@keyframes bounceLeft {
-  0% {
-    transform: translate3d(100%, -50%, 0);
-  }
-  50% {
-    transform: translate3d(-30px, -50%, 0);
-  }
-  100% {
-    transform: translate3d(0, -50%, 0);
-  }
-}
-@keyframes bounceRight {
-  0% {
-    transform: translate3d(0, -50%, 0);
-  }
-  50% {
-    transform: translate3d(calc(100% + 30px), -50%, 0);
-  }
-  100% {
-    transform: translate3d(100%, -50%, 0);
-  }
+@keyframes pinUser {
+    0%{
+        opacity: 0;
+        bottom: 0px;
+    }
+    100%{
+        opacity: 1;
+        bottom: 12px;
+    }
 }
 @keyframes showSignUp {
   100% {
@@ -275,17 +267,13 @@ html {
   }
 }
 @keyframes chatBoxAppear {
-    0%{
-        transform: scale(0, 0);
-    }
     50%{
-        transform: scale(1, 1);
-    }
-    75%{
-        transform: scale(0.85, 0.85);
+        transform: translateY(15px);
+        opacity: 0;
     }
     100%{
-        transform: scale(1, 1);
+        transform: translateY(0px);
+        opacity: 1;
     }
 }
 .lazy_load{
@@ -776,6 +764,7 @@ html {
     right: -15px;
     top: -15px;
     padding: 8px;
+    border: none;
     border-radius: 50%;
     box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.34);
     background-color: #fff;
@@ -1092,8 +1081,8 @@ html {
     width: calc(90% - 8px);
     height: 75px;
     background-color: transparent;
-    border-radius: 10px;
-    bottom: 12px;
+    border-radius: 35px;
+    bottom: 0px;
     box-shadow: 0px 0px 12px 2px rgba(0, 0, 0, 0.57);
     overflow: hidden;
     animation-duration: 0.25s;
@@ -1123,20 +1112,22 @@ html {
     position: absolute;
     left: 0;
     height: 100%;
-    width: 25%;
+    width: 0%;
     border-radius: 0px 20px 20px 0px;
     background-color: var(--main-snackbar-indicator);
-    transition: width 0.25s;
+}
+.conversation-area .snackbar_hold .main_snackbar .width_ind_snack.animate_width{
+    animation-name: incWidth;
+    animation-duration: 2s;
+    animation-timing-function: linear;
 }
 .conversation-area .snackbar_hold .main_snackbar .inline_snack_elem{
     position: relative;
     display: inline-block;
-    margin-left: 12px;
-    left: -24px;
 }
 .conversation-area .snackbar_hold .main_snackbar .snack_icon{
     padding: 8px;
-    font-size: 1rem;
+    font-size: 1.5rem;
     border-radius: 50%;
     background-color: var(--main-snackbar);
     box-shadow: 0px 2px 24px 4px rgba(0, 0, 0, 0.24);
@@ -1146,8 +1137,8 @@ html {
 .conversation-area .snackbar_hold .main_snackbar .snack_info{
     color: #1a8cee;
     font-weight: bold;
-    letter-spacing: 1.5px;
-    font-size: .7rem;
+    letter-spacing: 1px;
+    font-size: .9rem;
 }
 
 .msg-profile {
@@ -1158,50 +1149,7 @@ html {
     object-fit: cover;
     margin-right: 15px;
 }
-.msg-profile.group {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 7px;
-    height: 75px;
-    width: 75px;
-    box-shadow: 0px 0px 0px 5px var(--border-color);
-    overflow: hidden;
-}
-.msg-profile.group:hover .edit_overlay{
-    bottom: 0;
-    opacity: 1;
-}
-.msg-profile.group .edit_overlay{
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    bottom: -50%;
-    background-color: rgba(0, 0, 0, 0.09);
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: all 0.15s;
-}
-.msg-profile.group .edit_overlay .edit_grp_pic{
-    position: absolute;
-    color: #fff;
-    padding: 5px;
-    font-size: 1.25rem;
-    font-weight: bold;
-    box-shadow: 0px 0px 0px 3px var(--border-color);
-    border: none;
-    background-color: transparent;
-    border-radius: 50%;
-}
-.msg-profile.group img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
+
 .msg {
     position: relative;
     display: flex;
@@ -1222,18 +1170,20 @@ html {
     box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.24);
 }
 .msg-username {
-    margin-top: 8px;
+    margin-top: 5px;
     font-weight: 600;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     color: var(--chat-footer-txt-msg-clr);
 }
 .msg-message {
-    white-space: nowrap;
+    position: relative;
+    display: block;
     margin-top: 4px;
-    overflow: hidden;
     height: 20px;
-    width: 70%;
-    font-size: 0.5rem;
+    width: 100px;
+    font-size: .6rem;
+    white-space: nowrap;
+    overflow: hidden;
     text-overflow: ellipsis;
     color: var(--side-msg-clr);
 }
@@ -1243,13 +1193,13 @@ html {
 .msg-content {
     font-weight: 500;
     font-size: 13px;
-    display: flex;
 }
 
 .msg-date {
     position: absolute;
-    font-size: 0.5rem;
-    right: 15%;
+    font-size: .6rem;
+    right: 10%;
+    font-weight: bold;
     bottom: 30%;
     color: var(--side-msg-clr);
     margin-left: 3px;
@@ -1264,8 +1214,7 @@ html {
     border-radius: 35px;
     z-index: 0;
     transition: all 0.25s;
-    overflow: auto;
-    /* background-image: url("https://i.imgur.com/pAfubEz.jpg"); */
+    overflow: visible;
     background-size: 100% 100%;
     background-attachment: fixed;
     background-repeat: no-repeat;
@@ -1315,37 +1264,31 @@ html {
     width: 100%;
     height: 100%;
 } 
-.chat-area-header .action_icons_chat{
-    position: absolute;
-    right: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.chat-area-header .action_icons_chat .chat_icons_chat_btns{
-    position: relative;
-    display: inline-block;
-    padding: 8px;
-    border-radius: 50%;
-    margin-left: 8px;
-    font-size: 1.25rem;
-    font-weight: bold;
-    border: none;
-    color: #888;
-    cursor: pointer;
-    background-color: #fff;
-}
-.chat-area-header .action_icons_chat .chat_icons_chat_btns:hover{
-    background-color: #f1f1f1;
-}
 .chat-area-main {
     position: relative;
-    width: 75%;
+    width: 100%;
     height: 75%;
-    left: 13%;
-    /* transform: translateX(-50%); */
     overflow-x: hidden;
     overflow-y: auto;
+    scroll-behavior: smooth;
+}
+.chat-area-main:hover::-webkit-scrollbar-thumb{
+    background-color: #fff;
+}
+.chat-area-main::-webkit-scrollbar{
+    width: 5px
+}
+.chat-area-main::-webkit-scrollbar-thumb{
+    background-color: transparent;
+    border-radius: 5px;
+    transition: all .25s;
+}
+.chat-area-main::-webkit-scrollbar-thumb:hover{
+    background-color: #f3f4f5;
+}
+.chat-area-main::-webkit-scrollbar-track{
+    background-color: transparent;
+    overflow: visible;
 }
 .chat-msg {
     display: flex;
@@ -1354,8 +1297,12 @@ html {
     margin-top: 35px;
     top: -17px;
     padding: 4px;
-    transition: all 0.25s;
+    transition: all .25s;
     user-select: none;
+    opacity: 0;
+}
+.chat-msg.appear{
+    opacity: 1;
 }
 .chat-msg.owner.replyingCurr .chat-msg-text{
     background-color: #0059b3;
@@ -1393,7 +1340,6 @@ html {
 .time {
     position: absolute;
     color: #fff;
-    display: inline-block;
     white-space: nowrap;
     font-size: 0.6rem;
     font-weight: lighter;
@@ -1405,20 +1351,29 @@ html {
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.34);
     z-index: 3;
 }
+
+.delivered_status{    
+    position: absolute;
+    bottom: 0;
+    right: -1px;
+    padding: 2px 5px;
+    border-radius: 5px;
+    color: #1a9cff;
+    background-color: rgba(0, 0, 0, 0.43);
+    font-weight: lighter;
+    font-size: 0.6rem;
+    z-index: 3;
+}
+
 .chat-msg-text {
     position: relative;
     margin-top: 4px;
     padding: 4px 8px;
     width: 100%;
     max-width: fit-content;
-    min-width: min-content;
     top: 2px;
     z-index: 5;
     box-shadow: 0px 4px 12px 2px rgba(0, 0, 0, 0.35);
-    animation-name: chatBoxAppear;
-    animation-duration: 0.25s;
-    animation-iteration-count: 1;
-    animation-timing-function: ease-in;
     transition: all 0.25s;
     cursor: pointer;
 }
@@ -1507,15 +1462,7 @@ html {
     border-radius: 20px;
     background-color: #fff;
 }
-.owner .chat-msg-text.focused{
-    background-color: #bfff00;
-}
-.owner .chat-msg-text.focused .usr_main_msg{
-    color: #222;
-}
-.owner .chat-msg-text.focused .reply_msg_btn{
-    display: none;
-}
+
 .chat-msg-text .chat-msg-user {
     position: absolute;
     top: -21px;
@@ -1680,10 +1627,14 @@ html {
     flex-direction: row-reverse;
 }
 .owner .chat-msg-content {
-  margin-left: 0;
-  align-items: flex-end;
+    margin-left: 0;
+    align-items: flex-end;
+}
+.owner .chat-msg-profile {
+    right: 75px;
 }
 .owner .chat-msg-text {
+    right: 75px;
     background-color: var(--chat-text-owner);
     color: #fff;
     border-radius: 15px 5px 15px 15px;
@@ -1713,7 +1664,15 @@ html {
     border-radius: 5px 5px 12px 12px;
     padding: 8px;
 }
-
+.owner .chat-msg-text.focused{
+    background-color: #bfff00;
+}
+.owner .chat-msg-text.focused .usr_main_msg{
+    color: #222;
+}
+.owner .chat-msg-text.focused .reply_msg_btn{
+    display: none;
+}
 .owner .chat-msg-text.one_select{
     background-color: var(--one-select-cls);
 }
@@ -1723,7 +1682,7 @@ html {
 }
 
 .owner .time{
-    right: 10px;
+    right: 20px;
 }
 
 
@@ -1735,7 +1694,11 @@ html {
     bottom: -5px;
     transform: rotateY(180deg);
 }
+.otherU .chat-msg-profile{
+    left: 75px;
+}
 .otherU .chat-msg-text {
+    left: 75px;
     background-color: var(--chat-text-other);
     border-radius: 3px 15px 15px 15px;
 }
@@ -1999,6 +1962,51 @@ html {
     margin-bottom: 15px;
 }
 
+.msg-profile.group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 7px;
+    height: 75px;
+    width: 75px;
+    box-shadow: 0px 0px 0px 5px var(--border-color);
+    overflow: hidden;
+}
+.msg-profile.group:hover .edit_overlay{
+    bottom: 0;
+    opacity: 1;
+}
+.msg-profile.group .edit_overlay{
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    bottom: -50%;
+    background-color: rgba(0, 0, 0, 0.09);
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: all 0.15s;
+}
+.msg-profile.group .edit_overlay .edit_grp_pic{
+    position: absolute;
+    color: #fff;
+    padding: 5px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    box-shadow: 0px 0px 0px 3px var(--border-color);
+    border: none;
+    background-color: transparent;
+    border-radius: 50%;
+}
+.msg-profile.group img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
 .detail-title {
     position: relative;
     font-size: 0.75rem;
@@ -2066,6 +2074,118 @@ html {
 .detail-changes {
     margin-top: 40px;
 }
+
+.detail-change .pin_msg_holder{
+    position: relative;
+    margin-top: 8px;
+    top: -4px;
+}
+.detail-change .pin_msg_holder .pin_msg_blcks.pinned_msgs_title_hold{
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.detail-change .pin_msg_holder .pin_msg_blcks.pinned_msgs_title_hold .pinned_msg_title{
+    position: relative;
+    color: var(--input-chat-color);
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+.detail-change .pin_msg_holder .pin_msg_blcks.pinned_msgs_title_hold .pinned_msg_title.pinned_msgs_icon{
+    padding: 5px;
+    font-size: 1rem;
+    border: none;
+} 
+.detail-change .pin_msg_holder .pin_msg_blcks.pinned_msgs_title_hold .pinned_msg_title.pinned_msgs_main_title{
+    letter-spacing: 2px;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div{
+    position: relative;
+    padding: 12px;
+    width: 100%;
+    height: 175px;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: transparent;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .slide_navigate_buttons{
+    position: absolute;
+    top: 2px;
+    padding: 8px;
+    border-radius: 50%;
+    box-shadow: 0 0 4px rgba(0, 0, 0, .45);
+    background-color: #fff;
+    color: #222;
+    border: none;
+    transition: all .15s;
+    cursor: pointer;
+    z-index: 13;
+}
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .slide_navigate_buttons:hover{
+    background-color: #ccc;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .slide_navigate_buttons.prev_button{
+    left: 2px;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .slide_navigate_buttons.next_button{
+    right: 2px;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .pin_message_slides{
+    display: none;
+    padding: 8px;
+    align-content: center;
+    background-color: #fff;
+    border-radius: 12px;
+    width: 100%;
+    height: 100%;
+    animation-name: pinUser;
+    animation-duration: .25s;
+    animation-timing-function: ease-in;
+}
+
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .pin_message_slides .pinned_msg{
+    position: relative;
+    padding: 15px;
+    height: 100%;
+    color: #222;
+    font-weight: lighter;
+    text-align: justify-all;
+    word-wrap: break-word;
+    word-break: break-all;
+    overflow: auto;
+}
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .pin_message_slides .pinned_image{
+    position: relative;
+    max-height: 100%;
+    max-width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 0 3px 4px rgba(0, 0, 0, .3);
+}
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .pin_message_slides .pinned_msg::-webkit-scrollbar{
+    display: none;
+}
+.detail-change .pin_msg_holder .pin_msg_slideshow_div .pin_message_slides .pinned_msg_from_user{
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 4px 8px;
+    font-size: .8rem;
+    text-align: center;
+    width: calc(100% - 24px);
+    color: #6495ea;
+    background-color: #fff;
+    border-radius: 50% 50% 12px 12px;
+    box-shadow: 0 -1px 4px 2px rgba(0, 0, 0, .24);
+    animation-name: pinUser;
+    animation-duration: .5s;
+    animation-timing-function: ease-out;
+}
+
 .detail-change .saved_msgs_div{
     position: relative;
     height: 100%;
@@ -2101,7 +2221,7 @@ html {
     padding: 12px;
     width: 100%;
     height: 250px;
-    background-color: rgba(0, 0, 0, 0.23);
+    background-color: transparent;
     border-radius: 8px;
     overflow: auto;
 }
@@ -2286,7 +2406,7 @@ html {
 .detail-change .member_hold_blck.actual_members_holder{
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.34);
+    background-color: transparent;
     border-radius: 8px;
 }
 .detail-change .member_hold_blck.actual_members_holder .members_list{
@@ -2327,14 +2447,32 @@ html {
     width: 50px;
     background-color: transparent;
     border-radius: 50%;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0px 0px 12px 4px rgba(0, 0, 0, 0.6);
+}
+.detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_img_holder.online_mem{
+    box-shadow: 0 0 0 3px #4cab67;
+}
+.detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_img_holder.online_mem::after{
+    content: "";
+    position: absolute;
+    right: 2px;
+    bottom: 0px;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: #4cab67;
+    box-shadow: 0 0 3px 4px rgba(0, 0, 0, .34);
+}
+.detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_img_holder.online_mem img.member_image{
+    box-shadow: 0 0 4px 4px rgba(0, 0, 0, .54);
 }
 .detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_img_holder img.member_image{
     position: absolute;
     width: 100%;
     height: 100%;
     border: none;
+    border-radius: 50%;
 }
 .detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_detail_blcks{
     position: relative;
@@ -2356,6 +2494,12 @@ html {
     font-size: 0.6rem;
     font-weight: lighter;
 }
+.detail-change .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_about_details.online_mem_spn{
+    font-weight: bold;
+    color: #eee;
+    text-shadow: 0 0 3px rgba(0, 0, 0, .56);
+}
+
 
 .dark-mode .search-bar input,
 .dark-mode .detail-area input {
@@ -2533,16 +2677,22 @@ html {
     animation-duration: 0.4s;
     z-index: 100;
 }
-.close {
+.closeImgMdl {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    text-align: center;
     color: white;
-    float: right;
-    font-size: 28px;
+    font-size: 1.5rem;
     font-weight: bold;
+    padding: 12px;
+    border: none;
+    background-color: rgba(0, 0, 0, .45);
+    border-radius: 50%;
+    text-decoration: none;
 }
 
-.close:hover,.close:focus {
-    color: #000;
-    text-decoration: none;
+.closeImgMdl:hover,.closeImgMdl:focus {
     cursor: pointer;
 }
 
@@ -2659,6 +2809,12 @@ html {
     background-color: #0066cc;
     box-shadow: 0px 1px 3px #0066cc, 0px 1px 4px #0066cc;
 }
+.img-send[disabled] {
+    background-color: #7ebde1;
+    color: #333;
+    box-shadow: 0px 1px 3px #7ebde1, 0px 1px 4px #7ebde1;
+}
+
 .img-holds {
     position: absolute;
     top: 35%;
@@ -2685,7 +2841,6 @@ html {
     box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.16);
 }
 </style>
-
 <body translate="no" id="data_load_b" class="dark-mode" onload="_confirmCookie();">
    
     <div class="authUser-wrapper" id="authUserWrap">
@@ -2791,9 +2946,9 @@ html {
         </div>
         
         <div class="main_mdl_user" id="mainUsrMdl">
-        	
+            
             <div class="main_mdl_user-body">
-        		
+                
                 <!--Settings Modal_Close-->
 
                 <button class="cls_icon material-icons" id="mdlClsBtn">close</button>
@@ -2801,23 +2956,23 @@ html {
                 <div class="main_mdl_user-content" id="mdlUsrCont">
                     
                     <!--User Details and Info-->
-                	
+                    
                     <div class="mdl_sub_contents image_user_owner">
-                		<div class="user_img_holder_main">
-                			<button class="user_change_image_icon material-icons" onclick="document.getElementById(`imageUpload`).click();">camera_alt</button>
-                			<img class="user_changed_img" id="photo" src="https://miro.medium.com/max/4960/1*IoYzOWcZohYOUQgJUvL2AQ.png">
-                			<input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                		</div>
-                	</div>
+                        <div class="user_img_holder_main">
+                            <button class="user_change_image_icon material-icons" onclick="document.getElementById(`imageUpload`).click();">camera_alt</button>
+                            <img class="user_changed_img" id="photo" src="https://miro.medium.com/max/4960/1*IoYzOWcZohYOUQgJUvL2AQ.png">
+                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
 
-                	<div class="mdl_sub_contents about_user_owner">
-                		<div class="user_input_about_holder">
-                			<input type="text" class="user_about_input" id="usrAbout" name="userAbout" autocomplete="false">
-                			<div class="unfocused_spn"></div>
-                			<div class="focus_spn"></div>
-                		</div>
-                	</div>
-                	
+                    <div class="mdl_sub_contents about_user_owner">
+                        <div class="user_input_about_holder">
+                            <input type="text" class="user_about_input" id="usrAbout" name="userAbout" autocomplete="false">
+                            <div class="unfocused_spn"></div>
+                            <div class="focus_spn"></div>
+                        </div>
+                    </div>
+                    
                     <!--Chat Themes-->
 
                     <div class="mdl_sub_contents chat_theme_user">
@@ -2831,76 +2986,76 @@ html {
                             <div class="color lightred" data-color="Themelightred"></div>
                             <div class="color lightgreen" data-color="Themelightgreen"></div>
                         </div>
-                	</div>
+                    </div>
 
                     <!--Chat Backgrounds-->
-                	
+                    
                     <div class="mdl_sub_contents background_user_change">
-                		<div class="tgle_tabs_bg">
-                			<div class="tabs_blcks top_tabs_tgle">
-                				<div class="center_tgle_bar">
-                					<button class="pill_btns actvBgTag" id="evtTagLight">Light</button>
-                					<button class="pill_btns" id="evtTagDark">Dark</button>
-                					<button class="pill_btns" id="evtTagTextr">Texture</button>
-                				</div>
-                			</div>
-                			<div class="tabs_blcks tabs_bg_holder">
-                				<div class="swtch_bgs swtch_bgs_actv" id="tagLight">
-		                            <div class="grid_img_hold">
-										<img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EUv6NpK.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/4s1vZ4o.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/sHNGDM0.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yOGxgue.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yKBz1U0.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/ci3BsgV.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQELM9j2SUFJiFEkm1IJEFJig7rxtcPqQXI_7-7fz55zaakVKd&usqp=CAU" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/94/b5/54/94b55402fc9fba59460a565b92f8f5f4.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg/1200px-Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg"/>
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTFY-xbZ9jwoqA9NpQsZrUKrs_OTbIwqVsuMPVkLQgIxFnbFog2&usqp=CAU" />
-		                            </div>
-                				</div>
-                				<div class="swtch_bgs" id="tagDark">
-                					<div class="grid_img_hold">
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/DufJA71.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/L8PT27G.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/6XT0BuG.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/YvmuKvq.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pph47S9.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pAfubEz.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/oqlqxfY.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/zFSbP7D.jpg" />
-                					</div>
-                				</div>
-                				<div class="swtch_bgs" id="tagTextr">
-                					<div class="grid_img_hold">
-	                					<img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/j2BcCaz.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/LrPnlOL.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EQANrlK.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/gvKhEg9.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/ba/3a/91/ba3a91c6992e6519332dfc935fa6b1cc.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/b2/a2/48/b2a2482edeebd13053c788ceee62f695.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRXZ0JFpEVZSu1BRwnTmU_-vhVD0Cn55F57yJ_Dh3J0DPksEec-&usqp=CAU" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://img.freepik.com/free-photo/brick-wall-painted-white_1194-7526.jpg?size=626&ext=jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://previews.123rf.com/images/svl861/svl8611704/svl861170400251/77092466-white-distressed-weathered-whitewashed-wall-texture-close-up-.jpg" />
-			                            <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/d0/4d/f1/d04df1fcd7069cc26c778ebcc3f37720.jpg" />
-                					</div>
-                				</div>
-                			</div>
-                		</div>
-                	</div>
+                        <div class="tgle_tabs_bg">
+                            <div class="tabs_blcks top_tabs_tgle">
+                                <div class="center_tgle_bar">
+                                    <button class="pill_btns actvBgTag" id="evtTagLight">Light</button>
+                                    <button class="pill_btns" id="evtTagDark">Dark</button>
+                                    <button class="pill_btns" id="evtTagTextr">Texture</button>
+                                </div>
+                            </div>
+                            <div class="tabs_blcks tabs_bg_holder">
+                                <div class="swtch_bgs swtch_bgs_actv" id="tagLight">
+                                    <div class="grid_img_hold">
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EUv6NpK.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/4s1vZ4o.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/sHNGDM0.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yOGxgue.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yKBz1U0.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/ci3BsgV.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQELM9j2SUFJiFEkm1IJEFJig7rxtcPqQXI_7-7fz55zaakVKd&usqp=CAU" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/94/b5/54/94b55402fc9fba59460a565b92f8f5f4.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg/1200px-Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg"/>
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTFY-xbZ9jwoqA9NpQsZrUKrs_OTbIwqVsuMPVkLQgIxFnbFog2&usqp=CAU" />
+                                    </div>
+                                </div>
+                                <div class="swtch_bgs" id="tagDark">
+                                    <div class="grid_img_hold">
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/DufJA71.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/L8PT27G.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/6XT0BuG.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/YvmuKvq.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pph47S9.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pAfubEz.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/oqlqxfY.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/zFSbP7D.jpg" />
+                                    </div>
+                                </div>
+                                <div class="swtch_bgs" id="tagTextr">
+                                    <div class="grid_img_hold">
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/j2BcCaz.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/LrPnlOL.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EQANrlK.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/gvKhEg9.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/ba/3a/91/ba3a91c6992e6519332dfc935fa6b1cc.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/b2/a2/48/b2a2482edeebd13053c788ceee62f695.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRXZ0JFpEVZSu1BRwnTmU_-vhVD0Cn55F57yJ_Dh3J0DPksEec-&usqp=CAU" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://img.freepik.com/free-photo/brick-wall-painted-white_1194-7526.jpg?size=626&ext=jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://previews.123rf.com/images/svl861/svl8611704/svl861170400251/77092466-white-distressed-weathered-whitewashed-wall-texture-close-up-.jpg" />
+                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/d0/4d/f1/d04df1fcd7069cc26c778ebcc3f37720.jpg" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-            	<!--Scrolling Buttons-->
+                <!--Scrolling Buttons-->
 
                 <div class="scrll_btns_h">
-            		<button class="scrll_btns material-icons" id="scrllMdlBtn1">expand_less</button>
-            		<button class="scrll_btns material-icons" id="scrllMdlBtn2">expand_more</button>
-            	</div>
+                    <button class="scrll_btns material-icons" id="scrllMdlBtn1">expand_less</button>
+                    <button class="scrll_btns material-icons" id="scrllMdlBtn2">expand_more</button>
+                </div>
 
-        	</div>
+            </div>
         </div>
         <div class="wrapper">
 
@@ -2923,7 +3078,7 @@ html {
                 <div class="snackbar_hold" id="snackBar">
                     <div class="main_snackbar">
                         <div class="width_ind_snack" id="widthInd"></div>
-                        <div class="snack_icon material-icons inline_snack_elem" id="snackIcon">brush</div>
+                        <div class="snack_icon inline_snack_elem material-icons" id="snackIcon">brush</div>
                         <div class="snack_info inline_snack_elem" id="snackInfo">Edited Sucessfully</div>
                     </div>
                 </div>
@@ -2934,18 +3089,13 @@ html {
             <!--Main Chatting Area-->
             <div class="chat-area" id="chatArea">
                 <div class="chat-area-header">
-                	<div class="chat-main-profile-pic-hold">
-                		<img data-src="https://i.imgur.com/7K7CNap.jpg" class="chat-main-profile-pic lazy_load">
-                	</div>
+                    <div class="chat-main-profile-pic-hold">
+                        <img data-src="https://i.imgur.com/7K7CNap.jpg" class="chat-main-profile-pic lazy_load">
+                    </div>
                     <div class="chat-area-title">
-                    	<span>Web Developers</span>
-                    	<br>
-                    	<span class="chat_user_status"><strong id="Memnum"></strong> Members , <strong id="MemOnline"></strong>Online</span>
-                	</div>
-                    <div class="action_icons_chat">
-                        <button class="chat_icons_chat_btns material-icons" id="sidePanelBtn">menu</button>
-                        <button class="chat_icons_chat_btns material-icons">search</button>
-                        <button class="chat_icons_chat_btns material-icons">more_vert</button>
+                        <span>Web Developers</span>
+                        <br>
+                        <span class="chat_user_status"><b id="MemNum"></b> Members, <b id="MemOnline"></b> Online</span>
                     </div>
                 </div>
 
@@ -2953,9 +3103,10 @@ html {
                 <div id="myModal" class="img_mdl">
                     <div class="img_mdl_content">
                         <div class="img_mdl_body">
+                            <button class="material-icons closeImgMdl" id="clsMdl">close</button>
                             <div class="img-holds" id="imgWater"></div>
                             <div class="image_info_holder">
-                                <div class="inline_images_divs main_image_attach">
+                                <div class="inline_images_divs main_image_attach" id="mainImgAttach">
                                     <img src="https://i.imgur.com/pAfubEz.jpg" id="imageIsLoaded" class="main_image">
                                 </div>
                                 <div class="inline_images_divs info_and_caption_holder">
@@ -2964,7 +3115,7 @@ html {
                                     </div>
                                     <div class="flex_images_div text-box-hold">
                                         <input type="text" id="captionTxt" class="cap-text inline_divs" name="caption" placeholder="Caption Here...">
-                                        <div class="img-send inline_divs material-icons" id="submit">send</div>
+                                        <div class="img-send inline_divs material-icons" disabled="true" id="submit">send</div>
                                     </div>
                                 </div>
                             </div>
@@ -3008,12 +3159,12 @@ html {
                 </div>
             </div>
 
-            <div class="detail-area" id="sidePanel">
+            <div class="detail-area show_panel" id="sidePanel">
                 <div class="detail-area-header light-dark-divs-area">
                     <div class="msg-profile group">
                         <img data-src="https://i.imgur.com/7K7CNap.jpg" class="lazy_load" alt="" />
                         <div class="edit_overlay">
-                        	<button class="edit_grp_pic material-icons">camera</button>
+                            <button class="edit_grp_pic material-icons">camera</button>
                         </div>
                     </div>
                     <div class="detail-title">Web Developers</div>
@@ -3036,26 +3187,43 @@ html {
                     </div>
                 </div>
                 <div class="detail-changes">
+
+                    <div class="detail-change light-dark-divs-area">
+                      <div class="pin_msg_holder">
+                        <div class="pin_msg_blcks pinned_msgs_title_hold">
+                            <span class="material-icons pinned_msg_title pinned_msgs_icon">chat_bubble_outline</span>
+                            <span class="pinned_msg_title pinned_msgs_main_title">Pinned Messages</span>
+                        </div>
+                        <div class="pin_msg_holder" id="pinMsgHold">
+                            <div class="pin_msg_slideshow_div" id="pinMsgSlideDiv">
+                                <button class="material-icons slide_navigate_buttons prev_button" id="nextSlideBtn">chevron_left</button>
+                                <button class="material-icons slide_navigate_buttons next_button" id="PrevSlideBtn">chevron_right</button>
+                            </div>
+
+                        </div>
+                      </div>
+                    </div>
+
                     <input type="text" class="light-dark-divs-area" placeholder="Search Saved Messages" />
 
                     <div class="detail-change light-dark-divs-area">
                       <div class="saved_msgs_div">
-                      	<div class="save_msg_blcks saved_msgs_title_hold">
-                      		<span class="material-icons saved_msg_title saved_msgs_icon">bookmark_outline</span>
-                      		<span class="saved_msg_title saved_msgs_main_title">Saved Messages</span>
-                      	</div>
-                      	<div class="save_msg_blcks saved_msgs_holder" id="savedMsgHold"></div>
+                        <div class="save_msg_blcks saved_msgs_title_hold">
+                            <span class="material-icons saved_msg_title saved_msgs_icon">bookmark_outline</span>
+                            <span class="saved_msg_title saved_msgs_main_title">Saved Messages</span>
+                        </div>
+                        <div class="save_msg_blcks saved_msgs_holder" id="savedMsgHold"></div>
                       </div>
                     </div>
 
                     <input type="text" class="light-dark-divs-area" placeholder="Search Members" />
 
                     <div class="detail-change light-dark-divs-area">
-                    	<div class="member_hold_blck member_top_bar">
-                    		<span class="member_icon material-icons">people_outline</span>
-                    		<span class="members_of_name">Web Developer</span>
-                    	</div>
-                    	<div class="member_hold_blck actual_members_holder" id="membersListHolder"></div>
+                        <div class="member_hold_blck member_top_bar">
+                            <span class="member_icon material-icons">people_outline</span>
+                            <span class="members_of_name">Web Developer</span>
+                        </div>
+                        <div class="member_hold_blck actual_members_holder" id="membersListHolder"></div>
                     </div>
                 </div>
 
@@ -3067,8 +3235,8 @@ html {
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
 <script>
-
 //Firebase Setting Up
+
 const firebaseConfig = {
     apiKey: "AIzaSyAoXTA3D0Z4WloDHJE5-5fmE8sGkTEzjNs",
     authDomain: "mesmerizing-app-307511.firebaseapp.com",
@@ -3080,18 +3248,14 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
+//Firebase Database and cloud storage 
+
 const db = firebase.database();
 const cldStorage = firebase.storage();
-const fetchChat = db.ref("WebApplication/Web Developers/chatMessages");
-
-//For Getting Username
-let userNameVal = '';
-let usernameCookie = '';
 
 //All declaratoins
 
-
-let mdlUsrShwBtn = document.getElementById("mdlShwBtn");
+let mdlUsrShwBtn = document.getElementById("mdlShwBtn"); 
 let mdlUsrsClsBtn = document.getElementById("mdlClsBtn");
 
 let userFormWrapper = document.getElementById("authUserWrap");
@@ -3117,7 +3281,7 @@ let signUpPass = document.getElementById("authNewPass");
 
 
 let modal = document.getElementById("myModal");
-let btn = document.getElementById("fileAttachBtn");
+let imgAttachBtn = document.getElementById("fileAttachBtn");
 let span = document.getElementsByClassName("close")[0];
 
 let txtTggle = document.getElementById("textTgle");
@@ -3130,7 +3294,13 @@ let replyClr = document.getElementById("rplyClr");
 let submit = document.getElementById("submit");
 
 let imgUpload = document.getElementById("imageUpload");
+
+let clsImgMdl = document.getElementById("clsMdl");
 let imgchtAttach = document.getElementById("attachment");
+
+//For Getting Username
+
+let usernameCookie = '';
 
 
 //Setting a Cookie
@@ -3157,7 +3327,7 @@ function _$fetchCookie(_cookieName) {
   return "";
 }
 
-//Confirm Cookie
+//Confirming Cookie for Cookie Related Functions
 
 function _confirmCookie() {
   let user = _$fetchCookie("username");
@@ -3165,24 +3335,85 @@ function _confirmCookie() {
   else return false;
 }
 
-/*(function() {
+//Load User Database
+
+function loadUserDatabase() {
+    loadUsrPreferences();
+    loadUsrInformation();
+    userPresenceState();
+    databaseFunction();
+}
+
+(function() {
+    //If User Cookie Already Exists
     if (_confirmCookie()) {
         userFormWrapper.remove();
         usernameCookie = _$fetchCookie("username");
-        setDBThemes();
-        setDBdetails();
-    } else{
+        loadUserDatabase();
+    } else{//If Cookie is deleted or doesn't exists => By CLick Event Set Cookie
         authValdtbtn.addEventListener("click", function() {
             let userVal = logInusrName.value || signUpusrName.value;
-            setCookie("username", userNameVal, 30);
+
+            setCookie("username", userVal, 30);
             usernameCookie = _$fetchCookie("username");
-            setDBThemes();
-            setDBdetails();
+
             ValidateUser(userVal);
+            loadUserDatabase();
         });
     }
-})();*/
+})();
 
+
+//Authentication Functions => Change textCOntent of button from "Login" To "Signup"
+
+function AuthBtnValueFn(stringVal, callCheckFn, stringToCheck) {
+    //For Changing innerext only
+    if (stringVal) {
+        authValdtbtn.innerText = stringVal; 
+    } else { // Check if Authenticate Button has value of login or signup
+        if (stringToCheck && callCheckFn) {
+            const authValdtbtnText = authValdtbtn.innerText.toLowerCase();
+            const stringToCheckCase = stringToCheck.toLowerCase();
+            
+            if (authValdtbtnText === stringToCheckCase) return true;
+            else return false;
+        }
+    }
+}
+
+//Authentication Functions => Clearing all Errors while validating Inputs of login and Signup
+
+function clearValidation(clrValidateType) {
+
+    const clrValidateTypeCase = clrValidateType.toLowerCase();
+    
+    function clearLoginValidate(){
+        if (authLoginUsrName.classList.contains("validate-error")) {
+            authLoginUsrName.classList.remove("validate-error");
+            authValdtbtn.removeAttribute("disabled");
+        }
+    }
+    
+    function clearSignupValidate() {
+        if (authSignupUsrName.classList.contains("validate-error")) {
+            authSignupUsrName.classList.remove("validate-error");
+            authValdtbtn.removeAttribute("disabled");
+        }
+    }
+    if (clrValidateTypeCase === 'loginclr') clearLoginValidate();
+    else if (clrValidateTypeCase === 'signupclr') clearSignupValidate();
+}
+
+//Authentication Events => onKeyUp Clearing validation
+
+logInusrName.addEventListener("keyup", function() {
+    clearValidation('loginclr');
+});
+signUpusrName.addEventListener("keyup", function() {
+    clearValidation('signupclr');
+});
+
+//Authentication Functions => Clearing Auth Info to avoid both login and signup values 
 
 function clearAuthInfo(){
     logInusrName.value = '';
@@ -3194,41 +3425,8 @@ function clearAuthInfo(){
     clearValidation('signupclr');
 }
 
-function AuthBtnValueFn(stringVal, callCheckFn, stringToCheck) {
-    if (stringVal) {
-        authValdtbtn.innerText = stringVal; 
-    } else {
-        if (stringToCheck && callCheckFn) {
-            const authValdtbtnText = authValdtbtn.innerText.toLowerCase();
-            const stringToCheckCase = stringToCheck.toLowerCase();
-            if (authValdtbtnText === stringToCheckCase) return true;
-            else return false;
-        }
-    }
-}
-function clearValidation(clrValidateType) {
-    const clrValidateTypeCase = clrValidateType.toLowerCase();
-    function clearLoginValidate(){
-        if (authLoginUsrName.classList.contains("validate-error")) {
-            authLoginUsrName.classList.remove("validate-error");
-            authValdtbtn.removeAttribute("disabled");
-        }
-    }
-    function clearSignupValidate() {
-        if (authSignupUsrName.classList.contains("validate-error")) {
-            authSignupUsrName.classList.remove("validate-error");
-            authValdtbtn.removeAttribute("disabled");
-        }
-    }
-    if (clrValidateTypeCase === 'loginclr') clearLoginValidate();
-    else if (clrValidateTypeCase === 'signupclr') clearSignupValidate();
-}
-logInusrName.addEventListener("keyup", function() {
-    clearValidation('loginclr');
-});
-signUpusrName.addEventListener("keyup", function() {
-    clearValidation('signupclr');
-});
+//Authentication Events => onClick Animate the Divs from Login to SignUp or Vice versa 
+
 jmptoLogin.addEventListener("click", function() {
     clsLogIn.classList.add("animate-shutter-up");
     clsLogIn.classList.remove("animate-shutter-down");
@@ -3242,25 +3440,35 @@ jmptoSignUp.addEventListener("click", function() {
     clearAuthInfo();
 });
 
+//Authentication Functions => Validating User for Login or SignUp
+
 function ValidateUser(usrNameGet){
 
+    //Validating User Function => Show Error on Inputs 
+
     function usrFetchingHandlingError(errType) {
+        
         const errTypeCase = errType.toLowerCase();
+
         function errorLogingIn() {
             if (!authLoginPass.classList.contains("validate-error")) {
                 authLoginUsrName.classList.add("validate-error");
                 authValdtbtn.setAttribute("disabled", "true");
             }
         }
+        
         function errorSigningUp() {
             if (!authSignupUsrName.classList.contains("validate-error")) {
                 authSignupUsrName.classList.add("validate-error");
                 authValdtbtn.setAttribute("disabled", "true");
             }
         }
+        
         if (errTypeCase === 'login') errorLogingIn();
         else if(errTypeCase === 'signup') errorSigningUp();
     }
+
+    //Validating User Functions => If validation is not wrong then remove the Wrapper
 
     function validatationSuccess() {        
         topLoading.classList.add("top-loading-start");
@@ -3273,100 +3481,128 @@ function ValidateUser(usrNameGet){
         });
 
     }
+
+    //Check Existence of UserName in DataBase 
+
     db.ref(`WebApplication/UsersInfo`).get().then((usrExists) => {
         let usrLoginFlag = false;
         let usrSignupFlag = true;
-            let UsrEachKeyPath = Object.keys(usrExists.val());
 
+        let UsrEachKeyPath = Object.keys(usrExists.val());
+        let UsrEachKeyPathLen = UsrEachKeyPath.length;
 
-            for (let i = 0; i < Object.keys(usrExists.val()).length; ++i) {
-                if (AuthBtnValueFn('' , true, 'login')) {
-                    if (UsrEachKeyPath[i] === usrNameGet) {
-                        usrLoginFlag = true;
-                        // setCookie("CurrentUserId",`${crntUsrId}`, 30);
-                    }
-                } else if (AuthBtnValueFn('' , true, 'signup')) {
-                    if (UsrEachKeyPath[i] === usrNameGet) {
-                        usrSignupFlag = false;
-                    }
+        for (let i = 0; i < UsrEachKeyPathLen; ++i) {
+            //Checking State of login
+            if (AuthBtnValueFn('' , true, 'login')) {
+                //Can Login if Exist
+                if (UsrEachKeyPath[i] === usrNameGet) {
+                    usrLoginFlag = true;
                 }
-                console.log(UsrEachKeyPath[i]);
+            } else if (AuthBtnValueFn('' , true, 'signup')) {
+                //Cannot SignUp, As user already Exists in Database
+                if (UsrEachKeyPath[i] === usrNameGet) {
+                    usrSignupFlag = false;
+                }
             }
+        }
 
         if (AuthBtnValueFn('', true, 'login')) {
             if (!usrLoginFlag) usrFetchingHandlingError('login');
-            else {
-                validatationSuccess();
-                setCookie("username", `${usrNameGet}`, 30);
-                usernameCookie = _$fetchCookie("username");
-            }
+            else validatationSuccess();
         } else if(AuthBtnValueFn('', true, 'signup')) {
             if (!usrSignupFlag) usrFetchingHandlingError('signup');
-            else {
-                validatationSuccess();
-                setCookie("username", `${usrNameGet}`, 30);
-                usernameCookie = _$fetchCookie("username");
-            }
+            else validatationSuccess();
         }
 
     });
 }
-function _confirmCookie() {
-  let user = _$fetchCookie("username");
-  if (user !== "") return true;
-  else return false;
-}
-(function() {
-    if (_confirmCookie()) {
-        userFormWrapper.remove();
-        usernameCookie = _$fetchCookie("username");
-            setDBThemes();
-            setDBdetails();
-    } else{
-        authValdtbtn.addEventListener("click", function() {
-            let userVal = logInusrName.value || signUpusrName.value;
-            setCookie("username", userVal, 30);
-            usernameCookie = _$fetchCookie("username");
-            ValidateUser(userVal);
-            setDBThemes();
-            setDBdetails();
-        });
-    }
-})();
-//For Lazy Loading Image for Optimizaton
 
-function setSrc() {
+//CLIENT SIDE : Function For Lazy Loading Image for Optimizaton
+
+(function () {
+    //Set Src to Image After page Loading
     let lazyLoads = document.getElementsByClassName("lazy_load");
     let lazyLoadsLen = lazyLoads.length;
+    
     for (let i = 0; i < lazyLoadsLen; ++i) {
         let lazyLoadSrc = lazyLoads[i].getAttribute("data-src");
+
         lazyLoads[i].setAttribute("src", `${lazyLoadSrc}`);
+        
         lazyLoads[i].removeAttribute("data-src");
+        
         lazyLoads[i].addEventListener("load", function() {
             this.classList.add("img_loaded");
         });
     }
+
+})();
+
+
+//CLIENT SIDE : Function to Scroll By Button
+
+function scrollElems({ScrollBox: elemtoScrll, ScrollBtns: {ScrllBtnFD: scrllBtn1, ScrllBtnSD: scrllBtn2, ScrllValues: {ScrllFdVal: scrllFd, ScrllSdVal: scrllSd}}, ScrllAxis: direction}) {
+    function setScrllValue(ScrllToVal) {
+        let dirSmcase = direction.toLowerCase();
+        if (dirSmcase === "y") mLogCon.scrollTop += ScrllToVal;
+        else if (dirSmcase === "x") mLogCon.scrollLeft += ScrllToVal;
+    }
+    let mLogCon = document.getElementById(elemtoScrll);
+    let firstBtn = document.getElementById(scrllBtn1);
+    let secondBtn = document.getElementById(scrllBtn2);
+
+    firstBtn.addEventListener("click", function() {setScrllValue(scrllFd);});
+    secondBtn.addEventListener("click", function() {setScrllValue(scrllSd);});
 }
-setSrc();
 
+scrollElems({
+    ScrollBox: 'mdlUsrCont', 
+    ScrollBtns: {
+        ScrllBtnFD: 'scrllMdlBtn1', 
+        ScrllBtnSD: 'scrllMdlBtn2', 
+        ScrllValues: {
+            ScrllFdVal: -350, 
+            ScrllSdVal: 350
+        }
+    }, 
+    ScrllAxis: 'y'
+});
 
-//Function for Loading user's Details and Settings
+//CLIENT SIDE : Function of Modal of Settings and Details Function 
+
+function userModalVisibility(state) {
+    let usrMdl = document.getElementById("mainUsrMdl");
+    if (!state) usrMdl.classList.remove("animation");   
+    else usrMdl.classList.add("animation"); 
+}
+mdlUsrShwBtn.addEventListener("click", function() {
+    userModalVisibility(true);
+});
+mdlUsrsClsBtn.addEventListener("click", function() {
+    userModalVisibility(false);
+});
+
+//CLIENT SIDE : Function for Loading user's Details and Settings
 
 (function() {
     let pillLight = document.getElementById("evtTagLight");
     let pillDark = document.getElementById("evtTagDark");
     let pillTextr = document.getElementById("evtTagTextr");
 
+    //Background Image Tabs
+
     function bgTabOpen(bgTagId) {
-        let swtchBgs = document.getElementsByClassName("swtch_bgs");
-        let swtchBgsLen = swtchBgs.length
         let bgId = document.getElementById(`${bgTagId}`);
 
-        for (let i = 0; i < swtchBgsLen; ++i) {
-            swtchBgs[i].classList.remove("swtch_bgs_actv");
-        }
+        let swtchBgs = document.getElementsByClassName("swtch_bgs");
+        let swtchBgsLen = swtchBgs.length
+
+        for (let i = 0; i < swtchBgsLen; ++i) swtchBgs[i].classList.remove("swtch_bgs_actv");
+        
         bgId.classList.add("swtch_bgs_actv")    
     }
+    
+    //Pill Buttons Trigger tabs
 
     pillLight.addEventListener("click", function() {
         bgTabOpen('tagLight');
@@ -3383,10 +3619,178 @@ setSrc();
 
 })();
 
+//CLIENT SIDE : Function Add Active Class Dynamically 
 
-//Function to set User Details or to Change
+function selectElem({Elemname: elemN, ClassName: clsName, TimeOut: timeCs}) {   
+    let elems = document.querySelectorAll(elemN);
+    let elemsLen = elems.length;
+    let clsByTIme;
 
-function setDBdetails() {
+    if (timeCs) {
+        clsByTIme = setTimeout(function() {
+            for (let i = 0; i < elemsLen; ++i) {
+                elems[i].classList.remove(clsName);
+            }
+        }, timeCs);
+    }
+    
+    for (let i = 0; i < elemsLen; ++i) {
+      elems[i].addEventListener("click", function() {
+    
+        clearTimeout(clsByTIme);
+
+        let crntCls = document.getElementsByClassName(clsName);
+
+        if (crntCls.length > 0) crntCls[0].className = crntCls[0].className.replace(` ${clsName}`, "");
+
+        this.className += ` ${clsName}`;
+    
+      });
+    }
+}
+
+//CLIENT SIDE : Function focus text Element
+
+function openBoard(wToogle) {
+   if(wToogle) {
+         msgInpt.focus();
+    } else {
+        msgInpt.blur();
+    }
+}
+
+//CLIENT SIDE : Function Setting reply on Opened Board
+
+function setReply(txtReply, usrFrmRply, imgReply) {
+    let replyMainDiv = document.getElementById("rplyClsEn");
+    let rplyUsrFrm = document.getElementById("rplyFrmUsr");
+    let replySpnVar = document.getElementById("rplySpn");
+
+    let rplyImageHolder = document.getElementById("replYImageDiv");
+    let rplyImage = document.getElementById("repliedImage");
+
+    rplyUsrFrm.innerText = usrFrmRply;
+
+    replySpnVar.innerHTML = txtReply; 
+
+    //For Image reply
+
+    if(imgReply) {
+        rplyImage.src = imgReply;
+        rplyImageHolder.classList.add("visible_now");
+    } else {
+        rplyImageHolder.classList.remove("visible_now");
+        rplyImage.removeAttribute("src");
+    }
+
+    if (replySpnVar.innerText) {
+        if (!replyMainDiv.classList.contains("replyEnabled")) {
+            replyMainDiv.classList.add("replyEnabled");
+        }
+    } else replyMainDiv.classList.remove("replyEnabled");
+    
+    openBoard(true);
+}
+
+//CLIENT SIDE : Function Snackbar Function to Notify Actions
+
+function snackBarShow({icon: icn, infoTxt: infTxt}) {
+
+    let snackBar = document.getElementById("snackBar");
+    let snackIcon = document.getElementById("snackIcon");
+    let snackInfo = document.getElementById("snackInfo");
+
+    let widthSnack = document.getElementById("widthInd");
+    
+    snackIcon.innerText = icn;
+    snackInfo.innerText = infTxt;   
+    
+    snackBar.classList.add("slide_in_snack");
+    snackBar.classList.remove("slide_out_snack");
+        
+    widthSnack.classList.add("animate_width");
+
+    widthSnack.addEventListener("animationend", function() {
+        snackBar.classList.remove("slide_in_snack");
+        snackBar.classList.add("slide_out_snack");
+        widthSnack.classList.remove("animate_width");
+    });
+
+}
+
+//CLIENT SIDE : Function for Modal of Image
+
+imgAttachBtn.addEventListener("click", function () {
+    
+    let imgSrcReset = document.getElementById("imageIsLoaded");
+    let imgCaptReset = document.getElementById("captionTxt");
+
+    imgSrcReset.src = '';
+    imgCaptReset.innerText = '';
+
+    modal.style.display = "block";
+
+    document.getElementById('attachment').click();
+    
+    openBoard(true);
+});
+
+//CLIENT SIDE : Function Send Message on Enter Event
+
+msgInpt.addEventListener("keydown", function(entEvt){
+    
+    if (msgInpt.innerText/*.trim()*/ !== '') {
+        if (entEvt.code === 'Enter' && !entEvt.shiftKey) {
+            entEvt.preventDefault();
+            SendMessage();
+        }
+    } else {
+        if (entEvt.code === 'Enter' && !entEvt.shiftKey) {
+           entEvt.preventDefault();
+           return false;
+        }
+    }
+    
+    // Events for Formatting Text COntent
+
+    if(entEvt.code === 'Control' && entEvt.code === 'b') {
+        document.execCommand("bold", false, null);
+    }
+
+    if(entEvt.code === 'Control' && entEvt.code === 'i') {
+        document.execCommand("italic", false, null);
+    }
+
+    if(entEvt.code === 'Control' && entEvt.code === 'u') {
+        document.execCommand("underline", false, null);
+    }
+});
+
+//CLIENT SIDE : Function of Events TO Post 
+
+sendBtn.addEventListener("click", SendMessage);
+
+submit.addEventListener("click", SendImage);
+
+//CLIENT SIDE : Function of Clear reply By Event onclick 
+
+replyClr.addEventListener("click", function(){
+    setReply('', '', '');
+});
+
+
+//Database Function => Function for Optimizing Performance by lazy loading Images
+
+function lazyLoading(typeImg, objImgCon, lsrc){
+    let loadBdy = document.getElementById("data_load_b");
+
+    if(typeImg === 'Img') objImgCon.src = lsrc;
+    else if (typeImg === 'BgImg') objImgCon.style.backgroundImage = `url("${lsrc}")`;
+}
+
+//Database Functions => User Details
+
+function loadUsrInformation() {
     const dbUsrsAbout = db.ref(`WebApplication/UsersInfo/${usernameCookie}/UserDetails`);
 
     let usrAboutStats = document.getElementById("usrAbout");
@@ -3407,6 +3811,7 @@ function setDBdetails() {
 
     imgUpload.addEventListener("change", function(fileEvt) {
         let oneFile = fileEvt.target.files[0];
+
         let imgRef = cldStorage.ref(`${usernameCookie}/${usernameCookie}_Pic`);
         let userPrfImg = imgRef.put(oneFile, {contentType: oneFile.type});
 
@@ -3421,6 +3826,7 @@ function setDBdetails() {
 
     dbUsrsAbout.on('value', (usrAbtSnp) => {
         let usrDetailsSnp = usrAbtSnp.val();
+
         let usrStatusExits = usrAbtSnp.child('userStatus').exists();
         let userProfilePicExists = usrAbtSnp.child('userProfilePic').exists();
         
@@ -3428,30 +3834,17 @@ function setDBdetails() {
         
         if (userProfilePicExists) {
             let usrImgUrl = document.getElementById("photo");
+            let usrFore = document.getElementById("myImg");
             usrImgUrl.src = usrDetailsSnp.userProfilePic;
+            usrFore.src = usrDetailsSnp.userProfilePic;
         }
     });
 
 }
 
+//Database Functions => User Preferences
 
-
-imgchtAttach.addEventListener("change", function(chtMsgEvt) {
-    let uploadImgFile = chtMsgEvt.target.files[0];
-    let filenameSpn = document.getElementById("fileName");
-    filenameSpn.innerText = uploadImgFile.name;
-    let uploadTask = cldStorage.ref(`chatMessagesImgs/${uploadImgFile.name}`);
-    uploadTask.put(uploadImgFile, {contentType: uploadImgFile.type}).then((ImgSnp) => {
-        ImgSnp.ref.getDownloadURL().then((cldImgUrl) => {
-            let imgSrcSet = document.getElementById('imageIsLoaded');
-            imgSrcSet.src = cldImgUrl;
-        });
-    });
-
-});
-
-
-function setDBThemes() {
+function loadUsrPreferences() {
     const dbUsrsSettings = db.ref(`WebApplication/UsersInfo/${usernameCookie}/UserSettings`);
 
     const toggleButton = document.querySelector(".dark-light");
@@ -3460,28 +3853,38 @@ function setDBThemes() {
     let bdBody =  document.querySelector("body");
     let chtarea = document.getElementById("chatArea");
 
+    //Initializing Mode and Theme to avoid data type "undefined"
+
     let dbTheme = 'light';
     let chtClr = 'Themeblue';
 
-    //Funtion for Setting Chat Themes
+    //For all Color Themed Divs
 
     clrThemes.forEach((color) => {
+        
         color.addEventListener("click", (e) => {
-            clrThemes.forEach((c) => c.classList.remove("selected"));
             const theme = color.getAttribute("data-color");
+            
+            //Remove Selected from each color themed Divs
+            clrThemes.forEach((c) => c.classList.remove("selected"));
+            
             document.body.setAttribute("data-theme", theme);
+            
             color.classList.add("selected");
-            chtClr = theme;
-            dbUsrsSettings.update({chatTheme: chtClr});
+                        
+            dbUsrsSettings.update({chatTheme: theme});
         });
+
     });
 
     //Funtion for Setting Dark Mode
 
     toggleButton.addEventListener("click", () => {
         document.body.classList.toggle("dark-mode");
+
         if (document.body.classList.contains("dark-mode")) dbTheme = 'dark';
         else  dbTheme = 'light';
+        
         dbUsrsSettings.update({appTheme: dbTheme});
     });
 
@@ -3542,14 +3945,75 @@ function setDBThemes() {
     });
 }
 
-if (!usernameCookie) {
-    let saveMsgCookie = _$fetchCookie("username");
-    saveMsgGrp = db.ref(`WebApplication/Web Developers/savedMsgs/${saveMsgCookie}`);
-} else{
-    saveMsgGrp = db.ref(`WebApplication/Web Developers/savedMsgs/${usernameCookie}`);
+//Database Function => User Presence System
+function userPresenceState() {
+    const userStatusRef = db.ref(`WebApplication/UsersInfo/${_$fetchCookie("username")}`).child("Presence");
+
+    userStatusRef.set({
+       Status: "Online"
+    });
+
+    userStatusRef.on('value', (usrState) => {
+        if (usrState.val() === false) return;
+
+        let dateOffline = new Date();
+        let usrLastHrs = dateOffline.getHours();
+        let usrLastMins = dateOffline.getMinutes();
+        
+        userStatusRef.onDisconnect().update({
+           Status: `Last Seen at ${usrLastHrs}:${usrLastMins}`
+        });
+
+    }); 
 }
 
-//Function to Display All Members of Group 
+//Database Functions => RealTime All Users Presence States  
+
+(function() {
+    const allUserStatus = db.ref("WebApplication/UsersInfo");
+    
+    let memberOnline = document.getElementById("MemOnline");
+
+    allUserStatus.on("value", function(usrStatus) {
+
+        //Resetting array
+
+        let memOnlineArr = [];
+        let memOnlineNum = 0;
+
+        let allusrArr =  usrStatus.val();
+
+        let staticMemPresence = document.getElementsByClassName("member_about_details");
+        let staticMemPresenceLen = staticMemPresence.length;
+
+        let allUsrs = Object.keys(usrStatus.val());
+
+        for (let i = 0; i < staticMemPresenceLen; ++i) {
+            
+            let staticMemList = staticMemPresence[i].parentElement.parentElement.getElementsByClassName("member_list_sections")[0];
+            let staticMemImg = staticMemList.getElementsByClassName("member_img_holder")[0];
+
+            memOnlineArr.push(allusrArr[allUsrs[i]].Presence.Status);
+            
+            if (allusrArr[allUsrs[i]].Presence.Status === 'Online') memOnlineNum = (++memOnlineNum);
+
+            if (memOnlineNum > 1) memberOnline.innerText = memOnlineNum - 1;
+            else memberOnline.innerText = `No one is `;
+
+            console.log(memOnlineNum);
+
+            staticMemPresence[i].innerText = memOnlineArr[i];
+
+            if (staticMemPresence[i].innerText === 'Online') {
+                staticMemPresence[i].classList.add("online_mem_spn");
+                // staticMemImg.add("online_mem");
+            } /*else staticMemImg.remove("online_mem");*/
+        }
+
+    });
+})();
+
+//Database Functions => Members in Group
 
 (function() {
     const mainApplicationdb = db.ref("WebApplication/UsersInfo");
@@ -3564,27 +4028,25 @@ if (!usernameCookie) {
         
         let usrWebLen = usrWeb.length;
 
+        let memberNumber = document.getElementById("MemNum");
+        let onceMemberOnline = document.getElementById("MemOnline");
+
+        let memOnlineCnt = 0;
+
+        memberNumber.innerText = `${usrWebLen}`;
+        
+        //Creating Arrays for setting them in Sequence
 
         let userStatusArr = [];
         let userImgUrlArr = [];
         let userchtBgImg = [];
         
-        for (var i = 0; i < usrWebLen; ++i) {
+        let userPresence = [];
+
+
+        for (let i = 0; i < usrWebLen; ++i) {
             let users = usrWeb[i];
 
-            //Check Existence and Push Values in array
-
-            if(usersSnaps.child(`${users}/UserDetails/userStatus`).exists()) userStatusArr.push(dbFetchKeys[users].UserDetails.userStatus);
-            else userStatusArr.push('');
-            if(usersSnaps.child(`${users}/UserDetails/userProfilePic`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.userProfilePic);
-            else userImgUrlArr.push('');
-            if(usersSnaps.child(`${users}/UserSettings/chatBgImg`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.chatBgImg);
-            else userchtBgImg.push('');
-        }
-
-        //Appending User Data in Design
-
-        for (var i = 0; i < usrWebLen; ++i) {
             let membersListH = document.getElementById("membersListHolder");
 
             let mainListHold = document.createElement("div");
@@ -3607,8 +4069,36 @@ if (!usernameCookie) {
             memAbout.classList.add("member_about_details");
             memAbout.classList.add("member_detail_blcks");
 
-            memNameHolder.innerText = usrWeb[i];
-            memAbout.innerText = userStatusArr[i];
+            //Check Existence and Push Values in array
+
+            if(usersSnaps.child(`${users}/UserDetails/userStatus`).exists()) userStatusArr.push(dbFetchKeys[users].UserDetails.userStatus);
+            else userStatusArr.push('');
+
+            if(usersSnaps.child(`${users}/UserDetails/userProfilePic`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.userProfilePic);
+            else userImgUrlArr.push('');
+            
+            if(usersSnaps.child(`${users}/UserSettings/chatBgImg`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.chatBgImg);
+            else userchtBgImg.push('');
+
+            if(usersSnaps.child(`${users}/Presence`).exists()) userPresence.push(dbFetchKeys[users].Presence.Status);
+            else userPresence.push("Last Seen Recently");
+
+            if (dbFetchKeys[users].Presence.Status === 'Online') memOnlineCnt = ++memOnlineCnt;
+
+            // console.log(memOnlineArr);
+
+            if(usrWeb[i] === usernameCookie) memNameHolder.innerText = 'Me';
+            else memNameHolder.innerText = usrWeb[i];
+
+            memAbout.innerText = userPresence[i];
+
+            if (memAbout.innerText === 'Online') {
+                memAbout.classList.add("online_mem_spn");
+                // memImgHold.classList.add("online_mem");
+            } /*else{
+                if(memImgHold.classList.contains("online_mem")) memImgHold.classList.remove("online_mem");
+                if(memImgHold.classList.contains("online_mem_spn")) memImgHold.classList.remove("online_mem_spn");
+            }*/
 
             lazyLoading('Img', memImg, userImgUrlArr[i]);
             lazyLoading('BgImg', mainListHold, userchtBgImg[i]);
@@ -3624,13 +4114,15 @@ if (!usernameCookie) {
 
             membersListH.appendChild(mainListHold);
         }
+        if (memOnlineCnt > 1) onceMemberOnline.innerText = memOnlineCnt-1;
+        else onceMemberOnline.innerText = 'No one is ';
     });
 })();
 
 
 //FUnction Event of Side panel where members are visible
 
-let sidePnlBtn = document.getElementById("sidePanelBtn");
+/*let sidePnlBtn = document.getElementById("sidePanelBtn");
 
 sidePnlBtn.addEventListener("click", function() {
     let sidePnl = document.getElementById("sidePanel");
@@ -3638,154 +4130,7 @@ sidePnlBtn.addEventListener("click", function() {
     chtArea.classList.toggle("d_width");
     sidePnl.classList.toggle("show_panel");
 });
-
-//Function to Scroll By Button
-
-function scrollElems({ScrollBox: elemtoScrll, ScrollBtns: {ScrllBtnFD: scrllBtn1, ScrllBtnSD: scrllBtn2, ScrllValues: {ScrllFdVal: scrllFd, ScrllSdVal: scrllSd}}, ScrllAxis: direction}) {
-    function setScrllValue(ScrllToVal) {
-        let dirSmcase = direction.toLowerCase();
-        if (dirSmcase === "y") mLogCon.scrollTop += ScrllToVal;
-        else if (dirSmcase === "x") mLogCon.scrollLeft += ScrllToVal;
-    }
-    let mLogCon = document.getElementById(elemtoScrll);
-    let firstBtn = document.getElementById(scrllBtn1);
-    let secondBtn = document.getElementById(scrllBtn2);
-
-    firstBtn.addEventListener("click", function() {setScrllValue(scrllFd);});
-    secondBtn.addEventListener("click", function() {setScrllValue(scrllSd);});
-}
-
-scrollElems({
-    ScrollBox: 'mdlUsrCont', 
-    ScrollBtns: {
-        ScrllBtnFD: 'scrllMdlBtn1', 
-        ScrllBtnSD: 'scrllMdlBtn2', 
-        ScrllValues: {
-            ScrllFdVal: -350, 
-            ScrllSdVal: 350
-        }
-    }, 
-    ScrllAxis: 'y'
-});
-
-function userModalVisibility(state) {
-    let usrMdl = document.getElementById("mainUsrMdl");
-    if (!state) usrMdl.classList.remove("animation");   
-    else usrMdl.classList.add("animation"); 
-}
-mdlUsrShwBtn.addEventListener("click", function() {
-    userModalVisibility(true);
-});
-mdlUsrsClsBtn.addEventListener("click", function() {
-    userModalVisibility(false);
-});
-function selectElem({Elemname: elemN, ClassName: clsName, TimeOut: timeCs}) {   
-    let elems = document.querySelectorAll(elemN);
-    let elemsLen = elems.length;
-    let clsByTIme;
-    if (timeCs) {
-        clsByTIme = setTimeout(function() {
-            for (let i = 0; i < elemsLen; ++i) {
-                elems[i].classList.remove(clsName);
-            }
-        }, timeCs);
-    }
-    for (let i = 0; i < elemsLen; ++i) {
-      elems[i].addEventListener("click", function() {
-        clearTimeout(clsByTIme);
-        let crntCls = document.getElementsByClassName(clsName);
-        if (crntCls.length > 0) {
-            crntCls[0].className = crntCls[0].className.replace(` ${clsName}`, "");
-        }
-        this.className += ` ${clsName}`;
-      });
-    }
-}
-
-//focus text Element
-
-function openBoard(wToogle) {
-   if(wToogle) {
-         msgInpt.focus();
-    } else {
-        msgInpt.blur();
-    }
-}
-
-//Setting reply on Opened Board
-
-function setReply(txtReply, usrFrmRply, imgReply) {
-    let replyMainDiv = document.getElementById("rplyClsEn");
-    let rplyUsrFrm = document.getElementById("rplyFrmUsr");
-    let replySpnVar = document.getElementById("rplySpn");
-
-    let rplyImageHolder = document.getElementById("replYImageDiv");
-    let rplyImage = document.getElementById("repliedImage");
-
-    rplyUsrFrm.innerText = usrFrmRply;
-
-    replySpnVar.innerHTML = txtReply; 
-
-    //For Image reply
-
-    if(imgReply) {
-        rplyImage.src = imgReply;
-        rplyImageHolder.classList.add("visible_now");
-    } else {
-        rplyImageHolder.classList.remove("visible_now");
-        rplyImage.removeAttribute("src");
-    }
-
-    if (replySpnVar.innerText) {
-        if (!replyMainDiv.classList.contains("replyEnabled")) {
-            replyMainDiv.classList.add("replyEnabled");
-        }
-    } else replyMainDiv.classList.remove("replyEnabled");
-    
-    openBoard(true);
-}
-
-//Snackbar FUnction to Notify Actions
-
-function snackBarShow({icon: icn, infoTxt: infTxt}) {
-    let snackBar = document.getElementById("snackBar");
-    let snackIcon = document.getElementById("snackIcon");
-    let snackInfo = document.getElementById("snackInfo");
-
-    let widthSnack = document.getElementById("widthInd");
-
-    let widthStr = 0;
-    let maxWidth = 110;
-    
-    snackIcon.innerText = icn;
-    snackInfo.innerText = infTxt;   
-    
-    snackBar.classList.add("slide_in_snack");
-    snackBar.classList.remove("slide_out_snack");
-    
-    let widthInter = setInterval(function() {
-        widthStr+=10;
-        widthSnack.style.width = `${widthStr}%`;
-        if (widthStr === maxWidth) clearInterval(widthInter);
-    }, 250);
-
-    setTimeout(function() {
-        snackBar.classList.remove("slide_in_snack");
-        snackBar.classList.add("slide_out_snack");
-        clearInterval(widthInter);
-        widthSnack.style.width = `0%`;
-    }, 4000);
-
-}
-
-//FUnction for Optimizing Performance by lazy loading Images
-
-function lazyLoading(typeImg, objImgCon, lsrc){
-    let loadBdy = document.getElementById("data_load_b");
-
-        if(typeImg === 'Img') objImgCon.src = lsrc;
-        else if (typeImg === 'BgImg') objImgCon.style.backgroundImage = `url("${lsrc}")`;
-}
+*/
 
 //Database Chat => Getting Time
 
@@ -3797,7 +4142,9 @@ function userPostTime() {
 
     let chtMinsTern = (chtMins<10?"0":"")+chtMins;
     let parseHr = parseInt(chtHrs);
+
     if (parseHr > 12) parseHr = parseHr - 12;
+    
     let parseHrTern = (parseHr<10?"0":"")+parseHr;
 
     let meredian = (chtHrs<=11?"am":"pm");
@@ -3824,9 +4171,12 @@ function setmsgUniqueId(){
 
 //Database Chat => Posting text chat in chatMessages Child
 
-function postChat() {
+function SendMessage() {
     let rplSpn = document.getElementById("rplySpn");
+    let rplyDbFromUsr = document.getElementById("rplyFrmUsr");
+
     let rplyChkDb = rplSpn.innerHTML?rplSpn.innerHTML:"";
+    let rplyFrmUsrChk  = rplyDbFromUsr.innerText?rplyDbFromUsr.innerText:"";
 
     let rplImage = document.getElementById("repliedImage").src;
     let rplyImageChk = rplImage?rplImage:"";
@@ -3844,6 +4194,7 @@ function postChat() {
         usr: usernameCookie,
         replyStr: rplyChkDb,
         replyImage: rplyImageChk,
+        replyOfUser: rplyFrmUsrChk,
         msg: msgInptVal,
         usrTime: usrPostTimeDb,
         chgId: getUniqueIdDbStr
@@ -3854,7 +4205,7 @@ function postChat() {
 
 //Database Chat => Posting Image in chatMessages child
 
-function sendchtImg(){
+function SendImage(){
   let getImgCht =  document.getElementById("imageIsLoaded");
   let getImgSrcCht = getImgCht.src;
   
@@ -3879,12 +4230,48 @@ function sendchtImg(){
 
       afterPostFunctions();
       document.getElementById('myModal').style.display = 'none';
+      submit.setAttribute("disabled", "true");
 }
+
+
+//Database Chat => File Handling!
+let filenameSpn = document.getElementById("fileName");
+
+imgchtAttach.addEventListener("change", function(chtMsgEvt) {
+    
+    let uploadImgFile = chtMsgEvt.target.files[0];
+    
+    let mainImgAtch = document.getElementById("mainImgAttach");
+
+    filenameSpn.innerText = uploadImgFile.name;
+
+    let uploadTask = cldStorage.ref(`chatMessagesImgs/${uploadImgFile.name}`);
+
+    uploadTask.put(uploadImgFile, {contentType: uploadImgFile.type}).then((ImgSnp) => {
+        ImgSnp.ref.getDownloadURL().then((cldImgUrl) => {
+            let imgSrcSet = document.getElementById('imageIsLoaded');
+            submit.removeAttribute("disabled");
+            imgSrcSet.src = cldImgUrl;
+        });
+    });
+
+});
+
+//Database Chat => Events to avoid unnessesary bugs and errors 
+
+imgchtAttach.addEventListener("focus", function() {
+    submit.setAttribute("disabled", "true");
+});
+
+clsImgMdl.addEventListener("click", function() {
+      document.getElementById('myModal').style.display = 'none';
+      filenameSpn.innerText = "File Name";
+});
+
 
 //Database Chat => Posting audio in chatMessages child
 
-
-function sendchtAudio() {
+/*function sendchtAudio() {
   let getImgCht =  document.getElementById("imageIsLoaded");
   let getImgSrcCht = getImgCht.src;
   
@@ -3909,625 +4296,688 @@ function sendchtAudio() {
 
   afterPostFunctions();
   document.getElementById('myModal').style.display = 'none';
-}
+}*/
 
-//Database Chat => Fetching Image For Posting
 
-btn.addEventListener("click", function () {
-    let imgSrcReset = document.getElementById("imageIsLoaded");
-    let imgCaptReset = document.getElementById("captionTxt");
+//Database Chat => All Database Functions
 
-    imgSrcReset.src = '';
-    imgCaptReset.innerText = '';
-
-    modal.style.display = "block";
-
-    document.getElementById('attachment').click();
+function databaseFunction() {
+    const fetchChat = db.ref("WebApplication/Web Developers/chatMessages");
+    const pinMessageDb = db.ref(`WebApplication/Web Developers/Pinned Messages`);
+    const saveMsgGrp = db.ref(`WebApplication/Web Developers/savedMsgs/${usernameCookie}`);
     
-    openBoard(true);
-});
-sendBtn.addEventListener("click", postChat);
-submit.addEventListener("click", sendchtImg);
-
-//Send Message on Enter Event
-
-msgInpt.addEventListener("keydown", function(entEvt){
-    if (msgInpt.innerText/*.trim()*/ !== '') {
-        if (entEvt.code === 'Enter' && !entEvt.shiftKey) {
-            entEvt.preventDefault();
-            postChat();
-        }
-    } else {
-        if (entEvt.code === 'Enter' && !entEvt.shiftKey) {
-           entEvt.preventDefault();
-           return false;
-        }
-    }
-
-    if(entEvt.code === 'Control' && entEvt.code === 'b') {
-        document.execCommand("bold", false, null);
-    }
-
-    if(entEvt.code === 'Control' && entEvt.code === 'i') {
-        document.execCommand("italic", false, null);
-    }
-
-    if(entEvt.code === 'Control' && entEvt.code === 'u') {
-        document.execCommand("underline", false, null);
-    }
-});
-
-//Clear reply onclick span
-
-replyClr.addEventListener("click", function(){
-    setReply('', '', '');
-});
-
-//Database Function => After Child is Removed
-
-fetchChat.on("child_removed", function(delSnpVal) {
-    const dbDeleteMsg = delSnpVal.val();
-    const dbDeleteMsgId = dbDeleteMsg.chgId;
-
-    let rmvelem = document.getElementById(`${dbDeleteMsgId}`);
-    rmvelem.parentElement.parentElement.parentElement.remove();
-});
-
-//Database Function => After Child is Edited
-
-fetchChat.on("child_changed", function(chngChildSnp) {
-    let chngChildVal = chngChildSnp.val();
-    let chngChildId = chngChildVal.chgId;
-    let chngChildMsg = chngChildVal.msg;
-
-    let chngElem = document.getElementById(chngChildId);
-    chngElem.innerText = chngChildMsg;
-});
-
-//Database Function => After Child is Added
-
-fetchChat.on("child_added", function (dbChatSnp) {
-    let dbFetch = dbChatSnp.val();
-
-    let dbFetchMsg = dbFetch.msg;
-    let dbFetchTime = dbFetch.usrTime;
-    let dbFetchUser = dbFetch.usr;
-    let dbFetchId = dbFetch.chgId;
-    let dbFetchRply = dbFetch.replyStr;
-    let dbFetchRplyImage = dbFetch.replyImage;
-
-    //Confirming User By Cookie
-
-    let getCookieDb = _$fetchCookie("username");
-
-    let lstMsg = document.getElementById("lastMsg");
-    let lstMsgtime = document.getElementById("lastMsgTime");
-    let chtRplyMsgTxt = document.getElementById("rplySpn").innerText;
-
-    let chatMsg = document.createElement("div");
-    let chtMsgProf = document.createElement("div");
-    let chtMsgdate = document.createElement("div");
+    //Database Function => After Child is Removed
     
-    let chtMsgCOnt = document.createElement("div");
-    let chtTxt = document.createElement("div");
+    fetchChat.on("child_removed", function(delSnpVal) {
+        const dbDeleteMsg = delSnpVal.val();
+        const dbDeleteMsgId = dbDeleteMsg.chgId;
 
-    let chtReplyBtn = document.createElement("button");
+        let rmvelem = document.getElementById(`${dbDeleteMsgId}`);
+        rmvelem.parentElement.parentElement.parentElement.remove();
+    });
 
-    let chtusrOptH = document.createElement("div");
+    //Database Function => After Child is Edited
 
-    let usroptBtnCopy = document.createElement("button");
-    let usroptBtnCopyIco = document.createElement("i");
+    fetchChat.on("child_changed", function(chngChildSnp) {
+        let chngChildVal = chngChildSnp.val();
+        let chngChildId = chngChildVal.chgId;
+        let chngChildMsg = chngChildVal.msg;
 
-    let usrOptBtnPin = document.createElement("button");
-    let usrOptBtnPinIco = document.createElement("i");
+        let chngElem = document.getElementById(chngChildId);
+        chngElem.innerText = chngChildMsg;
+    });
 
-    let usroptBtnSave = document.createElement("button");
-    let usroptBtnSaveIco = document.createElement("i");
+    //Database Function => After Child is Added
 
-    let chtMainMsg = document.createElement("div");
+    fetchChat.on("child_added", function (dbChatSnp) {
+        let dbFetch = dbChatSnp.val();
 
-    chatMsg.classList.add("chat-msg");
-    chtReplyBtn.classList.add("reply_msg_btn");
-    chtReplyBtn.classList.add("material-icons");
-    chtMsgProf.classList.add("chat-msg-profile");
-    chtMsgdate.classList.add("time");
-    chtMsgCOnt.classList.add("chat-msg-content");
+        let dbFetchMsg = dbFetch.msg;
+        let dbFetchTime = dbFetch.usrTime;
+        let dbFetchUser = dbFetch.usr;
+        let dbFetchId = dbFetch.chgId;
+        let dbFetchRply = dbFetch.replyStr;
+        let dbFetchRplyImage = dbFetch.replyImage;
 
-    chtusrOptH.classList.add("usr_opts_h");
+        //Confirming User By Cookie
 
-    usroptBtnCopy.classList.add("usr_opts_btn");
-    usroptBtnCopyIco.classList.add("material-icons");
+        let getCookieDb = _$fetchCookie("username");
 
-    usrOptBtnPin.classList.add("usr_opts_btn");
-    usrOptBtnPinIco.classList.add("material-icons");
+        let lstMsg = document.getElementById("lastMsg");
+        let lstMsgtime = document.getElementById("lastMsgTime");
+        let chtRplyMsgTxt = document.getElementById("rplySpn").innerText;
 
-    usroptBtnSave.classList.add("usr_opts_btn");
-    usroptBtnSaveIco.classList.add("material-icons");
+        let chatMsg = document.createElement("div");
+        let chtMsgProf = document.createElement("div");
+        let chtMsgdate = document.createElement("div");
+        
+        let chtMsgCOnt = document.createElement("div");
+        let chtTxt = document.createElement("div");
 
-    chtTxt.classList.add("chat-msg-text");
-    chtMainMsg.classList.add("usr_main_msg");
+        let chtReplyBtn = document.createElement("button");
 
-    chtMainMsg.setAttribute(`id`, `${dbFetch.chgId}`);
+        let chtusrOptH = document.createElement("div");
 
-    function fnReply(evtFn, elemTxt) {
-        evtFn.stopPropagation();
-        evtFn.preventDefault();
+        let usroptBtnCopy = document.createElement("button");
+        let usroptBtnCopyIco = document.createElement("i");
 
-        setReply(elemTxt);
+        let usrOptBtnPin = document.createElement("button");
+        let usrOptBtnPinIco = document.createElement("i");
 
-        let clsReplySet = setTimeout(function() {
-            chatMsg.classList.remove("replyingCurr");
-        }, 500);
-        chatMsg.classList.add("replyingCurr");
-        openBoard(false);
-    }
-    function selectRmvs() {
-        let rmvChild = document.getElementsByClassName("chat-msg-text");
-        let rmvChildLen = rmvChild.length;
-        for (var i = 0; i < rmvChildLen; ++i) {
-            rmvChild[i].classList.remove("one_select");
+        let usroptBtnSave = document.createElement("button");
+        let usroptBtnSaveIco = document.createElement("i");
+
+        let chtMainMsg = document.createElement("div");
+
+        chatMsg.classList.add("chat-msg");
+        chtReplyBtn.classList.add("reply_msg_btn");
+        chtReplyBtn.classList.add("material-icons");
+        chtMsgProf.classList.add("chat-msg-profile");
+        chtMsgdate.classList.add("time");
+        chtMsgCOnt.classList.add("chat-msg-content");
+
+        chtusrOptH.classList.add("usr_opts_h");
+
+        usroptBtnCopy.classList.add("usr_opts_btn");
+        usroptBtnCopyIco.classList.add("material-icons");
+
+        usrOptBtnPin.classList.add("usr_opts_btn");
+        usrOptBtnPinIco.classList.add("material-icons");
+
+        usroptBtnSave.classList.add("usr_opts_btn");
+        usroptBtnSaveIco.classList.add("material-icons");
+
+        chtTxt.classList.add("chat-msg-text");
+        chtMainMsg.classList.add("usr_main_msg");
+
+        chtMainMsg.setAttribute(`id`, `${dbFetch.chgId}`);
+
+        function fnReply(evtFn, elemTxt) {
+            evtFn.stopPropagation();
+            evtFn.preventDefault();
+
+            setReply(elemTxt);
+
+            let clsReplySet = setTimeout(function() {
+                chatMsg.classList.remove("replyingCurr");
+            }, 500);
+            chatMsg.classList.add("replyingCurr");
+            openBoard(false);
         }
-    }
-    function selectEvent() {
-        selectElem({
-            Elemname: '.chat-msg-text', 
-            ClassName: 'one_select', 
-            TimeOut: 7500
-        });
-    }
+        function selectRmvs() {
+            let rmvChild = document.getElementsByClassName("chat-msg-text");
+            let rmvChildLen = rmvChild.length;
+            for (var i = 0; i < rmvChildLen; ++i) {
+                rmvChild[i].classList.remove("one_select");
+            }
+        }
+        function selectEvent() {
+            selectElem({
+                Elemname: '.chat-msg-text', 
+                ClassName: 'one_select', 
+                TimeOut: 7500
+            });
+        }
 
-    //if Current User is sending Message
+        //if Current User is sending Message
 
-    if (dbFetchUser === getCookieDb) {
-        chatMsg.classList.add("owner");
-        
-        let usrOptCls = document.getElementsByClassName("usr_opts_btn");
-        let usrOptClsLen = usrOptCls.length;
-        
-        let msgOrininalVal;
-
-        //Adding Edit Option for Current User Only
-
-        let usroptBtnEdit = document.createElement("button");
-        let usroptBtnEditIco = document.createElement("i");
-
-        let usroptBtnDel = document.createElement("button");
-        let usroptBtnDelIco = document.createElement("i");
-
-        usroptBtnEdit.classList.add("usr_opts_btn");
-        usroptBtnEditIco.classList.add("material-icons");
-
-        usroptBtnDelIco.classList.add("material-icons");
-        usroptBtnDel.classList.add("usr_opts_btn");
-        usroptBtnDel.classList.add("red_btn");
-
-        usroptBtnEditIco.innerText = 'brush';
-        usroptBtnDelIco.innerText = 'remove_circle_outline';
-
-        usroptBtnDel.appendChild(usroptBtnDelIco);
-        chtusrOptH.appendChild(usroptBtnDel);
-
-        usroptBtnEdit.appendChild(usroptBtnEditIco);
-        chtusrOptH.appendChild(usroptBtnEdit);
-        
-        //Edit Message Trigger
-        usroptBtnEdit.addEventListener("click", function() {
-            let grandParentELemtxt = this.parentElement.parentElement;
-            grandParentELemtxt.removeEventListener("click", selectEvent);
-
-            chtMainMsg.setAttribute('contentEditable', 'true');
-            chtMainMsg.focus();
+        if (dbFetchUser === getCookieDb) {
+            chatMsg.classList.add("owner");
             
-            grandParentELemtxt.classList.add("focused");
-            selectRmvs();
+            let usrOptCls = document.getElementsByClassName("usr_opts_btn");
+            let usrOptClsLen = usrOptCls.length;
+            
+            let msgOrininalVal;
 
-            if (dbFetch.ImgUrl) {
-                if (!dbFetchMsg) {
-                    chtMainMsg.style.display = 'inline-block';
+            let chtMsgStatus = document.createElement("div");
+
+            chtMsgStatus.classList.add("material-icons");
+            chtMsgStatus.classList.add("delivered_status");
+
+
+            //Adding Edit Option for Current User Only
+
+            let usroptBtnEdit = document.createElement("button");
+            let usroptBtnEditIco = document.createElement("i");
+
+            let usroptBtnDel = document.createElement("button");
+            let usroptBtnDelIco = document.createElement("i");
+
+            usroptBtnEdit.classList.add("usr_opts_btn");
+            usroptBtnEditIco.classList.add("material-icons");
+
+            usroptBtnDelIco.classList.add("material-icons");
+            usroptBtnDel.classList.add("usr_opts_btn");
+            usroptBtnDel.classList.add("red_btn");
+
+            usroptBtnEditIco.innerText = 'brush';
+            usroptBtnDelIco.innerText = 'remove_circle_outline';
+
+            chtMsgStatus.innerText = 'done_all';
+
+            usroptBtnDel.appendChild(usroptBtnDelIco);
+            chtusrOptH.appendChild(usroptBtnDel);
+
+            usroptBtnEdit.appendChild(usroptBtnEditIco);
+            chtusrOptH.appendChild(usroptBtnEdit);
+
+
+            chtMsgProf.appendChild(chtMsgStatus);
+            
+            //Edit Message Trigger
+            usroptBtnEdit.addEventListener("click", function() {
+                let grandParentELemtxt = this.parentElement.parentElement;
+                grandParentELemtxt.removeEventListener("click", selectEvent);
+
+                chtMainMsg.setAttribute('contentEditable', 'true');
+                chtMainMsg.focus();
+                
+                grandParentELemtxt.classList.add("focused");
+                selectRmvs();
+
+                if (dbFetch.ImgUrl) {
+                    if (!dbFetchMsg) {
+                        chtMainMsg.style.display = 'inline-block';
+                    }
                 }
-            }
-            
-            chtTxt.addEventListener("click", function() {
-                if (this.classList.contains("one_select")) this.classList.remove("one_select");
-            });
-        });
-
-        //Database chat Options => Remove Message
-
-        usroptBtnDel.addEventListener("click", function() {
-            let rmvElemId = chtMainMsg.getAttribute("id");
-
-            fetchChat.child(`${rmvElemId}`).remove().then(function() {
-                snackBarShow({icon: 'delete_forever', infoTxt: 'Bubble Deleted!'});
-            }).catch(function() {
-                snackBarShow({icon: 'clear', infoTxt: 'Cannot Delete Bubble'})
-            });
-
-        });
-
-        //KeyDown Event => Editing Chat message
-        chtMainMsg.addEventListener("keydown", function(entAttr) {
-            if ((entAttr.key === 'Enter')&&(!entAttr.shiftKey)) {
                 
-                entAttr.preventDefault();
-                
-                let dataVId = this.getAttribute("id");
-                let datavIdConn = fetchChat.child(`${dataVId}`);
-                let inrTxt = this.innerText;
-
-                datavIdConn.update({msg: `${inrTxt}`}).then(function() {
-                    snackBarShow({icon: 'brush', infoTxt: 'Edited Sucessfully!'});
-                    
-                    chtMainMsg.removeAttribute("contentEditable");
-                    chtMainMsg.parentElement.classList.remove("focused");
-
-                    if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal; 
-                    chtMainMsg.parentElement.addEventListener("click", selectEvent);
-
+                chtTxt.addEventListener("click", function() {
+                    if (this.classList.contains("one_select")) this.classList.remove("one_select");
                 });
+            });
+
+            //Database chat Options => Remove Message
+
+            usroptBtnDel.addEventListener("click", function() {
+                let rmvElemId = chtMainMsg.getAttribute("id");
+
+                fetchChat.child(`${rmvElemId}`).remove().then(function() {
+                    snackBarShow({icon: 'delete_forever', infoTxt: 'Bubble Deleted!'});
+                }).catch(function() {
+                    snackBarShow({icon: 'clear', infoTxt: 'Cannot Delete Bubble'})
+                });
+
+            });
+
+            //KeyDown Event => Editing Chat message
+            chtMainMsg.addEventListener("keydown", function(entAttr) {
+                if ((entAttr.key === 'Enter')&&(!entAttr.shiftKey)) {
+                    
+                    entAttr.preventDefault();
+                    
+                    let dataVId = this.getAttribute("id");
+                    let datavIdConn = fetchChat.child(`${dataVId}`);
+                    let inrTxt = this.innerText;
+
+                    datavIdConn.update({msg: `${inrTxt}`}).then(function() {
+                        snackBarShow({icon: 'brush', infoTxt: 'Edited Sucessfully!'});
+                        
+                        chtMainMsg.removeAttribute("contentEditable");
+                        chtMainMsg.parentElement.classList.remove("focused");
+
+                        if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal; 
+                        chtMainMsg.parentElement.addEventListener("click", selectEvent);
+
+                    });
+                }
+            });
+
+            //Focus Lost Event
+            chtMainMsg.addEventListener("blur", function() {
+                if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal;
+
+
+                this.removeAttribute("contentEditable");
+                this.parentElement.classList.remove("focused");
+
+                this.parentElement.addEventListener("click", selectEvent);
+            });
+
+        } else{
+
+            //other Users Messages
+
+            let chtMsgUsrName = document.createElement("div");
+
+            chtMsgUsrName.classList.add("chat-msg-user");
+
+            chatMsg.classList.add("otherU");
+
+            chtTxt.appendChild(chtMsgUsrName);
+            
+            chtMsgUsrName.innerText = dbFetchUser;
+            if (dbFetch.ImgUrl) {
+                if (!chtMainMsg.innerText) chtMainMsg.style.display = 'none';
+            }
+        }
+
+        //For all Users Functions
+
+
+        //if Dataase Has Reply Message
+
+        if (dbFetchRply) {
+            let scpdDbRplyStr = dbFetch.replyStr;
+            let rplyDiv = document.createElement("div");
+            let rplyDivUser = document.createElement("span");
+            let rplyDivSpn = document.createElement("span");
+
+            rplyDiv.classList.add("reply_db");
+            
+            rplyDivUser.classList.add("reply_spns");
+            rplyDivUser.classList.add("reply_db_user");
+
+            rplyDivSpn.classList.add("reply_spns");
+            rplyDivSpn.classList.add("reply_db_spn");
+
+            //If database reply also contains Image
+
+            if (dbFetchRplyImage !== "") {
+
+                let rplyImageH = document.createElement("div");
+                let rplyImage = document.createElement("img");
+
+                rplyImageH.classList.add("reply_db_image_holder");
+                rplyImage.classList.add("reply_db_image");
+
+                rplyImage.src = dbFetchRplyImage;
+
+                rplyImageH.appendChild(rplyImage);
+                rplyDiv.appendChild(rplyImageH);
+            }
+
+            //From User's Message
+
+            rplyDivUser.innerText = dbFetch.replyOfUser;
+
+            //User Replied Message
+
+            rplyDivSpn.innerHTML = scpdDbRplyStr;
+
+            rplyDiv.appendChild(rplyDivUser);
+            rplyDiv.appendChild(rplyDivSpn);
+            chtTxt.appendChild(rplyDiv);
+        }
+
+        //If Chat message Has Image
+
+        if (dbFetch.ImgUrl) {
+            let imgHolder = document.createElement("div");
+            let imgTag = document.createElement("img");
+
+            imgHolder.classList.add("cht_img_holder");
+            chtTxt.classList.add("is_img");
+
+            //Lazy Load to optimize 
+
+            lazyLoading('Img', imgTag, dbFetch.ImgUrl);
+
+            imgHolder.appendChild(imgTag);
+            chtTxt.appendChild(imgHolder);
+
+            if (!dbFetchMsg) chtMainMsg.style.display = 'none';
+        }
+
+        //Check Valid Url
+
+        function validURL(str) {
+          let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+          return !!pattern.test(str);
+        }
+
+        //If Database has Link
+
+        if(validURL(dbFetchMsg)) {
+            let scpdDbMsg = dbFetch.msg;
+            let linkHold = document.createElement("div");
+            let linkAnchor = document.createElement("a");
+
+            linkHold.classList.add("link_hold");
+
+            if(!dbFetch.ImgUrl){
+                let linkUpperH = document.createElement("div");
+                let linkFrame = document.createElement("iframe");
+                let linkText = document.createElement("div");
+         
+                linkUpperH.classList.add("link_upper_hold");
+
+                linkFrame.classList.add("iframe_prev");
+                linkFrame.classList.add("link_divs");
+
+                linkText.classList.add("link_divs");
+                linkText.classList.add("text_link_div");
+
+                linkFrame.src = scpdDbMsg;
+                linkText.innerText = scpdDbMsg;
+
+                linkFrame.setAttribute("scrolling", 'no', "height", "100%", "width", '100%');
+                
+                linkUpperH.appendChild(linkFrame);
+                linkUpperH.appendChild(linkText);
+                linkHold.appendChild(linkUpperH);
+            }
+
+            linkAnchor.href = scpdDbMsg;
+            linkAnchor.innerText = scpdDbMsg;
+
+            linkHold.appendChild(linkAnchor);
+            chtMainMsg.appendChild(linkHold);
+
+            chtReplyBtn.addEventListener("click", function(rplyLinkEvt) {
+                let rplyLinkevtVr = rplyLinkEvt;
+                fnReply(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
+            });
+        } else{
+
+            //Simple Text Reply
+
+            chtMainMsg.innerHTML = dbFetchMsg;
+            chtReplyBtn.addEventListener("click", function(rplyEvt) {
+                let rplyEvtVar = rplyEvt;
+                fnReply(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
+            });
+        }
+
+        chtReplyBtn.innerText = 'reply';
+
+        usroptBtnCopyIco.innerText = 'content_copy';
+        
+        usrOptBtnPinIco.innerText = 'filter_1';
+        
+        usroptBtnSaveIco.innerText = 'bookmark_outline';
+
+        chtMsgdate.innerText = dbFetchTime;
+
+        chtMsgProf.appendChild(chtMsgdate);
+
+        usroptBtnCopy.appendChild(usroptBtnCopyIco);
+        usrOptBtnPin.appendChild(usrOptBtnPinIco);
+        usroptBtnSave.appendChild(usroptBtnSaveIco);
+
+        chtusrOptH.appendChild(usrOptBtnPin);
+        chtusrOptH.appendChild(usroptBtnCopy);
+        chtusrOptH.appendChild(usroptBtnSave);
+        chtTxt.appendChild(chtusrOptH);
+        
+        chtTxt.appendChild(chtReplyBtn);
+
+        chtTxt.appendChild(chtMainMsg);
+
+        chtMsgCOnt.appendChild(chtTxt);
+
+        chatMsg.appendChild(chtMsgProf);    
+        chatMsg.appendChild(chtMsgCOnt);    
+
+        chtAreaMsg.appendChild(chatMsg);
+
+        //Active class to chatTxt
+
+        chtTxt.addEventListener("click", function(e) {
+            e.preventDefault();
+            selectEvent();
+        });
+
+        //Set Reply By Double Clicking on Board
+
+        chatMsg.addEventListener("dblclick", function() {
+            let chtMsgInnerTxtGet = chtMainMsg.innerText;
+            let chtMsgUsr = dbFetchUser;
+            
+            let clsReplyChtMsg = setTimeout(function() {
+                chatMsg.classList.remove("replyingCurr");
+                clearInterval(clsReplyChtMsg);
+            }, 1000);
+                    
+            chatMsg.classList.add("replyingCurr");
+            
+            openBoard(false);
+
+            if (dbFetch.ImgUrl) {
+                let imageIcon = `<i class="material-icons">camera_alt</i> Image`;
+                setReply(imageIcon, chtMsgUsr, dbFetch.ImgUrl);
+            } else{
+                setReply(chtMsgInnerTxtGet, chtMsgUsr);
             }
         });
 
-        //Focus Lost Event
-        chtMainMsg.addEventListener("blur", function() {
-            if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal;
+        //Database chat Options => Copy Text
 
-
-            this.removeAttribute("contentEditable");
-            this.parentElement.classList.remove("focused");
-
-            this.parentElement.addEventListener("click", selectEvent);
+        usroptBtnCopy.addEventListener("click", function() {
+            navigator.clipboard.writeText(dbFetchMsg);
+            snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
+            selectRmvs();
         });
 
-    } else{
+        //Database Chat Options => Pin Messages
 
-        //other Users Messages
-
-        let chtMsgUsrName = document.createElement("div");
-
-        chtMsgUsrName.classList.add("chat-msg-user");
-
-        chatMsg.classList.add("otherU");
-
-        chtTxt.appendChild(chtMsgUsrName);
-        
-        chtMsgUsrName.innerText = dbFetchUser;
-        if (dbFetch.ImgUrl) {
-            if (!chtMainMsg.innerText) chtMainMsg.style.display = 'none';
-        }
-    }
-
-    //For all Users Functions
-
-
-    //if Dataase Has Reply Message
-
-    if (dbFetchRply) {
-        let scpdDbRplyStr = dbFetch.replyStr;
-        let rplyDiv = document.createElement("div");
-        let rplyDivUser = document.createElement("span");
-        let rplyDivSpn = document.createElement("span");
-
-        rplyDiv.classList.add("reply_db");
-        
-        rplyDivUser.classList.add("reply_spns");
-        rplyDivUser.classList.add("reply_db_user");
-
-        rplyDivSpn.classList.add("reply_spns");
-        rplyDivSpn.classList.add("reply_db_spn");
-
-        //If database reply also contains Image
-
-        if (dbFetchRplyImage !== "") {
-
-            let rplyImageH = document.createElement("div");
-            let rplyImage = document.createElement("img");
-
-            rplyImageH.classList.add("reply_db_image_holder");
-            rplyImage.classList.add("reply_db_image");
-
-            rplyImage.src = dbFetchRplyImage;
-
-            rplyImageH.appendChild(rplyImage);
-            rplyDiv.appendChild(rplyImageH);
-        }
-
-        //From User's Message
-
-        rplyDivUser.innerText = dbFetchUser;
-
-        //User Replied Message
-
-        rplyDivSpn.innerHTML = scpdDbRplyStr;
-
-        rplyDiv.appendChild(rplyDivUser);
-        rplyDiv.appendChild(rplyDivSpn);
-        chtTxt.appendChild(rplyDiv);
-    }
-
-    //If Chat message Has Image
-
-    if (dbFetch.ImgUrl) {
-        let imgHolder = document.createElement("div");
-        let imgTag = document.createElement("img");
-
-        imgHolder.classList.add("cht_img_holder");
-        chtTxt.classList.add("is_img");
-
-        //Lazy Load to optimize 
-
-        lazyLoading('Img', imgTag, dbFetch.ImgUrl);
-
-        imgHolder.appendChild(imgTag);
-        chtTxt.appendChild(imgHolder);
-
-        if (!dbFetchMsg) chtMainMsg.style.display = 'none';
-    }
-
-    //Check Valid Url
-
-    function validURL(str) {
-      let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-      return !!pattern.test(str);
-    }
-
-    //If Database has Link
-
-    if(validURL(dbFetchMsg)) {
-        let scpdDbMsg = dbFetch.msg;
-        let linkHold = document.createElement("div");
-        let linkAnchor = document.createElement("a");
-
-        linkHold.classList.add("link_hold");
-
-        if(!dbFetch.ImgUrl){
-            let linkUpperH = document.createElement("div");
-            let linkFrame = document.createElement("iframe");
-            let linkText = document.createElement("div");
-     
-            linkUpperH.classList.add("link_upper_hold");
-
-            linkFrame.classList.add("iframe_prev");
-            linkFrame.classList.add("link_divs");
-
-            linkText.classList.add("link_divs");
-            linkText.classList.add("text_link_div");
-
-            linkFrame.src = scpdDbMsg;
-            linkText.innerText = scpdDbMsg;
-
-            linkFrame.setAttribute("scrolling", 'no', "height", "100%", "width", '100%');
-            
-            linkUpperH.appendChild(linkFrame);
-            linkUpperH.appendChild(linkText);
-            linkHold.appendChild(linkUpperH);
-        }
-
-        linkAnchor.href = scpdDbMsg;
-        linkAnchor.innerText = scpdDbMsg;
-
-        linkHold.appendChild(linkAnchor);
-        chtMainMsg.appendChild(linkHold);
-
-        chtReplyBtn.addEventListener("click", function(rplyLinkEvt) {
-            let rplyLinkevtVr = rplyLinkEvt;
-            fnReply(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
-        });
-    } else{
-
-        //Simple Text Reply
-
-        chtMainMsg.innerHTML = dbFetchMsg;
-        chtReplyBtn.addEventListener("click", function(rplyEvt) {
-            let rplyEvtVar = rplyEvt;
-            fnReply(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
-        });
-    }
-
-    chtReplyBtn.innerText = 'reply';
-
-    usroptBtnCopyIco.innerText = 'content_copy';
-    
-    usrOptBtnPinIco.innerText = 'filter_1';
-    
-    usroptBtnSaveIco.innerText = 'bookmark_outline';
-    
-    
-    chtMsgdate.innerText = dbFetchTime;
-
-    chtMsgProf.appendChild(chtMsgdate);
-
-    usroptBtnCopy.appendChild(usroptBtnCopyIco);
-    usrOptBtnPin.appendChild(usrOptBtnPinIco);
-    usroptBtnSave.appendChild(usroptBtnSaveIco);
-
-    chtusrOptH.appendChild(usrOptBtnPin);
-    chtusrOptH.appendChild(usroptBtnCopy);
-    chtusrOptH.appendChild(usroptBtnSave);
-    chtTxt.appendChild(chtusrOptH);
-    
-    chtTxt.appendChild(chtReplyBtn);
-
-    chtTxt.appendChild(chtMainMsg);
-
-    chtMsgCOnt.appendChild(chtTxt);
-
-    chatMsg.appendChild(chtMsgProf);    
-    chatMsg.appendChild(chtMsgCOnt);    
-
-    chtAreaMsg.appendChild(chatMsg);
-
-    //Active class to chatTxt
-
-    chtTxt.addEventListener("click", function(e) {
-        e.preventDefault();
-        selectEvent();
-    });
-
-    //Set Reply By Double Clicking on Board
-
-    chatMsg.addEventListener("dblclick", function() {
-        let chtMsgInnerTxtGet = chtMainMsg.innerText;
-        let chtMsgUsr = dbFetchUser;
-        
-        let clsReplyChtMsg = setTimeout(function() {
-            chatMsg.classList.remove("replyingCurr");
-            clearInterval(clsReplyChtMsg);
-        }, 1000);
-                
-        chatMsg.classList.add("replyingCurr");
-        
-        openBoard(false);
-
-        if (dbFetch.ImgUrl) {
-            let imageIcon = `<i class="material-icons">camera_alt</i> Image`;
-            setReply(imageIcon, chtMsgUsr, dbFetch.ImgUrl);
-        } else{
-            setReply(chtMsgInnerTxtGet, chtMsgUsr);
-        }
-    });
-
-    //Database chat Options => Copy Text
-
-    usroptBtnCopy.addEventListener("click", function() {
-        navigator.clipboard.writeText(dbFetchMsg);
-        snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
-        selectRmvs();
-    });
-
-    //Database chat Options => Save Messages
-    
-    usroptBtnSave.addEventListener("click", function() {
-        let msgUniqId = Date.now();
-        //Toogle Bookmarked Option and Functions
-        if (this.innerText === 'bookmark_outline') {
-            this.innerText = 'bookmark';
-            //Saving Image from message
-            if (dbFetch.ImgUrl) {
-                saveMsgGrp.child(`${msgUniqId}`).set({
-                    fromUser: dbFetchUser,
-                    savedMsg: dbFetchMsg,
-                    savedRplyStr: dbFetchRply,
-                    savedImgUrl: dbFetch.ImgUrl,
-                    savedUsrTime: dbFetchTime,
-                    lastUpdate: `${msgUniqId}`
-                }).then(function() {
-                    snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+        usrOptBtnPin.addEventListener("click", function() {
+            let pinMsgId = Date.now();
+            if(dbFetch.ImgUrl) {
+                pinMessageDb.child(`${pinMsgId}`).set({
+                    PinMessage: dbFetchMsg,
+                    PinImageUrl: dbFetch.ImgUrl,
+                    PinByUser: dbFetchUser
+                }).then(()=>{
+                    snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
                 });
             } else{
-                //Saving Txt from message
-                saveMsgGrp.child(`${msgUniqId}`).set({
-                    fromUser: dbFetchUser,
-                    savedRplyStr: dbFetchRply,
-                    savedMsg: dbFetchMsg,
-                    savedUsrTime: dbFetchTime,
-                    lastUpdate: `${msgUniqId}`
-                }).then(function() {
-                    snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+                pinMessageDb.child(`${pinMsgId}`).set({
+                    PinMessage: dbFetchMsg,
+                    PinByUser: dbFetchUser
+                }).then(()=>{
+                    snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
                 });
             }
-        }
-        else{
-            this.innerText = 'bookmark_outline';
-            snackBarShow({icon: 'star_outline', infoTxt: 'Bubble Unstarred!'});
-        }
-        selectRmvs();
+        });
+
+        //Database chat Options => Save Messages
+        
+        usroptBtnSave.addEventListener("click", function() {
+            let msgUniqId = Date.now();
+            //Toogle Bookmarked Option and Functions
+            if (usroptBtnSaveIco.innerText === 'bookmark_outline') {
+                usroptBtnSaveIco.innerText = 'bookmark';
+                //Saving Image from message
+                if (dbFetch.ImgUrl) {
+                    saveMsgGrp.child(`${msgUniqId}`).set({
+                        fromUser: dbFetchUser,
+                        savedMsg: dbFetchMsg,
+                        savedRplyStr: dbFetchRply,
+                        savedImgUrl: dbFetch.ImgUrl,
+                        savedUsrTime: dbFetchTime,
+                        lastUpdate: `${msgUniqId}`
+                    }).then(function() {
+                        snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+                    });
+                } else{
+                    //Saving Txt from message
+                    saveMsgGrp.child(`${msgUniqId}`).set({
+                        fromUser: dbFetchUser,
+                        savedRplyStr: dbFetchRply,
+                        savedMsg: dbFetchMsg,
+                        savedUsrTime: dbFetchTime,
+                        lastUpdate: `${msgUniqId}`
+                    }).then(function() {
+                        snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+                    });
+                }
+            }
+            else{
+                usroptBtnSaveIco.innerText = 'bookmark_outline';
+                snackBarShow({icon: 'star_outline', infoTxt: 'Bubble Unstarred!'});
+            }
+            selectRmvs();
+        });
+
+
+        lstMsg.innerHTML = dbFetchMsg;
+        lstMsgtime.innerText = dbFetchTime;
+
+        setTimeout(()=>{
+            chatMsg.classList.add("appear");
+        }, 250);
+
+        chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
     });
 
+    //Database Chat => Pin Messaages
 
-    lstMsg.innerText = dbFetchMsg;
-    lstMsgtime.innerText = dbFetchTime;
+    pinMessageDb.on("child_added", function(pinMsgSnp) {
+        let pinMsgSnpVal = pinMsgSnp.val();
 
-    chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
-});
+        let pinMsg = pinMsgSnpVal.PinMessage;
+        let pinUserName = pinMsgSnpVal.PinByUser;
 
-saveMsgGrp.on('child_added', function(dbGrpsavedMsg) {
+        let mainPinDiv = document.getElementById("pinMsgSlideDiv");
+        let allSlides = document.getElementsByClassName("pin_message_slides");
+        let allSlidesLen = allSlides.length;
 
-    let savedMsgVal = dbGrpsavedMsg.val();
+        let pinSlide = document.createElement("div");
+        let pinnedMsg = document.createElement("div");
+        let pinnedUserName = document.createElement("div");
 
-    let saveMsgH = document.getElementById("savedMsgHold");
+        pinSlide.classList.add("pin_message_slides"); 
+        pinnedMsg.classList.add("pinned_msg"); 
+        pinnedUserName.classList.add("pinned_msg_from_user"); 
 
-    let saveMsgDivH = document.createElement("div");
-    let saveMsgDiv = document.createElement("div");
-    let fromUserSpn = document.createElement("div");
-    let saveMsgSpn = document.createElement("div");
-    let savedMsgTime = document.createElement("div");
-    let saveMsgInd = document.createElement("button");
+        if (pinMsgSnpVal.PinImageUrl) {
+            let pinImage = document.createElement("img");
+            pinImage.classList.add("pinned_image");
 
-    saveMsgDivH.classList.add("saved_msgs_cntr");
-    saveMsgDiv.classList.add("saved_msgs");
-    fromUserSpn.classList.add("from_user");
-    saveMsgSpn.classList.add("saved_msgs_spn");
-    savedMsgTime.classList.add("saved_msgs_usr_time");
-    saveMsgInd.classList.add("material-icons");
-    saveMsgInd.classList.add("saved_msgs_indcatr");
+            pinImage.src = pinMsgSnpVal.PinImageUrl;
 
-    if (savedMsgVal.fromUser === usernameCookie) {
-        fromUserSpn.innerText = 'Me';
-        saveMsgDivH.classList.add("saved_msgs_me");
-    }
-    else {
-        fromUserSpn.innerText = savedMsgVal.fromUser;
-        saveMsgDivH.classList.add("saved_msgs_others");
-    }
+            pinSlide.appendChild(pinImage);
+        }
 
-    if (savedMsgVal.savedRplyStr) {
-        let saveMsgRply = document.createElement("div");
-        let saveMsgLine = document.createElement("div");
-        let saveMsgUser = document.createElement("span");
-        let saveMsgSpn = document.createElement("span");
+        pinnedMsg.innerHTML = pinMsg;
+        pinnedUserName.innerText = pinUserName;
 
-        saveMsgRply.classList.add("saved_msgs_reply");
-        saveMsgLine.classList.add("saved_rply_msg_line");
-        saveMsgSpn.classList.add("save_msg_main_rply");
+        pinSlide.appendChild(pinnedMsg);
+        pinSlide.appendChild(pinnedUserName);
+        mainPinDiv.appendChild(pinSlide);
 
-        saveMsgSpn.innerText = savedMsgVal.savedRplyStr;
+        //SlideShow for Messages
 
-        saveMsgRply.appendChild(saveMsgLine);
-        saveMsgRply.appendChild(saveMsgSpn);
-        saveMsgDiv.appendChild(saveMsgRply);
-    }
+        let slideIndex = 1;
 
-    if (savedMsgVal.savedImgUrl) {
-        let saveMsgImg = document.createElement("img");
-        saveMsgImg.classList.add("saved_msg_img");
-        lazyLoading("Img", saveMsgImg, savedMsgVal.savedImgUrl);
-        saveMsgDiv.appendChild(saveMsgImg);
-    }
+        showSlides(allSlidesLen - 1);
 
-    saveMsgSpn.innerText = savedMsgVal.savedMsg;
-    savedMsgTime.innerText = savedMsgVal.savedUsrTime;
-    saveMsgInd.innerText = 'bookmark';
+        function plusSlides(n) {
+          showSlides(slideIndex += n);
+        }
 
-    saveMsgInd.addEventListener("click", function() {
-        saveMsgGrp.child(`${savedMsgVal.lastUpdate}`).remove().then(function() {
-            snackBarShow({icon: 'bookmark_outline', infoTxt: 'Bubble Unstarred!'});
-        });     
+        function showSlides(n) {
+
+          let slides = document.getElementsByClassName("pin_message_slides");
+          let slidesLen = slides.length;
+          
+            if (n > slidesLen) slideIndex = 1;
+            if (n < 1) slideIndex = slidesLen;
+            
+            for (let i = 0; i < slidesLen; ++i) slides[i].style.display = "none";
+             
+            slides[slideIndex-1].style.display = "inline-block";
+        }
+        let nextSlideButtons = document.getElementById("nextSlideBtn");
+        let prevSlideButtons = document.getElementById("PrevSlideBtn");
+
+        nextSlideButtons.addEventListener("click", function() {
+            plusSlides(1);
+        });
+        prevSlideButtons.addEventListener("click", function() {
+            plusSlides(-1);
+        });
+
     });
 
-    saveMsgDivH.setAttribute("id", `${savedMsgVal.lastUpdate}`);
+    saveMsgGrp.on('child_added', function(dbGrpsavedMsg) {
 
-    saveMsgDiv.appendChild(saveMsgSpn);
-    saveMsgDivH.appendChild(savedMsgTime);
-    saveMsgDivH.appendChild(saveMsgInd);
-    saveMsgDivH.appendChild(fromUserSpn);
-    saveMsgDivH.appendChild(saveMsgDiv);
+        let savedMsgVal = dbGrpsavedMsg.val();
 
-    saveMsgH.appendChild(saveMsgDivH);
+        let saveMsgH = document.getElementById("savedMsgHold");
 
-    saveMsgH.scrollTop = saveMsgH.scrollHeight;
-});
-saveMsgGrp.on('child_removed', function(rmvSMsgSnp) {
-    let rmvSnpVal = rmvSMsgSnp.val();
-    let lstUpdateMsg = rmvSnpVal.lastUpdate;
-    let rmvMsgId = document.getElementById(`${lstUpdateMsg}`);
-    rmvMsgId.remove();
-});
+        let saveMsgDivH = document.createElement("div");
+        let saveMsgDiv = document.createElement("div");
+        let fromUserSpn = document.createElement("div");
+        let saveMsgSpn = document.createElement("div");
+        let savedMsgTime = document.createElement("div");
+        let saveMsgInd = document.createElement("button");
+
+        saveMsgDivH.classList.add("saved_msgs_cntr");
+        saveMsgDiv.classList.add("saved_msgs");
+        fromUserSpn.classList.add("from_user");
+        saveMsgSpn.classList.add("saved_msgs_spn");
+        savedMsgTime.classList.add("saved_msgs_usr_time");
+        saveMsgInd.classList.add("material-icons");
+        saveMsgInd.classList.add("saved_msgs_indcatr");
+
+        if (savedMsgVal.fromUser === usernameCookie) {
+            fromUserSpn.innerText = 'Me';
+            saveMsgDivH.classList.add("saved_msgs_me");
+        }
+        else {
+            fromUserSpn.innerText = savedMsgVal.fromUser;
+            saveMsgDivH.classList.add("saved_msgs_others");
+        }
+
+        if (savedMsgVal.savedRplyStr) {
+            let saveMsgRply = document.createElement("div");
+            let saveMsgLine = document.createElement("div");
+            let saveMsgUser = document.createElement("span");
+            let saveMsgSpn = document.createElement("span");
+
+            saveMsgRply.classList.add("saved_msgs_reply");
+            saveMsgLine.classList.add("saved_rply_msg_line");
+            saveMsgSpn.classList.add("save_msg_main_rply");
+
+            saveMsgSpn.innerText = savedMsgVal.savedRplyStr;
+
+            saveMsgRply.appendChild(saveMsgLine);
+            saveMsgRply.appendChild(saveMsgSpn);
+            saveMsgDiv.appendChild(saveMsgRply);
+        }
+
+        if (savedMsgVal.savedImgUrl) {
+            let saveMsgImg = document.createElement("img");
+            saveMsgImg.classList.add("saved_msg_img");
+            lazyLoading("Img", saveMsgImg, savedMsgVal.savedImgUrl);
+            saveMsgDiv.appendChild(saveMsgImg);
+        }
+
+        saveMsgSpn.innerHTML = savedMsgVal.savedMsg;
+        savedMsgTime.innerText = savedMsgVal.savedUsrTime;
+        saveMsgInd.innerText = 'bookmark';
+
+        saveMsgInd.addEventListener("click", function() {
+            saveMsgGrp.child(`${savedMsgVal.lastUpdate}`).remove().then(function() {
+                snackBarShow({icon: 'bookmark_outline', infoTxt: 'Bubble Unstarred!'});
+            });     
+        });
+
+        saveMsgDivH.setAttribute("id", `${savedMsgVal.lastUpdate}`);
+
+        saveMsgDiv.appendChild(saveMsgSpn);
+        saveMsgDivH.appendChild(savedMsgTime);
+        saveMsgDivH.appendChild(saveMsgInd);
+        saveMsgDivH.appendChild(fromUserSpn);
+        saveMsgDivH.appendChild(saveMsgDiv);
+
+        saveMsgH.appendChild(saveMsgDivH);
+
+        saveMsgH.scrollTop = saveMsgH.scrollHeight;
+    });
+    saveMsgGrp.on('child_removed', function(rmvSMsgSnp) {
+        let rmvSnpVal = rmvSMsgSnp.val();
+        let lstUpdateMsg = rmvSnpVal.lastUpdate;
+        let rmvMsgId = document.getElementById(`${lstUpdateMsg}`);
+        rmvMsgId.remove();
+    });
+}
 </script>
 </body>
 </html>
