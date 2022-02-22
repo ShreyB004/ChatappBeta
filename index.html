@@ -278,9 +278,16 @@ html {
 }
 .lazy_load{
     opacity: 0;
-    transition: all 0.75s;
+    transition: all 0.5s;
 }
 .lazy_load.img_loaded{
+    opacity: 1;
+}
+.lazy_load_cdn{
+    opacity: 0;
+    transition: all 0.5s;
+}
+.lazy_load_cdn.cdn_img_loaded{
     opacity: 1;
 }
 .authUser-wrapper{
@@ -303,9 +310,11 @@ html {
     width: 100%;
     height: 100%;
     background-color: #fff;
-    background-image: url('https://c4.wallpaperflare.com/wallpaper/227/256/2/blue-white-material-design-minimal-art-wallpaper-preview.jpg');
     background-attachment: local;
     background-size: 100%;
+}
+.authUser-wrapper .authUser-holder.no_Auth{
+    background-image: url('https://c4.wallpaperflare.com/wallpaper/227/256/2/blue-white-material-design-minimal-art-wallpaper-preview.jpg');
 }
 .authUser-wrapper .authUser-holder .main-auth-div{
     position: absolute;
@@ -674,50 +683,22 @@ html {
     width: 20%;
     opacity: 1;
 }
-.search-bar {
-    height: 80px;
-    z-index: 3;
-    position: relative;
-    margin-left: 280px;
-}
-.search-bar input {
-    height: 100%;
-    width: 100%;
-    display: block;
-    background-color: transparent;
-    border: none;
-    color: var(--input-chat-color);
-    padding: 0 54px;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 56.966 56.966' fill='%23c1c7cd'%3e%3cpath d='M55.146 51.887L41.588 37.786A22.926 22.926 0 0046.984 23c0-12.682-10.318-23-23-23s-23 10.318-23 23 10.318 23 23 23c4.761 0 9.298-1.436 13.177-4.162l13.661 14.208c.571.593 1.339.92 2.162.92.779 0 1.518-.297 2.079-.837a3.004 3.004 0 00.083-4.242zM23.984 6c9.374 0 17 7.626 17 17s-7.626 17-17 17-17-7.626-17-17 7.626-17 17-17z'/%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-size: 16px;
-    background-position: 25px 48%;
-    font-weight: 600;
-    font-size: 15px;
-}
-.search-bar input::placeholder {
-    color: var(--input-chat-color);
-}
-
-.logo {
-    color: var(--theme-color);
-    width: 38px;
-    flex-shrink: 0;
-}
-.logo svg {
-    width: 100%;
-}
-
 .user-settings {
+    position: ;
+    left: 0;
+    width: 100%;
     display: flex;
     align-items: center;
     cursor: pointer;
-    margin-left: auto;
-    flex-shrink: 0;
 }
+.user-settings .dark-light{
+    position: absolute;
+    right: 12px;
+}
+/* 
 .user-settings > * {
     margin-left: 14px;
-}
+} */
 
 .mdlBtn {
     position: relative;
@@ -737,84 +718,248 @@ html {
     border-radius: 50%;
     border: none;
 }
+
 .main_mdl_user {
     position: absolute;
-    align-items: center;
-    justify-content: center;
     top: 0;
-    left: 0;
-    display: none;
+    left: -100%;
     width: 100%;
     height: 100%;
+    transition: all 0.5s;
     background-color: rgba(0, 0, 0, 0.63);
-    z-index: 10000;
+    z-index: 20;
 }
 .main_mdl_user.animation{
-    display: flex;
+    left: 0;
 }
 .main_mdl_user-body{
     position: absolute;
-    width: 50%;
-    height: 75%;
+    width: 100%;
+    height: 100%;
     overflow: visible;
     z-index: 1;
 }
 .main_mdl_user-body .cls_icon{
     position: absolute;
-    right: -15px;
-    top: -15px;
+    left: 12px;
+    top: 12px;
     padding: 8px;
     border: none;
     border-radius: 50%;
-    box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.34);
+    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.34);
     background-color: #fff;
     color: #db443a;
     font-weight: bold;
     z-index: 5;
-}
-.main_mdl_user-body .scrll_btns_h {
-    position: absolute;
-    bottom: 12px;
-    right: 12px;
-    padding: 5px;
-    height: max-content;
-    width: max-content;
-    background-color: #fff;
-    border-radius: 20px;
-    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.12);
-}
-.main_mdl_user-body .scrll_btns_h .scrll_btns{
-    position: relative;
-    display: block;
-    border-radius: 50%;
-    color: #1a8cff;
-    border: none;
-    padding: 8px;
-    background-color: #fffff3;
-}
-.main_mdl_user-body .scrll_btns_h .scrll_btns:hover{
-    background-color: #f1f2f4;
 }
 .main_mdl_user-content {
     position: relative;
     width: 100%;
     height: 100%;
     background-color: #fff;
-    border-radius: 12px;
+    border-radius: 8px;
     overflow-y: auto;
     scroll-behavior: smooth;
 }
 .main_mdl_user-content::-webkit-scrollbar{
     display: none;
 }
+.main_mdl_user-content .content_info{
+    position: relative;
+    display: block;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 8px;
+    margin-top: 8px;
+    width: calc(100% - 18px);
+    background-color: #eff;
+    border-radius: 8px;
+    padding: 12px 18px;
+    font-weight: bold;
+    text-align: left;
+}
 .main_mdl_user-content .mdl_sub_contents {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     padding: 12px 16px;
 }
+.main_mdl_user-content .top_bar{
+    position: sticky;
+    display: flex;
+    align-content: center;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, .23);
+    z-index: 13;
+}
+
+.main_mdl_user-content .top_bar .top_bar_buttons{
+    position: relative;
+    display: inline-block;
+    margin-left: 12px;
+    left: -12px;
+    border: none;
+    border-radius: 50%;
+    padding: 6px;
+    background-color: #fff;
+    font-weight: bold;
+    color: #444;
+    font-size: 1.25rem;
+    z-index: 1;
+    transition: all .35s;
+    cursor: pointer;
+}
+.main_mdl_user-content .top_bar .top_bar_buttons:hover{
+    background-color: #ddd;
+}
+.main_mdl_user-content .top_bar .top_bar_buttons.edit_button{
+    left: 50px;
+}
+.main_mdl_user-content .top_bar .top_bar_buttons.more_button{
+    left: 50px;
+}
+.main_mdl_user-content .top_bar span{
+    position: relative;
+    top: 8px;
+    left: 8px;
+    font-weight: bold;
+}
+
+.main_mdl_user-content .edit_info_holder{
+    position: absolute;
+    left: -100%;
+    top: 0;
+    z-index: 21;
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    transition: all 0.25s;
+}
+.main_mdl_user-content .edit_info_holder.edit_animation{
+    left: 0;
+}
+.main_mdl_user-content .edit_info_holder .top_bar .top_bar_buttons.edit_button{
+    left: 20px;
+}
+.main_mdl_user-content .edit_info_holder .top_bar .top_bar_buttons.more_button{
+    left: 25px;
+}
+
+.main_mdl_user-content .edit_info_holder .edit_blocks{
+    display: block;
+    position: relative;
+    padding: 12px;
+    width: 100%;
+    margin-top: 3px;
+    background-color: #fff;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder{
+    position: relative;
+    width: 100%;
+    height: 125px;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder .edit_image_main_holder{
+    position: relative;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 125px;
+    width: 125px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .34);
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder .edit_image_main_holder:hover .edit_image_overlay .edit_img_icon{
+    transform: translate(-50%, -50%) scale(1.1, 1.1);
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder .edit_image_main_holder .edit_image_overlay{
+    position: absolute;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+    z-index: 1;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder .edit_image_main_holder .edit_image_overlay .edit_img_icon{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 3rem;
+    background-color: transparent;
+    color: #fff;
+    font-weight: lighter;
+    border: none;
+    transition: all 0.25s;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .edit_image_holder .edit_image_main_holder .usr_profile_edit_image{
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    border: none; 
+    z-index: 0; 
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder{
+    position: relative;
+    width: 100%;
+    background-color: #fff;
+    text-align: left;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .bio_details{
+    position: relative;
+    font-size: .7rem;
+    color: #888;
+    top: -20px;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold{
+    position: relative;
+    display: block;
+    padding: 12px;
+    width: 100%;
+    margin-top: 28px;
+    top: -28px;
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px #555;
+    transition: all 0.25s;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold:hover{
+    box-shadow: 0 0 0 1px#1aacff;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold:hover .user_detail_info_span{
+    color: #1aacff;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold:focus-within{
+    box-shadow: 0 0 0 1px#1a8cff;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold:focus-within .user_detail_info_span{
+    color: #1a8cff;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold .user_detail_info_span{
+    position: absolute;
+    top: -10px;
+    left: 8px;
+    padding: 2px 4px;
+    background-color: #ffff;
+    color: #555;
+    font-size: .7rem;
+    transition: all 0.25s;
+}
+.main_mdl_user-content .edit_info_holder .edit_blocks .user_detail_info_holder .user_detail_info_txt_hold .user_detail_info_input{
+    position: relative;
+    background-color: transparent;
+    border: none;
+    color: #111;
+    font-size: .8rem;
+    width: 100%;
+}
+
 .main_mdl_user-content .mdl_sub_contents.image_user_owner{
+    margin-top: 35px;
     height: 35%;
     /* background-image: url('https://i.imgur.com/pAfubEz.jpg'); */
     background-position: 0 0;
@@ -825,88 +970,93 @@ html {
 }
 .main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main{
     position: absolute;
-    bottom: -25%;
-    height: 150px;
-    width: 150px;
-    border: 8px solid #fff;
-    box-shadow: 0px -12px 8px 2px rgba(0, 0, 0, 0.54);
-    border-radius: 50%;
-    z-index: 0;
-}
-.main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main .user_change_image_icon{
-    position: absolute;
-    border: none;
-    top: 5px;
-    right: 0px;
-    border-radius: 50%;
-    padding: 8px;
-    box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.23);
+    top: -15%;
+    left: 0;
+    height: 275px;
+    width: 100%;
+    border-radius: 0;
+    overflow: hidden;
     background-color: #fff;
+}
+.main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main .img_of_user_name{
+    position: absolute;
+    border-radius: 4px;
+    bottom: 0;
+    left: 0;
+    padding: 8px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .43);
+    z-index: 2;
+}
+.main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main .img_of_user_name .img_usr_name{
+    color: #fff;
     font-weight: bold;
-    color: #1a8cff;
-    font-size: 1.25rem;
-    z-index: 1;
+}
+.main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main .img_of_user_name p{
+    color: #ddd;
+    font-size: .8rem;
+    line-height: 0;
 }
 .main_mdl_user-content .mdl_sub_contents.image_user_owner .user_img_holder_main .user_changed_img{
     position: absolute;
     height: 100%;
     width: 100%;
     border: none;
-    border-radius: 50%;
-}
-.main_mdl_user-content .mdl_sub_contents.about_user_owner{
-    height: 25%;
-    background-color: #fff;
-}
-.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_input_about_holder{
-    position: absolute;
-    padding: 12px;
-    width: calc(50% - 24px);
-    height: 40px;
-    box-shadow: 0px 0px 12px 1px rgba(0, 0, 0, 0.12);
-    border-radius: 5px;
-    overflow: hidden;
-}
-.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_input_about_holder .unfocused_spn{
-    position: absolute;
-    bottom: 0px;
-    left: 0;
-    width: 100%;
-    height: 3px;
-    background-color: #f4b400;
-    transition: all 0.25s;
     z-index: 1;
 }
-.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_input_about_holder .focus_spn{
-    position: absolute;
-    bottom: 0px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0%;
-    height: 3px;
-    background-color: #1a8cff;
-    transition: all 0.25s;
-    z-index: 2;
+.main_mdl_user-content .mdl_sub_contents.about_user_owner{
+    height: 30%;
+    background-color: #fff;
 }
-.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_input_about_holder:focus-within .focus_spn{
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder{
+    position: relative;
+    display: block;
+    margin-top: 6px;
     width: 100%;
+    height: 55px;
+    background-color: #fff;
+    box-shadow: 0 2px 3px rgba(0, 0, 0, .23);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.25s;
 }
-.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_input_about_holder .user_about_input{
-    position: absolute;
-    padding: 12px;
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder:hover{
+    background-color: rgba(0, 0, 0, .12);
+}
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder .user_show_details_inlines{
+    position: relative;
+    display: inline-block;
+    height: 100%;
+    width: fit-content;
+}
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder .user_show_details_inlines .user_show_details_icon{
+    position: relative;
     top: 50%;
     transform: translateY(-50%);
-    width: calc(100% - 24px);
-    height: calc(100% - 24px);
-    border: none;
-    font-weight: bold;
-    letter-spacing: 2px;
-    border-radius: 5px;
-    text-align: center;
+    padding: 12px;
+    height: 100%;
+    color: #888;
+    background-color: transparent;
+    font-weight: lighter;
+}
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder .user_show_details_inlines .user_show_details_blocks{
+    position: relative;
+    width: 100%;
+    top: 6px;
+    background-color: transparent;
+}
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder .user_show_details_inlines .user_show_details_blocks span{
+    color: #222;
+    font-size: 1rem;
+}
+.main_mdl_user-content .mdl_sub_contents.about_user_owner .user_show_details_holder .user_show_details_inlines .user_show_details_blocks p{
+    color: #999;
+    font-size: .7rem;
+    line-height: 0;
 }
 .main_mdl_user-content .mdl_sub_contents.chat_theme_user{
     height: 15%;
-    width: 50%;
+    width: calc(100% - 24px);
     left: 50%;
     transform: translateX(-50%);
     border-radius: 10px;
@@ -915,7 +1065,7 @@ html {
 .main_mdl_user-content .mdl_sub_contents .chat_theme_clr_holder {
     position: absolute;
     display: block;
-    width: calc(100% - 24px);
+    width: calc(100% - 12px);
     background-color: #fff;
     padding: 5px 12px;
     border-radius: 8px;
@@ -948,7 +1098,7 @@ html {
 .main_mdl_user-content .mdl_sub_contents.background_user_change .tgle_tabs_bg{
     position: absolute;
     padding: 8px;
-    width: 50%;
+    width: calc(100% - 32px);
     height: 75%;
     overflow-y: auto;
     background-color: #fff;
@@ -972,10 +1122,14 @@ html {
     position: relative;
     padding: 8px;
     height: calc(100% - 24px);
-    width: calc(80% - 12px);
+    width: calc(100% - 12px);
     border-radius: 35px;
     white-space: nowrap;
+    overflow: auto;
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.13);
+}
+.main_mdl_user-content .mdl_sub_contents.background_user_change .tgle_tabs_bg .top_tabs_tgle .center_tgle_bar::-webkit-scrollbar{
+    display: none;
 }
 .main_mdl_user-content .mdl_sub_contents.background_user_change .tgle_tabs_bg .top_tabs_tgle .center_tgle_bar .pill_btns{
     position: relative;
@@ -1046,13 +1200,21 @@ html {
     box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.53);
 }
 .dark-light {
-    width: 22px;
-    height: 22px;
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    padding: 18px;
+    width: fit-content;
+    height: fit-content;
+    background-color: rgba(255, 255, 255, .23);
+    border-radius: 50%;
     color: var(--settings-icon-color);
     flex-shrink: 0;
 }
 .dark-light svg {
-    width: 100%;
+    position: relative;
+    width: 35px;
+    height: 35px;
     fill: transparent;
     transition: 0.5s;
 }
@@ -1072,6 +1234,64 @@ html {
     flex-direction: column;
     background-color: rgba(0, 0, 0, 0.21);
     z-index: 5;
+}
+.conversation-area .top_options_bar{
+    position: relative;
+    display: flex;
+    align-content: center;
+    width: 100%;
+    padding: 12px;
+    background-color: rgba(255, 255, 255, .34);
+}
+.conversation-area .top_options_bar .inline_search_and_menu{
+    position: relative;
+    display: inline-block;
+}
+.conversation-area .top_options_bar .inline_search_and_menu .menu_icon{
+    position: relative;
+    background-color: transparent;
+    padding: 8px;
+    border-radius: 50%;
+    color: #444;
+    border: none;
+    font-weight: lighter;
+    transition: all .25s;
+}
+.conversation-area .top_options_bar .inline_search_and_menu.search_holder{
+    width: 80%;
+}
+.conversation-area .top_options_bar .inline_search_and_menu .search_conversation_hold{
+    position: relative;
+    width: 100%;
+    height: 40px;
+    border-radius: 35px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, .23);
+}
+.conversation-area .top_options_bar .inline_search_and_menu .search_conversation_hold .search_conversation_inlines{
+    position: relative;
+    display: inline-flex;
+}
+.conversation-area .top_options_bar .inline_search_and_menu .search_conversation_hold .search_conversation_inlines i {
+    position: relative;
+    top: 25%;
+    color: #ddd;
+    background-color: rgba(0, 0, 0, .12);
+    padding: 8px;
+    font-weight: lighter;
+    border: none;
+    border-radius: 50%;
+}
+.conversation-area .top_options_bar .inline_search_and_menu .search_conversation_hold .search_conversation_inlines .search_input_conversation{
+    position: relative;
+    width: 100%;
+    background-color: transparent;
+    font-size: .9rem;
+    color: #333;
+    border: none;
+}  
+.conversation-area .top_options_bar .inline_search_and_menu .search_conversation_hold .search_conversation_inlines .search_input_conversation::placeholder{
+    color: #ddd;
 }
 .conversation-area .snackbar_hold{
     position: absolute;
@@ -1566,7 +1786,7 @@ html {
     position: absolute;
     top: 0;
     right: 0;
-    width: 30%;
+    width: 40%;
     height: 100%;
     border-radius: 0 5px 0 5px;
     overflow: hidden;
@@ -1751,10 +1971,9 @@ html {
     bottom: 15px;
     width: 80%;
     padding: 12px;
-    background-color: var(--theme-bg-color);
+    background-color: transparent;
     border-radius: 25px 5px 25px 25px;
     transform: translateX(-50%);
-    box-shadow: 0px -8px 15px -8px rgba(0, 0, 0, 0.24);
     z-index: 5;
 }
 
@@ -1785,7 +2004,7 @@ html {
     max-height: 100px;
     padding: 6px;
     background-color: var(--chat-footer-msg-holder);
-    border-radius: 15px;
+    border-radius: 15px 15px 5px 15px;
     box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.3);
     transition: all 0.15s;
     z-index: 1;
@@ -2844,7 +3063,7 @@ html {
 <body translate="no" id="data_load_b" class="dark-mode" onload="_confirmCookie();">
    
     <div class="authUser-wrapper" id="authUserWrap">
-        <div class="authUser-holder">
+        <div class="authUser-holder" id="AuthBg">
             <div class="main-auth-div">
                 <div class="top-loading-bar">
                     <div class="top-loader" id="topLoader"></div>
@@ -2911,157 +3130,41 @@ html {
     <div class="blurred_img" id="blurredImg"></div>
     
     <div class="app">
-        <div class="header">
-           
-            <!--Logo-->
+<!--         <div class="header">
 
-            <div class="logo">
-                <svg viewBox="0 0 513 513" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                        d="M256.025.05C117.67-2.678 3.184 107.038.025 245.383a240.703 240.703 0 0085.333 182.613v73.387c0 5.891 4.776 10.667 10.667 10.667a10.67 10.67 0 005.653-1.621l59.456-37.141a264.142 264.142 0 0094.891 17.429c138.355 2.728 252.841-106.988 256-245.333C508.866 107.038 394.38-2.678 256.025.05z"/>
-                    <path
-                        d="M330.518 131.099l-213.825 130.08c-7.387 4.494-5.74 15.711 2.656 17.97l72.009 19.374a9.88 9.88 0 007.703-1.094l32.882-20.003-10.113 37.136a9.88 9.88 0 001.083 7.704l38.561 63.826c4.488 7.427 15.726 5.936 18.003-2.425l65.764-241.49c2.337-8.582-7.092-15.72-14.723-11.078zM266.44 356.177l-24.415-40.411 15.544-57.074c2.336-8.581-7.093-15.719-14.723-11.078l-50.536 30.744-45.592-12.266L319.616 160.91 266.44 356.177z"
-                        fill="#fff"/>
-                </svg>
-            </div>
-
-            <!--Searching Bar-->
-
-            <div class="search-bar">
-                <input type="text" placeholder="Search..." />
-            </div>
-
-            <!--Dark, Light Mode and User Settings Trigger-->
 
             <div class="user-settings">
                 <div class="mdlBtn" id="mdlShwBtn">
-                    <img class="lazy_load" data-src="https://miro.medium.com/max/4960/1*IoYzOWcZohYOUQgJUvL2AQ.png" id="myImg"/>
-                </div>
-                <div class="dark-light">
-                    <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-                    </svg>
+                    <img id="myImg"/>
                 </div>
             </div>
-        </div>
-        
-        <div class="main_mdl_user" id="mainUsrMdl">
-            
-            <div class="main_mdl_user-body">
-                
-                <!--Settings Modal_Close-->
+        </div> -->
 
-                <button class="cls_icon material-icons" id="mdlClsBtn">close</button>
-               
-                <div class="main_mdl_user-content" id="mdlUsrCont">
-                    
-                    <!--User Details and Info-->
-                    
-                    <div class="mdl_sub_contents image_user_owner">
-                        <div class="user_img_holder_main">
-                            <button class="user_change_image_icon material-icons" onclick="document.getElementById(`imageUpload`).click();">camera_alt</button>
-                            <img class="user_changed_img" id="photo" src="https://miro.medium.com/max/4960/1*IoYzOWcZohYOUQgJUvL2AQ.png">
-                            <input type="file" id="imageUpload" accept="image/*" style="display: none;">
-                        </div>
-                    </div>
-
-                    <div class="mdl_sub_contents about_user_owner">
-                        <div class="user_input_about_holder">
-                            <input type="text" class="user_about_input" id="usrAbout" name="userAbout" autocomplete="false">
-                            <div class="unfocused_spn"></div>
-                            <div class="focus_spn"></div>
-                        </div>
-                    </div>
-                    
-                    <!--Chat Themes-->
-
-                    <div class="mdl_sub_contents chat_theme_user">
-                        <div class="chat_theme_clr_holder">
-                            <div class="color blue selected" data-color="Themeblue"></div>
-                            <div class="color purple" data-color="Themepurple"></div>
-                            <div class="color green" data-color="Themegreen"></div>
-                            <div class="color orange" data-color="Themeorange"></div>
-                            <div class="color pink" data-color="Themepink"></div>
-                            <div class="color skyBlue" data-color="ThemeskyBlue"></div>
-                            <div class="color lightred" data-color="Themelightred"></div>
-                            <div class="color lightgreen" data-color="Themelightgreen"></div>
-                        </div>
-                    </div>
-
-                    <!--Chat Backgrounds-->
-                    
-                    <div class="mdl_sub_contents background_user_change">
-                        <div class="tgle_tabs_bg">
-                            <div class="tabs_blcks top_tabs_tgle">
-                                <div class="center_tgle_bar">
-                                    <button class="pill_btns actvBgTag" id="evtTagLight">Light</button>
-                                    <button class="pill_btns" id="evtTagDark">Dark</button>
-                                    <button class="pill_btns" id="evtTagTextr">Texture</button>
-                                </div>
-                            </div>
-                            <div class="tabs_blcks tabs_bg_holder">
-                                <div class="swtch_bgs swtch_bgs_actv" id="tagLight">
-                                    <div class="grid_img_hold">
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EUv6NpK.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/4s1vZ4o.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/sHNGDM0.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yOGxgue.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/yKBz1U0.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/ci3BsgV.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTQELM9j2SUFJiFEkm1IJEFJig7rxtcPqQXI_7-7fz55zaakVKd&usqp=CAU" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/94/b5/54/94b55402fc9fba59460a565b92f8f5f4.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg/1200px-Champ_de_bl%C3%A9_C%C3%B4te-d%27Or_Bourgogne_avril_2014.jpg"/>
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcTFY-xbZ9jwoqA9NpQsZrUKrs_OTbIwqVsuMPVkLQgIxFnbFog2&usqp=CAU" />
-                                    </div>
-                                </div>
-                                <div class="swtch_bgs" id="tagDark">
-                                    <div class="grid_img_hold">
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/DufJA71.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/L8PT27G.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/6XT0BuG.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/YvmuKvq.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pph47S9.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/pAfubEz.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/oqlqxfY.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/zFSbP7D.jpg" />
-                                    </div>
-                                </div>
-                                <div class="swtch_bgs" id="tagTextr">
-                                    <div class="grid_img_hold">
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/j2BcCaz.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/LrPnlOL.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/EQANrlK.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.imgur.com/gvKhEg9.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/ba/3a/91/ba3a91c6992e6519332dfc935fa6b1cc.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/b2/a2/48/b2a2482edeebd13053c788ceee62f695.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRXZ0JFpEVZSu1BRwnTmU_-vhVD0Cn55F57yJ_Dh3J0DPksEec-&usqp=CAU" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://img.freepik.com/free-photo/brick-wall-painted-white_1194-7526.jpg?size=626&ext=jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://previews.123rf.com/images/svl861/svl8611704/svl861170400251/77092466-white-distressed-weathered-whitewashed-wall-texture-close-up-.jpg" />
-                                        <img class="bg_tags_imgs lazy_load" data-src="https://i.pinimg.com/originals/d0/4d/f1/d04df1fcd7069cc26c778ebcc3f37720.jpg" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!--Scrolling Buttons-->
-
-                <div class="scrll_btns_h">
-                    <button class="scrll_btns material-icons" id="scrllMdlBtn1">expand_less</button>
-                    <button class="scrll_btns material-icons" id="scrllMdlBtn2">expand_more</button>
-                </div>
-
-            </div>
+        <div class="dark-light">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
         </div>
         <div class="wrapper">
 
             <!--Conversatoin Side Panel-->
 
             <div class="conversation-area">
+                <div class="top_options_bar">
+                    <div class="inline_search_and_menu">    
+                        <button class="menu_icon material-icons" id="mdlShwBtn">menu</button>
+                    </div>
+                    <div class="inline_search_and_menu search_holder">
+                        <div class="search_conversation_hold">
+                            <div class="search_conversation_inlines">
+                                <i class="material-icons">search</i>
+                   <!--          </div>
+                            <div class="search_conversation_inlines"> -->
+                                <input type="text" class="search_input_conversation" autocomplete="off" placeholder="Search..." name="searchChats">
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="msg online">
                     <img class="msg-profile lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg" alt="" />
                     <div class="msg-detail">
@@ -3080,6 +3183,191 @@ html {
                         <div class="width_ind_snack" id="widthInd"></div>
                         <div class="snack_icon inline_snack_elem material-icons" id="snackIcon">brush</div>
                         <div class="snack_info inline_snack_elem" id="snackInfo">Edited Sucessfully</div>
+                    </div>
+                </div>
+
+                <div class="main_mdl_user" id="mainUsrMdl">
+                    
+                    <div class="main_mdl_user-body">
+   
+                        <div class="main_mdl_user-content" id="mdlUsrCont">
+                            
+                            <div class="top_bar">
+                            <!--Settings Modal_Close-->
+                                <button class="top_bar_buttons material-icons" id="mdlClsBtn">arrow_back</button>
+                                <span>Settings</span>
+                                <button class="top_bar_buttons material-icons edit_button" id="editOpen">edit</button>
+                                <button class="top_bar_buttons material-icons more_button">more_vert</button>
+                            </div>
+
+                            <div class="edit_info_holder" id="editUsrMdl">
+                                <div class="top_bar">
+                                    <button class="top_bar_buttons material-icons" id="editCls">arrow_back</button>
+                                    <span>Edit Profile</span>  
+                                </div>
+                                <div class="edit_blocks">
+                                    <div class="edit_image_holder">
+                                        <div class="edit_image_main_holder">
+                                            <img class="usr_profile_edit_image" src="https://firebasestorage.googleapis.com/v0/b/mesmerizing-app-307511.appspot.com/o/Shrey%2FShrey_Pic?alt=media&token=90d2370a-84f3-4363-8410-9dd46e32912a" id="editImage">
+                                            <div class="edit_image_overlay" onclick="document.getElementById(`imageUpload`).click();">
+                                                <button class="material-icons edit_img_icon">monochrome_photos</button>
+                                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="edit_blocks">
+                                    <div class="user_detail_info_holder">
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">First Name (Required)</span>
+                                            <input type="text" class="user_detail_info_input" name="UserName">
+                                        </div>
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">Last Name (Optional)</span>
+                                            <input type="text" class="user_detail_info_input" name="UserLastName">
+                                        </div>
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">Bio</span>
+                                            <input type="text" class="user_detail_info_input" id="usrAbout" autocomplete="off" name="UserBio">
+                                        </div>
+                                        <span class="bio_details">Any details such as age, occupation or city.
+                                        Example: 17 y.o. web-designer from Earth</span>
+                                    </div>
+                                </div>
+                                <div class="edit_blocks"></div>
+                            </div>
+
+                            <!--User Details and Info-->
+                            
+                            <div class="mdl_sub_contents image_user_owner">
+                                <div class="user_img_holder_main">
+                                    <img class="user_changed_img" id="photo">
+                                    <div class="img_of_user_name">
+                                        <span class="img_usr_name" id="imageUserName">Shrey</span>
+                                        <p id="currUsrState"></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mdl_sub_contents about_user_owner">
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">person_outline</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span id="showUserName"></span>
+                                            <p>Username</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">call</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span>+91 </span>
+                                            <p>Phone</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">info_outline</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span id="showUserBio"></span>
+                                            <p>Bio</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="content_info">Chat Theme</div>
+
+                            <!--Chat Themes-->
+
+                            <div class="mdl_sub_contents chat_theme_user">
+                                <div class="chat_theme_clr_holder">
+                                    <div class="color blue selected" data-color="Themeblue"></div>
+                                    <div class="color purple" data-color="Themepurple"></div>
+                                    <div class="color green" data-color="Themegreen"></div>
+                                    <div class="color orange" data-color="Themeorange"></div>
+                                    <div class="color pink" data-color="Themepink"></div>
+                                    <div class="color skyBlue" data-color="ThemeskyBlue"></div>
+                                    <div class="color lightred" data-color="Themelightred"></div>
+                                    <div class="color lightgreen" data-color="Themelightgreen"></div>
+                                </div>
+                            </div>
+
+                            <div class="content_info">Chat Background</div>
+
+                            <!--Chat Backgrounds-->
+                            
+                            <div class="mdl_sub_contents background_user_change">
+                                <div class="tgle_tabs_bg">
+                                    <div class="tabs_blcks top_tabs_tgle">
+                                        <div class="center_tgle_bar">
+                                            <button class="pill_btns actvBgTag" id="evtTagLight">Light</button>
+                                            <button class="pill_btns" id="evtTagDark">Dark</button>
+                                            <button class="pill_btns" id="evtTagTextr">Texture</button>
+                                        </div>
+                                    </div>
+                                    <div class="tabs_blcks tabs_bg_holder">
+                                        <div class="swtch_bgs swtch_bgs_actv" id="tagLight">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/p7FgplN.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/GAjTwoj.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/8YbJNGx.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/DBXyJdk.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/yDpuXU0.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/pV6wotZ.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/HXlhj03.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/4h5uyOF.jpeg"/>
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/TZvQmee.jpeg" />
+
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/PZcvNdd.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/IRxhCaf.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/CNLG7Et.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/wRAOaAa.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/NC2G5if.jpeg" />
+                                            </div>
+                                        </div>
+                                        <div class="swtch_bgs" id="tagDark">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/WArfy9h.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/ANVqEuZ.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/uRrw6cC.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/3WsM0C8.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/Ao6Xylg.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/kwBzs5Q.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/e1VIUEl.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/29zP4Ur.jpeg" />
+                                            </div>
+                                        </div>
+                                        <div class="swtch_bgs" id="tagTextr">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/j2BcCaz.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/LrPnlOL.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/EQANrlK.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/gvKhEg9.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/ba/3a/91/ba3a91c6992e6519332dfc935fa6b1cc.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/b2/a2/48/b2a2482edeebd13053c788ceee62f695.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRXZ0JFpEVZSu1BRwnTmU_-vhVD0Cn55F57yJ_Dh3J0DPksEec-&usqp=CAU" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://img.freepik.com/free-photo/brick-wall-painted-white_1194-7526.jpg?size=626&ext=jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://previews.123rf.com/images/svl861/svl8611704/svl861170400251/77092466-white-distressed-weathered-whitewashed-wall-texture-close-up-.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/d0/4d/f1/d04df1fcd7069cc26c778ebcc3f37720.jpg" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
 
@@ -3107,7 +3395,7 @@ html {
                             <div class="img-holds" id="imgWater"></div>
                             <div class="image_info_holder">
                                 <div class="inline_images_divs main_image_attach" id="mainImgAttach">
-                                    <img src="https://i.imgur.com/pAfubEz.jpg" id="imageIsLoaded" class="main_image">
+                                    <img class="lazy_load main_image" id="imageIsLoaded" data-src="https://i.imgur.com/pAfubEz.jpg">
                                 </div>
                                 <div class="inline_images_divs info_and_caption_holder">
                                     <div class="flex_images_div image_name">
@@ -3234,6 +3522,8 @@ html {
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
 <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script> -->
+<!-- <script type="module" src="https://www.gstatic.com/firebasejs/9.6.7/firebase-analytics.js"></script> -->
 <script>
 //Firebase Setting Up
 
@@ -3245,13 +3535,17 @@ const firebaseConfig = {
     storageBucket: "mesmerizing-app-307511.appspot.com",
     messagingSenderId: "367000966824",
     appId: "1:367000966824:web:bc7acbfada3c3f0b06149d",
+    measurementId: "G-3VP1F9CGQX"
 };
-firebase.initializeApp(firebaseConfig);
+
+const fireBaseInit = firebase.initializeApp(firebaseConfig);
 
 //Firebase Database and cloud storage 
 
-const db = firebase.database();
+const dataBase = firebase.database();
 const cldStorage = firebase.storage();
+
+/* const messaging = firebase.messaging();*/
 
 //All declaratoins
 
@@ -3298,10 +3592,15 @@ let imgUpload = document.getElementById("imageUpload");
 let clsImgMdl = document.getElementById("clsMdl");
 let imgchtAttach = document.getElementById("attachment");
 
+let userBioPrevw = document.getElementById("showUserBio");
+let userNamePrevw = document.getElementById("showUserName");
+
+let imgUsrName = document.getElementById("imageUserName");
+let cUsrState = document.getElementById("currUsrState");
+
 //For Getting Username
 
 let usernameCookie = '';
-
 
 //Setting a Cookie
 
@@ -3351,6 +3650,8 @@ function loadUserDatabase() {
         usernameCookie = _$fetchCookie("username");
         loadUserDatabase();
     } else{//If Cookie is deleted or doesn't exists => By CLick Event Set Cookie
+        let authBg = document.getElementById("AuthBg");
+        authBg.classList.add("no_Auth");
         authValdtbtn.addEventListener("click", function() {
             let userVal = logInusrName.value || signUpusrName.value;
 
@@ -3484,7 +3785,7 @@ function ValidateUser(usrNameGet){
 
     //Check Existence of UserName in DataBase 
 
-    db.ref(`WebApplication/UsersInfo`).get().then((usrExists) => {
+    dataBase.ref(`WebApplication/UsersInfo`).get().then((usrExists) => {
         let usrLoginFlag = false;
         let usrSignupFlag = true;
 
@@ -3519,9 +3820,9 @@ function ValidateUser(usrNameGet){
 
 //CLIENT SIDE : Function For Lazy Loading Image for Optimizaton
 
-(function () {
+function lazyLoadImg(imgsElems, imgsElemsLoded) {
     //Set Src to Image After page Loading
-    let lazyLoads = document.getElementsByClassName("lazy_load");
+    let lazyLoads = document.getElementsByClassName(`${imgsElems}`);
     let lazyLoadsLen = lazyLoads.length;
     
     for (let i = 0; i < lazyLoadsLen; ++i) {
@@ -3532,41 +3833,11 @@ function ValidateUser(usrNameGet){
         lazyLoads[i].removeAttribute("data-src");
         
         lazyLoads[i].addEventListener("load", function() {
-            this.classList.add("img_loaded");
+            this.classList.add(`${imgsElemsLoded}`);
         });
     }
 
-})();
-
-
-//CLIENT SIDE : Function to Scroll By Button
-
-function scrollElems({ScrollBox: elemtoScrll, ScrollBtns: {ScrllBtnFD: scrllBtn1, ScrllBtnSD: scrllBtn2, ScrllValues: {ScrllFdVal: scrllFd, ScrllSdVal: scrllSd}}, ScrllAxis: direction}) {
-    function setScrllValue(ScrllToVal) {
-        let dirSmcase = direction.toLowerCase();
-        if (dirSmcase === "y") mLogCon.scrollTop += ScrllToVal;
-        else if (dirSmcase === "x") mLogCon.scrollLeft += ScrllToVal;
-    }
-    let mLogCon = document.getElementById(elemtoScrll);
-    let firstBtn = document.getElementById(scrllBtn1);
-    let secondBtn = document.getElementById(scrllBtn2);
-
-    firstBtn.addEventListener("click", function() {setScrllValue(scrllFd);});
-    secondBtn.addEventListener("click", function() {setScrllValue(scrllSd);});
 }
-
-scrollElems({
-    ScrollBox: 'mdlUsrCont', 
-    ScrollBtns: {
-        ScrllBtnFD: 'scrllMdlBtn1', 
-        ScrllBtnSD: 'scrllMdlBtn2', 
-        ScrllValues: {
-            ScrllFdVal: -350, 
-            ScrllSdVal: 350
-        }
-    }, 
-    ScrllAxis: 'y'
-});
 
 //CLIENT SIDE : Function of Modal of Settings and Details Function 
 
@@ -3581,6 +3852,19 @@ mdlUsrShwBtn.addEventListener("click", function() {
 mdlUsrsClsBtn.addEventListener("click", function() {
     userModalVisibility(false);
 });
+let eOp = document.getElementById("editOpen");
+let eCls = document.getElementById("editCls");
+function editModalVisibilty(state) {
+    let usrMdl = document.getElementById("editUsrMdl");
+    if (!state) usrMdl.classList.remove("edit_animation");  
+    else usrMdl.classList.add("edit_animation");    
+}
+eOp.addEventListener("click", function() {
+    editModalVisibilty(true);
+});
+eCls.addEventListener("click", function() {
+    editModalVisibilty(false);
+}); 
 
 //CLIENT SIDE : Function for Loading user's Details and Settings
 
@@ -3781,17 +4065,17 @@ replyClr.addEventListener("click", function(){
 
 //Database Function => Function for Optimizing Performance by lazy loading Images
 
-function lazyLoading(typeImg, objImgCon, lsrc){
+function lazyLoadingDb(typeImg, objImgCon, lsrc){
     let loadBdy = document.getElementById("data_load_b");
 
-    if(typeImg === 'Img') objImgCon.src = lsrc;
+    if(typeImg === 'Img') objImgCon.setAttribute("src", lsrc);
     else if (typeImg === 'BgImg') objImgCon.style.backgroundImage = `url("${lsrc}")`;
 }
 
 //Database Functions => User Details
 
 function loadUsrInformation() {
-    const dbUsrsAbout = db.ref(`WebApplication/UsersInfo/${usernameCookie}/UserDetails`);
+    const dbUsrsAbout = dataBase.ref(`WebApplication/UsersInfo/${usernameCookie}/UserDetails`);
 
     let usrAboutStats = document.getElementById("usrAbout");
     let usrImgfile = document.getElementById("usrImgByFile");
@@ -3830,13 +4114,27 @@ function loadUsrInformation() {
         let usrStatusExits = usrAbtSnp.child('userStatus').exists();
         let userProfilePicExists = usrAbtSnp.child('userProfilePic').exists();
         
-        if (usrStatusExits) usrAboutStats.value = usrDetailsSnp.userStatus;
+        let usrImgUrl = document.getElementById("photo");
+        let editImage = document.getElementById("editImage");
+
+        userNamePrevw.innerText = usernameCookie;
+        imgUsrName.innerText = usernameCookie;
+
+        if (usrStatusExits) {
+            usrAboutStats.value = usrDetailsSnp.userStatus;
+            userBioPrevw.innerText = usrDetailsSnp.userStatus;
+        }
         
         if (userProfilePicExists) {
-            let usrImgUrl = document.getElementById("photo");
-            let usrFore = document.getElementById("myImg");
-            usrImgUrl.src = usrDetailsSnp.userProfilePic;
-            usrFore.src = usrDetailsSnp.userProfilePic;
+            const userPic = usrDetailsSnp.userProfilePic;
+            dbUsrsAbout.once("value", function() {
+                usrImgUrl.setAttribute("src", `${userPic}`);
+                editImage.setAttribute("src", `${userPic}`);
+            });
+        } else{
+            const defaultPic = `https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png`;
+            usrImgUrl.setAttribute("src", `${defaultPic}`);
+            editImage.setAttribute("src", `${defaultPic}`);
         }
     });
 
@@ -3845,7 +4143,7 @@ function loadUsrInformation() {
 //Database Functions => User Preferences
 
 function loadUsrPreferences() {
-    const dbUsrsSettings = db.ref(`WebApplication/UsersInfo/${usernameCookie}/UserSettings`);
+    const dbUsrsSettings = dataBase.ref(`WebApplication/UsersInfo/${usernameCookie}/UserSettings`);
 
     const toggleButton = document.querySelector(".dark-light");
     const clrThemes = document.querySelectorAll(".color");
@@ -3883,7 +4181,7 @@ function loadUsrPreferences() {
         document.body.classList.toggle("dark-mode");
 
         if (document.body.classList.contains("dark-mode")) dbTheme = 'dark';
-        else  dbTheme = 'light';
+        else dbTheme = 'light';
         
         dbUsrsSettings.update({appTheme: dbTheme});
     });
@@ -3918,8 +4216,8 @@ function loadUsrPreferences() {
         //Set Chat Background From Database and Lazy Load
 
         if (dbBoolbgSrcExsits) {
-            lazyLoading('BgImg', document.getElementById("blurredImg"), themeSnap.chatBgImg);
-            lazyLoading('BgImg', document.getElementById("chatArea"), themeSnap.chatBgImg);
+            lazyLoadingDb('BgImg', document.getElementById("blurredImg"), themeSnap.chatBgImg);
+            lazyLoadingDb('BgImg', document.getElementById("chatArea"), themeSnap.chatBgImg);
         }
 
         //Set Chat Theme From Database
@@ -3947,7 +4245,7 @@ function loadUsrPreferences() {
 
 //Database Function => User Presence System
 function userPresenceState() {
-    const userStatusRef = db.ref(`WebApplication/UsersInfo/${_$fetchCookie("username")}`).child("Presence");
+    const userStatusRef = dataBase.ref(`WebApplication/UsersInfo/${_$fetchCookie("username")}`).child("Presence");
 
     userStatusRef.set({
        Status: "Online"
@@ -3970,7 +4268,7 @@ function userPresenceState() {
 //Database Functions => RealTime All Users Presence States  
 
 (function() {
-    const allUserStatus = db.ref("WebApplication/UsersInfo");
+    const allUserStatus = dataBase.ref("WebApplication/UsersInfo");
     
     let memberOnline = document.getElementById("MemOnline");
 
@@ -4000,7 +4298,9 @@ function userPresenceState() {
             if (memOnlineNum > 1) memberOnline.innerText = memOnlineNum - 1;
             else memberOnline.innerText = `No one is `;
 
-            console.log(memOnlineNum);
+            if (allusrArr[allUsrs[i]] === usernameCookie) {
+                cUsrState.innertext = allusrArr[allUsrs[i]].Presence.Status;
+            }
 
             staticMemPresence[i].innerText = memOnlineArr[i];
 
@@ -4016,7 +4316,7 @@ function userPresenceState() {
 //Database Functions => Members in Group
 
 (function() {
-    const mainApplicationdb = db.ref("WebApplication/UsersInfo");
+    const mainApplicationdb = dataBase.ref("WebApplication/UsersInfo");
 
     mainApplicationdb.once('value', (usersSnaps) => {
 
@@ -4071,14 +4371,14 @@ function userPresenceState() {
 
             //Check Existence and Push Values in array
 
-            if(usersSnaps.child(`${users}/UserDetails/userStatus`).exists()) userStatusArr.push(dbFetchKeys[users].UserDetails.userStatus);
-            else userStatusArr.push('');
+    /*      if(usersSnaps.child(`${users}/UserDetails/userStatus`).exists()) userStatusArr.push(dbFetchKeys[users].UserDetails.userStatus);
+            else userStatusArr.push('');*/
 
             if(usersSnaps.child(`${users}/UserDetails/userProfilePic`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.userProfilePic);
-            else userImgUrlArr.push('');
+            else userImgUrlArr.push('https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png');
             
             if(usersSnaps.child(`${users}/UserSettings/chatBgImg`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.chatBgImg);
-            else userchtBgImg.push('');
+            else userchtBgImg.push('https://blog.tubikstudio.com/wp-content/uploads/2020/04/Pennine-Alps-illustration-tubikarts-1024x768.png');
 
             if(usersSnaps.child(`${users}/Presence`).exists()) userPresence.push(dbFetchKeys[users].Presence.Status);
             else userPresence.push("Last Seen Recently");
@@ -4100,8 +4400,10 @@ function userPresenceState() {
                 if(memImgHold.classList.contains("online_mem_spn")) memImgHold.classList.remove("online_mem_spn");
             }*/
 
-            lazyLoading('Img', memImg, userImgUrlArr[i]);
-            lazyLoading('BgImg', mainListHold, userchtBgImg[i]);
+            mainApplicationdb.once("value", function() {
+                lazyLoadingDb('Img', memImg, userImgUrlArr[i]);
+                lazyLoadingDb('BgImg', mainListHold, userchtBgImg[i]);
+            });
 
             memImgHold.appendChild(memImg);
             memListsecImg.appendChild(memImgHold);
@@ -4186,19 +4488,40 @@ function SendMessage() {
   
     let usrPostTimeDb = userPostTime();
 
-    let dbRef = db.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdDb}`);
+    let dbRef = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdDb}`);
 
     let msgInptVal = msgInpt.innerHTML;
   
-    dbRef.set({
-        usr: usernameCookie,
-        replyStr: rplyChkDb,
-        replyImage: rplyImageChk,
-        replyOfUser: rplyFrmUsrChk,
-        msg: msgInptVal,
-        usrTime: usrPostTimeDb,
-        chgId: getUniqueIdDbStr
-    });
+    if(rplyFrmUsrChk){
+        if(rplyImageChk) {
+            dbRef.set({
+                usr: usernameCookie,
+                msg: msgInptVal,
+                replyStr: rplyChkDb,
+                replyImage: rplyImageChk,
+                replyOfUser: rplyFrmUsrChk,
+                usrTime: usrPostTimeDb,
+                chgId: getUniqueIdDbStr
+            });
+        } else{
+            dbRef.set({
+                usr: usernameCookie,
+                msg: msgInptVal,
+                replyStr: rplyChkDb,
+                replyImage: "",
+                replyOfUser: rplyFrmUsrChk,
+                usrTime: usrPostTimeDb,
+                chgId: getUniqueIdDbStr
+            });
+        }
+    }  else {
+        dbRef.set({
+            usr: usernameCookie,
+            msg: msgInptVal,
+            usrTime: usrPostTimeDb,
+            chgId: getUniqueIdDbStr
+        });
+    }
 
     afterPostFunctions();
 }
@@ -4209,28 +4532,30 @@ function SendImage(){
   let getImgCht =  document.getElementById("imageIsLoaded");
   let getImgSrcCht = getImgCht.src;
   
-  let imgrplSpn = document.getElementById("rplySpn");
-  let imgrplDb = imgrplSpn.innerText?imgrplSpn.innerText:"";
-  
-  let captTxt = document.getElementById("captionTxt");
-  let captTxtVal = captTxt.value;
-  
-  let getUniqueIdforImg = setmsgUniqueId();
+  if (getImgSrcCht!=="") {
+      let imgrplSpn = document.getElementById("rplySpn");
+      let imgrplDb = imgrplSpn.innerText?imgrplSpn.innerText:"";
+      
+      let captTxt = document.getElementById("captionTxt");
+      let captTxtVal = captTxt.value;
+      
+      let getUniqueIdforImg = setmsgUniqueId();
 
-  let dbRefImg = db.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
+      let dbRefImg = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
 
-   dbRefImg.set({
-          usr: usernameCookie,
-          replyStr: imgrplDb,
-          ImgUrl: getImgSrcCht,
-          msg: captTxtVal,
-          usrTime: userPostTime(),
-          chgId: getUniqueIdforImg.toString()
-      });
+       dbRefImg.set({
+              usr: usernameCookie,
+              replyStr: imgrplDb,
+              ImgUrl: getImgSrcCht,
+              msg: captTxtVal,
+              usrTime: userPostTime(),
+              chgId: getUniqueIdforImg.toString()
+          });
 
-      afterPostFunctions();
-      document.getElementById('myModal').style.display = 'none';
-      submit.setAttribute("disabled", "true");
+          afterPostFunctions();
+  }
+  document.getElementById('myModal').style.display = 'none';
+  submit.setAttribute("disabled", "true");
 }
 
 
@@ -4250,8 +4575,8 @@ imgchtAttach.addEventListener("change", function(chtMsgEvt) {
     uploadTask.put(uploadImgFile, {contentType: uploadImgFile.type}).then((ImgSnp) => {
         ImgSnp.ref.getDownloadURL().then((cldImgUrl) => {
             let imgSrcSet = document.getElementById('imageIsLoaded');
+            imgSrcSet.setAttribute("src", `${cldImgUrl}`);
             submit.removeAttribute("disabled");
-            imgSrcSet.src = cldImgUrl;
         });
     });
 
@@ -4283,7 +4608,7 @@ clsImgMdl.addEventListener("click", function() {
   
   let getUniqueIdforImg = setmsgUniqueId();
 
-  let dbRefImg = db.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
+  let dbRefImg = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
 
    dbRefImg.set({
       usr: usernameCookie,
@@ -4302,10 +4627,16 @@ clsImgMdl.addEventListener("click", function() {
 //Database Chat => All Database Functions
 
 function databaseFunction() {
-    const fetchChat = db.ref("WebApplication/Web Developers/chatMessages");
-    const pinMessageDb = db.ref(`WebApplication/Web Developers/Pinned Messages`);
-    const saveMsgGrp = db.ref(`WebApplication/Web Developers/savedMsgs/${usernameCookie}`);
+    const mainDb = dataBase.ref("WebApplication");
+    const fetchChat = dataBase.ref("WebApplication/Web Developers/chatMessages");
+    const pinMessageDb = dataBase.ref(`WebApplication/Web Developers/Pinned Messages`);
+    const saveMsgGrp = dataBase.ref(`WebApplication/Web Developers/savedMsgs/${usernameCookie}`);
     
+    mainDb.once("value", function(snp) {
+        lazyLoadImg('lazy_load', 'img_loaded');
+        lazyLoadImg('lazy_load_cdn', 'cdn_img_loaded');
+    });
+
     //Database Function => After Child is Removed
     
     fetchChat.on("child_removed", function(delSnpVal) {
@@ -4610,7 +4941,9 @@ function databaseFunction() {
 
             //Lazy Load to optimize 
 
-            lazyLoading('Img', imgTag, dbFetch.ImgUrl);
+            dataBase.ref("WebApplication/chatMessages").once("value", function() {
+                lazyLoadingDb('Img', imgTag, dbFetch.ImgUrl);
+            });
 
             imgHolder.appendChild(imgTag);
             chtTxt.appendChild(imgHolder);
@@ -4863,34 +5196,34 @@ function databaseFunction() {
 
         //SlideShow for Messages
 
-        let slideIndex = 1;
+        let pinSlideDef = 1;
 
-        showSlides(allSlidesLen - 1);
+        PreviewSlides(allSlidesLen - 1);
 
-        function plusSlides(n) {
-          showSlides(slideIndex += n);
+        function adjacentSlide(plsValue) {
+          PreviewSlides(pinSlideDef += plsValue);
         }
 
-        function showSlides(n) {
+        function PreviewSlides(plsValue) {
 
           let slides = document.getElementsByClassName("pin_message_slides");
           let slidesLen = slides.length;
           
-            if (n > slidesLen) slideIndex = 1;
-            if (n < 1) slideIndex = slidesLen;
+            if (plsValue > slidesLen) pinSlideDef = 1;
+            if (plsValue < 1) pinSlideDef = slidesLen;
             
             for (let i = 0; i < slidesLen; ++i) slides[i].style.display = "none";
              
-            slides[slideIndex-1].style.display = "inline-block";
+            slides[pinSlideDef-1].style.display = "inline-block";
         }
         let nextSlideButtons = document.getElementById("nextSlideBtn");
         let prevSlideButtons = document.getElementById("PrevSlideBtn");
 
         nextSlideButtons.addEventListener("click", function() {
-            plusSlides(1);
+            adjacentSlide(1);
         });
         prevSlideButtons.addEventListener("click", function() {
-            plusSlides(-1);
+            adjacentSlide(-1);
         });
 
     });
@@ -4945,7 +5278,7 @@ function databaseFunction() {
         if (savedMsgVal.savedImgUrl) {
             let saveMsgImg = document.createElement("img");
             saveMsgImg.classList.add("saved_msg_img");
-            lazyLoading("Img", saveMsgImg, savedMsgVal.savedImgUrl);
+            lazyLoadingDb("Img", saveMsgImg, savedMsgVal.savedImgUrl);
             saveMsgDiv.appendChild(saveMsgImg);
         }
 
