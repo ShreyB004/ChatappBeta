@@ -1599,7 +1599,7 @@ function databaseFunction() {
 	    //Database chat Options => Copy Text
 
 	    usroptBtnCopy.addEventListener("click", function() {
-	        navigator.clipboard.writeText(dbFetchMsg);
+	        navigator.clipboard.writeText(chtMainMsg.innerText);
 	        snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
 	        selectRmvs();
 	    });
@@ -1840,4 +1840,4 @@ function databaseFunction() {
 		let rmvMsgId = document.getElementById(`${lstUpdateMsg}`);
 		rmvMsgId.remove();
 	});
-}		
+}
