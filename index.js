@@ -272,7 +272,7 @@ function ValidateUser(usrNameGet){
 
     //Check Existence of UserName in DataBase 
 
-    dataBase.ref(`WebApplication/UsersInfo`).get().then((usrExists) => {
+    dataBase.ref(`Collo Chat/Users Info`).get().then((usrExists) => {
         let usrLoginFlag = false;
         let usrSignupFlag = true;
 
@@ -554,10 +554,10 @@ function lazyLoadingDb(typeImg, objImgCon, lsrc){
 	else if (typeImg === 'BgImg') objImgCon.style.backgroundImage = `url("${lsrc}")`;
 }*/
 
-//Database Functions => User Details
+//Database Functions => UserDetails
 
 function loadUsrInformation() {
-	const dbUsrsAbout = dataBase.ref(`WebApplication/UsersInfo/${usernameCookie}/UserDetails`);
+	const dbUsrsAbout = dataBase.ref(`Collo Chat/Users Info/${usernameCookie}/UserDetails`);
 
 	let usrAboutStats = document.getElementById("usrAbout");
 	let usrImgfile = document.getElementById("usrImgByFile");
@@ -567,7 +567,7 @@ function loadUsrInformation() {
 	usrAboutStats.addEventListener("keyup", (evtUsrSts) => {
 		
         if (evtUsrSts.code === 'Enter') {
-			dbUsrsAbout.update({userStatus: usrAboutStats.value});
+			dbUsrsAbout.update({UserBio: usrAboutStats.value});
 			usrAboutStats.blur();
 		}
 
@@ -583,7 +583,7 @@ function loadUsrInformation() {
 
 	    userPrfImg.then(function(usrImgSnp) {
 	    	usrImgSnp.ref.getDownloadURL().then((url) => {
-	    		dbUsrsAbout.update({userProfilePic: url});
+	    		dbUsrsAbout.update({UserProfileImage: url});
 	    	});
 	    });
 	});
@@ -593,8 +593,8 @@ function loadUsrInformation() {
 	dbUsrsAbout.on('value', (usrAbtSnp) => {
 		let usrDetailsSnp = usrAbtSnp.val();
 
-		let usrStatusExits = usrAbtSnp.child('userStatus').exists();
-		let userProfilePicExists = usrAbtSnp.child('userProfilePic').exists();
+		let usrStatusExits = usrAbtSnp.child('UserBio').exists();
+		let userProfilePicExists = usrAbtSnp.child('UserProfileImage').exists();
 		
 		let editImage = document.getElementById("editImage");
 
@@ -602,12 +602,12 @@ function loadUsrInformation() {
 		imgUsrName.innerText = usernameCookie;
 
         if (usrStatusExits) {
-        	usrAboutStats.value = usrDetailsSnp.userStatus;
-        	userBioPrevw.innerText = usrDetailsSnp.userStatus;
+        	usrAboutStats.value = usrDetailsSnp.UserBio;
+        	userBioPrevw.innerText = usrDetailsSnp.UserBio;
         }
 		
         if (userProfilePicExists) {
-        	const userPic = usrDetailsSnp.userProfilePic;
+        	const userPic = usrDetailsSnp.UserProfileImage;
 			lazyLoadImg('lazy_load', 'img_loaded');					
 			clickOnce(mdlUsrShwBtn, function() {
 				usrImgUrl.setAttribute("src", `${userPic}`);
@@ -628,7 +628,7 @@ function loadUsrInformation() {
 //Database Functions => User Preferences
 
 function loadUsrPreferences() {
-	const dbUsrsSettings = dataBase.ref(`WebApplication/UsersInfo/${usernameCookie}/UserSettings`);
+	const dbUsrsSettings = dataBase.ref(`Collo Chat/Users Info/${usernameCookie}/UserSettings`);
 
 	const toggleButton = document.querySelector(".dark-light");
 	const clrThemes = document.querySelectorAll(".color");
@@ -655,7 +655,7 @@ function loadUsrPreferences() {
 	        
 	        color.classList.add("selected");
 				        
-	        dbUsrsSettings.update({chatTheme: theme});
+	        dbUsrsSettings.update({ChatTheme: theme});
 	    });
 
 	});
@@ -668,7 +668,7 @@ function loadUsrPreferences() {
 	    if (document.body.classList.contains("dark-mode")) dbTheme = 'dark';
 	    else dbTheme = 'light';
 		
-		dbUsrsSettings.update({appTheme: dbTheme});
+		dbUsrsSettings.update({AppTheme: dbTheme});
 	});
 
     //Funtion for Setting Chat BackgroundImage
@@ -677,7 +677,7 @@ function loadUsrPreferences() {
 		dpChg.addEventListener("click", function() {
 			let chtBgSrc = this.src;
 			chtarea.style.backgroundImage = `url('${chtBgSrc}')`;
-			dbUsrsSettings.update({chatBgImg: chtBgSrc});
+			dbUsrsSettings.update({ChatBackground: chtBgSrc});
 		});
 	});
 
@@ -687,28 +687,28 @@ function loadUsrPreferences() {
 
         //Check Existence of child to avoid getting Error
 
-		const dbBoolThemeExsits = usrThmeSnp.child('appTheme').exists();
-		const dbBoolbgSrcExsits = usrThmeSnp.child('chatBgImg').exists();
-		const dbBoolchtThemeExsits = usrThmeSnp.child('chatTheme').exists();
+		const dbBoolThemeExsits = usrThmeSnp.child('AppTheme').exists();
+		const dbBoolbgSrcExsits = usrThmeSnp.child('ChatBackground').exists();
+		const dbBoolchtThemeExsits = usrThmeSnp.child('ChatTheme').exists();
 
         //Set Chat Mode (Light or Dark) From Database
 
 		if (dbBoolThemeExsits) {
-			if (themeSnap.appTheme === 'dark') document.body.classList.add("dark-mode");
+			if (themeSnap.AppTheme === 'dark') document.body.classList.add("dark-mode");
 			else document.body.classList.remove("dark-mode");
 		} else document.body.classList.remove("dark-mode");
 
         //Set Chat Background From Database and Lazy Load
 
 		if (dbBoolbgSrcExsits) {
-            document.getElementById("blurredImg").style.backgroundImage = `url(${themeSnap.chatBgImg})`;
-            document.getElementById("chatArea").style.backgroundImage = `url(${themeSnap.chatBgImg})`;
+            document.getElementById("blurredImg").style.backgroundImage = `url(${themeSnap.ChatBackground})`;
+            document.getElementById("chatArea").style.backgroundImage = `url(${themeSnap.ChatBackground})`;
         }
 
         //Set Chat Theme From Database
 
 		if (dbBoolchtThemeExsits) {
-            let chtTheme = themeSnap.chatTheme;
+            let chtTheme = themeSnap.ChatTheme;
 			document.body.setAttribute("data-theme", chtTheme);
 			clrThemes.forEach((clrsDB) => {
 				clrsDB.classList.remove("selected");
@@ -730,7 +730,7 @@ function loadUsrPreferences() {
 
 //Database Function => User Presence System
 function userPresenceState() {
-	const userStatusRef = dataBase.ref(`WebApplication/UsersInfo/${_$fetchCookie("username")}`).child("Presence");
+	const userStatusRef = dataBase.ref(`Collo Chat/Users Info/${_$fetchCookie("username")}`).child("Presence");
 
 	userStatusRef.set({
 	   Status: "Online"
@@ -753,7 +753,7 @@ function userPresenceState() {
 //Database Functions => RealTime All Users Presence States  
 
 (function() {
-	const allUserStatus = dataBase.ref("WebApplication/UsersInfo");
+	const allUserStatus = dataBase.ref("Collo Chat/Users Info");
     
     let memberOnline = document.getElementById("MemOnline");
 
@@ -800,7 +800,7 @@ function userPresenceState() {
 //Database Functions => Default Online Members
 
 function getOnlineUsers() {
-	const applicationUsersdb = dataBase.ref("WebApplication/UsersInfo");
+	const applicationUsersdb = dataBase.ref("Collo Chat/Users Info");
 	applicationUsersdb.once('value', (userOnline) => {
 		let dbFetchOnline = userOnline.val();
 		  
@@ -828,7 +828,7 @@ getOnlineUsers();
 //Database Functions => Members in Group
 
 function getMembersLists() {
-	const mainApplicationdb = dataBase.ref("WebApplication/UsersInfo");
+	const mainApplicationdb = dataBase.ref("Collo Chat/Users Info");
 
 	mainApplicationdb.once('value', (usersSnaps) => {
 
@@ -876,10 +876,10 @@ function getMembersLists() {
 
             //Check Existence and Push Values in array
 
-			if(usersSnaps.child(`${users}/UserDetails/userProfilePic`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.userProfilePic);
+			if(usersSnaps.child(`${users}/UserDetails/UserProfileImage`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.UserProfileImage);
 			else userImgUrlArr.push('https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png');
 			
-			if(usersSnaps.child(`${users}/UserSettings/chatBgImg`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.chatBgImg);
+			if(usersSnaps.child(`${users}/UserSettings/ChatBackground`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.ChatBackground);
 			else userchtBgImg.push('https://blog.tubikstudio.com/wp-content/uploads/2020/04/Pennine-Alps-illustration-tubikarts-1024x768.png');
 
 			if(usersSnaps.child(`${users}/Presence`).exists()) userPresence.push(dbFetchKeys[users].Presence.Status);
@@ -966,7 +966,7 @@ function setmsgUniqueId(){
     return msgDatId;
 }
 
-//Database Chat => Posting text chat in chatMessages Child
+//Database Chat => Posting text chat in Group Chats Child
 
 function SendMessage() {
     let rplSpn = document.getElementById("rplySpn");
@@ -983,7 +983,7 @@ function SendMessage() {
   
     let usrPostTimeDb = userPostTime();
 
-    let dbRef = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdDb}`);
+    let dbRef = dataBase.ref(`Collo Chat/Web Developers/Group Chats/${getUniqueIdDb}`);
 
     let msgInptVal = msgInpt.innerHTML;
   
@@ -1021,7 +1021,7 @@ function SendMessage() {
     afterPostFunctions();
 }
 
-//Database Chat => Posting Image in chatMessages child
+//Database Chat => Posting Image in Group Chats child
 
 function SendImage(){
   let getImgCht =  document.getElementById("imageIsLoaded");
@@ -1036,7 +1036,7 @@ function SendImage(){
 	  
 	  let getUniqueIdforImg = setmsgUniqueId();
 
-	  let dbRefImg = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
+	  let dbRefImg = dataBase.ref(`Collo Chat/Web Developers/Group Chats/${getUniqueIdforImg}`);
 
 	   dbRefImg.set({
 	          usr: usernameCookie,
@@ -1089,7 +1089,7 @@ clsImgMdl.addEventListener("click", function() {
 });
 
 
-//Database Chat => Posting audio in chatMessages child
+//Database Chat => Posting audio in Group Chats child
 
 /*function sendchtAudio() {
   let getImgCht =  document.getElementById("imageIsLoaded");
@@ -1103,7 +1103,7 @@ clsImgMdl.addEventListener("click", function() {
   
   let getUniqueIdforImg = setmsgUniqueId();
 
-  let dbRefImg = dataBase.ref(`WebApplication/Web Developers/chatMessages/${getUniqueIdforImg}`);
+  let dbRefImg = dataBase.ref(`Collo Chat/Web Developers/Group Chats/${getUniqueIdforImg}`);
 
    dbRefImg.set({
       usr: usernameCookie,
@@ -1122,10 +1122,10 @@ clsImgMdl.addEventListener("click", function() {
 //Database Chat => All Database Functions
 
 function databaseFunction() {
-	const mainDb = dataBase.ref("WebApplication");
-	const fetchChat = dataBase.ref("WebApplication/Web Developers/chatMessages");
-	const pinMessageDb = dataBase.ref(`WebApplication/Web Developers/Pinned Messages`);
-	const saveMsgGrp = dataBase.ref(`WebApplication/Web Developers/savedMsgs/${usernameCookie}`);
+	const mainDb = dataBase.ref("Collo Chat");
+	const fetchChat = dataBase.ref("Collo Chat/Web Developers/Group Chats");
+	const pinMessageDb = dataBase.ref(`Collo Chat/Web Developers/Pinned Messages`);
+	const saveMsgGrp = dataBase.ref(`Collo Chat/Web Developers/Saved Messages/${usernameCookie}`);
 	
 	//Database Function => After Child is Removed
 	
@@ -1431,7 +1431,7 @@ function databaseFunction() {
 
 	        //Lazy Load to optimize 
 
-	        // dataBase.ref("WebApplication/chatMessages").once("value", function() {
+	        // dataBase.ref("Collo Chat/Group Chats").once("value", function() {
 	    	imgTag.setAttribute("loading", "lazy");
 		    	
 	    	imgTag.setAttribute("src", dbFetch.ImgUrl);
@@ -1840,4 +1840,4 @@ function databaseFunction() {
 		let rmvMsgId = document.getElementById(`${lstUpdateMsg}`);
 		rmvMsgId.remove();
 	});
-}
+}		
