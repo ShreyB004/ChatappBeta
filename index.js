@@ -21,7 +21,12 @@ const cldStorage = firebase.storage();
 /* const messaging = firebase.messaging();*/
 
 //All declaratoins
+let chtarea = document.getElementById("chatArea");
 let usrImgUrl = document.getElementById("photo");
+let usrFallbackPic = document.getElementById("fallbackPhoto");
+
+let saveMsgBtn = document.getElementById("saveMsgBtn");
+let saveMsgCls = document.getElementById("saveMsgClose");
 
 let mdlUsrShwBtn = document.getElementById("mdlShwBtn"); 
 let mdlUsrsClsBtn = document.getElementById("mdlClsBtn");
@@ -50,7 +55,6 @@ let signUpusrName = document.getElementById("authNewUserName");
 let logInPass = document.getElementById("authPass");
 let signUpPass = document.getElementById("authNewPass");
 
-
 let modal = document.getElementById("myModal");
 let imgAttachBtn = document.getElementById("fileAttachBtn");
 let span = document.getElementsByClassName("close")[0];
@@ -66,28 +70,50 @@ let submit = document.getElementById("submit");
 
 let imgUpload = document.getElementById("imageUpload");
 
+let chtAreaTitle = document.getElementById("chatAreaTitle");
+
+let grpBtnBack = document.getElementById("grpInfoBackBtn");
+let grpEditBtn = document.getElementById("editGrpInfo");
+let grpDescInpt = document.getElementById("editedGrpDesc");
+
+let grpFileReader = document.getElementById("grpProfileUpload");
+let grpProfilePic = document.getElementById("grpImage");
+let grpEditOverlay = document.getElementById("editOverlay");
+
 let clsImgMdl = document.getElementById("clsMdl");
 let imgchtAttach = document.getElementById("attachment");
 
 let userBioPrevw = document.getElementById("showUserBio");
 let userNamePrevw = document.getElementById("showUserName");
 
+let wrapper = document.getElementById("onlineState");
+let offlineDiv = document.getElementById("offlineDiv")
+
 let imgUsrName = document.getElementById("imageUserName");
 let cUsrState = document.getElementById("currUsrState");
+
+function blurAllInputs() {
+	let allDomInputs = document.querySelectorAll(`input[type="text"]`);
+	allDomInputs.forEach((input) => {
+		if (input.focus()) input.blur();
+	})
+}
+
+let onlineState = setInterval(function() {
+	if (!navigator.onLine) {
+		wrapper.classList.add("offline_page");
+		offlineDiv.classList.add("isOffline");
+		blurAllInputs();
+		snackBarShow({icon: 'wifi', infoTxt: 'Reconnecting...'});
+	} else{
+		wrapper.classList.remove("offline_page");
+		offlineDiv.classList.remove("isOffline");
+	}
+}, 2500);
 
 //For Getting Username
 
 let usernameCookie = '';
-
-function clickOnce(clickedBtn, funName) {
-	clickedBtn.addEventListener("click", function() {
-		clicked = 1;
-		if(clicked === 1) {
-			funName();
-			clicked = 0;
-		}
-	});
-}
 
 //Setting a Cookie
 
@@ -314,13 +340,15 @@ function lazyLoadImg(imgsElems, imgsElemsLoded) {
 	
 	for (let i = 0; i < lazyLoadsLen; ++i) {
 		let lazyLoadSrc = lazyLoads[i].getAttribute("data-src");
-		lazyLoads[i].setAttribute("src", `${lazyLoadSrc}`);
-		lazyLoads[i].removeAttribute("data-src");	
-		lazyLoads[i].addEventListener("load", function() {
-			this.classList.add(`${imgsElemsLoded}`);
-		});
+		if (lazyLoads[i].src !== lazyLoadSrc) {
+			lazyLoads[i].setAttribute("src", `${lazyLoadSrc}`);
+			lazyLoads[i].removeAttribute("data-src");	
+			lazyLoads[i].addEventListener("load", function() {
+				this.classList.add(`${imgsElemsLoded}`);
+				this.classList.remove(`${imgsElems}`);
+			});
+		}
 	}
-
 }
 
 //CLIENT SIDE : Function of Modal of Settings and Details Function 
@@ -546,13 +574,26 @@ replyClr.addEventListener("click", function(){
 	setReply('', '', '');
 });
 
-/*
-//Database Function => Function for Optimizing Performance by lazy loading Images
 
-function lazyLoadingDb(typeImg, objImgCon, lsrc){
-	if(typeImg === 'Img') objImgCon.setAttribute("src", lsrc);
-	else if (typeImg === 'BgImg') objImgCon.style.backgroundImage = `url("${lsrc}")`;
-}*/
+// CLIENT SIDE : Function of Optimizing Performance by compressing Img
+
+let compressImg = {
+    compress: function(imgSrc, imgQuality, outputFormat) {
+        let compImgType = "image/jpeg";
+
+        "undefined" != typeof outputFormat && "png" == outputFormat && (compImgType = "image/png");
+
+        let canvasDraw = document.createElement("canvas");
+        let imgRtrn = new Image;
+        
+        canvasDraw.width = imgSrc.naturalWidth;
+        canvasDraw.height = imgSrc.naturalHeight;
+
+        let drawnImg = (canvasDraw.getContext("2d").drawImage(imgSrc, 0, 0), canvasDraw.toDataURL(compImgType, imgQuality / 100));
+
+        return imgRtrn.src = drawnImg, imgRtrn
+    }
+};
 
 //Database Functions => UserDetails
 
@@ -577,8 +618,9 @@ function loadUsrInformation() {
 
 	imgUpload.addEventListener("change", function(fileEvt) {
 	    let oneFile = fileEvt.target.files[0];
+	    let fileRead = new FileReader();
 
-	    let imgRef = cldStorage.ref(`${usernameCookie}/${usernameCookie}_Pic`);
+	    let imgRef = cldStorage.ref(`${usernameCookie}/${usernameCookie}_Profile`);
 	    let userPrfImg = imgRef.put(oneFile, {contentType: oneFile.type});
 
 	    userPrfImg.then(function(usrImgSnp) {
@@ -589,6 +631,14 @@ function loadUsrInformation() {
 	});
 
     //Setting Profile Pic from Database
+
+    let loadLazily = setTimeout(function() {
+		dbUsrsAbout.once('value', () => {
+			lazyLoadImg('lazy_load', 'img_loaded');
+			lazyLoadImg('lazy_load_cdn', 'img_loaded_cdn');	
+		});
+		clearTimeout(loadLazily);
+    }, 2500);
 
 	dbUsrsAbout.on('value', (usrAbtSnp) => {
 		let usrDetailsSnp = usrAbtSnp.val();
@@ -608,13 +658,10 @@ function loadUsrInformation() {
 		
         if (userProfilePicExists) {
         	const userPic = usrDetailsSnp.UserProfileImage;
-			lazyLoadImg('lazy_load', 'img_loaded');					
-			clickOnce(mdlUsrShwBtn, function() {
-				usrImgUrl.setAttribute("src", `${userPic}`);
+			usrImgUrl.setAttribute("src", `${userPic}`);
+			usrImgUrl.addEventListener("load", function() {
 				editImage.setAttribute("src", `${userPic}`);
-				usrImgUrl.addEventListener("load", function() {
-					lazyLoadImg('lazy_load_cdn', 'cdn_img_loaded');
-				});
+				usrFallbackPic.setAttribute("style", `background-image: url(${userPic})`);
 			});
 		} else{
 			const defaultPic = `https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png`;
@@ -634,7 +681,6 @@ function loadUsrPreferences() {
 	const clrThemes = document.querySelectorAll(".color");
 	let userBgImg = document.querySelectorAll(".grid_img_hold img.bg_tags_imgs");
 	let bdBody =  document.querySelector("body");
-    let chtarea = document.getElementById("chatArea");
 
     //Initializing Mode and Theme to avoid data type "undefined"
 
@@ -701,8 +747,7 @@ function loadUsrPreferences() {
         //Set Chat Background From Database and Lazy Load
 
 		if (dbBoolbgSrcExsits) {
-            document.getElementById("blurredImg").style.backgroundImage = `url(${themeSnap.ChatBackground})`;
-            document.getElementById("chatArea").style.backgroundImage = `url(${themeSnap.ChatBackground})`;
+            chtarea.style.backgroundImage = `url(${themeSnap.ChatBackground})`;
         }
 
         //Set Chat Theme From Database
@@ -776,15 +821,11 @@ function userPresenceState() {
 			let staticMemImg = staticMemList.getElementsByClassName("member_img_holder")[0];
 
 			memOnlineArr.push(allusrArr[allUsrs[i]].Presence.Status);
-			
+				
 			if (allusrArr[allUsrs[i]].Presence.Status === 'Online') memOnlineNum = (++memOnlineNum);
 
 			if (memOnlineNum > 1) memberOnline.innerText = memOnlineNum - 1;
 			else memberOnline.innerText = `No one is `;
-
-			if (allusrArr[allUsrs[i]] === usernameCookie) {
-				cUsrState.innertext = allusrArr[allUsrs[i]].Presence.Status;
-			}
 
 	    	staticMemPresence[i].innerText = memOnlineArr[i];
 
@@ -793,7 +834,6 @@ function userPresenceState() {
 	    		// staticMemImg.add("online_mem");
 	    	} /*else staticMemImg.remove("online_mem");*/
 	    }
-
 	});
 })();
 
@@ -823,7 +863,7 @@ function getOnlineUsers() {
         }
 	});
 }
-getOnlineUsers();
+    getOnlineUsers();
 
 //Database Functions => Members in Group
 
@@ -844,7 +884,7 @@ function getMembersLists() {
 
 		let userStatusArr = [];
 		let userImgUrlArr = [];
-	    let userchtBgImg = [];
+	    // let userchtBgImg = [];
 	    
 	    let userPresence = [];
 
@@ -879,8 +919,8 @@ function getMembersLists() {
 			if(usersSnaps.child(`${users}/UserDetails/UserProfileImage`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.UserProfileImage);
 			else userImgUrlArr.push('https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png');
 			
-			if(usersSnaps.child(`${users}/UserSettings/ChatBackground`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.ChatBackground);
-			else userchtBgImg.push('https://blog.tubikstudio.com/wp-content/uploads/2020/04/Pennine-Alps-illustration-tubikarts-1024x768.png');
+/*			if(usersSnaps.child(`${users}/UserSettings/ChatBackground`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.ChatBackground);
+			else userchtBgImg.push('https://blog.tubikstudio.com/wp-content/uploads/2020/04/Pennine-Alps-illustration-tubikarts-1024x768.png');*/
 
 			if(usersSnaps.child(`${users}/Presence`).exists()) userPresence.push(dbFetchKeys[users].Presence.Status);
 			else userPresence.push("Last Seen Recently");
@@ -901,7 +941,7 @@ function getMembersLists() {
 			memImg.setAttribute("loading", "lazy");
 			
 			memImg.setAttribute("src", userImgUrlArr[i]);
-			mainListHold.style.backgroundImage = `url(${userchtBgImg[i]})`;
+			// mainListHold.style.backgroundImage = `url(${userchtBgImg[i]})`;
 
 			memImgHold.appendChild(memImg);
 			memListsecImg.appendChild(memImgHold);
@@ -917,17 +957,21 @@ function getMembersLists() {
 	});
 }
 
-
-
-//FUnction Event of Side panel where members are visible
-
-sidePnlBtn.addEventListener("click", function() {
+//Function Event of Side panel where members are visible
+function groupPanel() {
 	let sidePnl = document.getElementById("sidePanel");
-	let chtArea = document.getElementById("chatArea");
-	chtArea.classList.toggle("d_width");
 	sidePnl.classList.toggle("show_panel");
-});
-clickOnce(sidePnlBtn, getMembersLists);
+}
+function fetchMemOnce(){
+	getMembersLists();
+	chtAreaTitle.removeEventListener("mouseover", fetchMemOnce);
+}
+
+sidePnlBtn.addEventListener("click", groupPanel);
+grpBtnBack.addEventListener("click", groupPanel);
+
+chtAreaTitle.addEventListener("mouseover", fetchMemOnce);
+
 
 //Database Chat => Getting Time
 
@@ -1126,7 +1170,80 @@ function databaseFunction() {
 	const fetchChat = dataBase.ref("Collo Chat/Web Developers/Group Chats");
 	const pinMessageDb = dataBase.ref(`Collo Chat/Web Developers/Pinned Messages`);
 	const saveMsgGrp = dataBase.ref(`Collo Chat/Web Developers/Saved Messages/${usernameCookie}`);
-	
+	const grpDb = dataBase.ref(`Collo Chat/Web Developers/Group Info`);
+
+
+	function editFuntion() {
+		grpDescInpt.contentEditable = "true";
+		grpEditBtn.innerText = `done`;
+		grpEditBtn.removeEventListener("click", editFuntion);
+		grpEditBtn.addEventListener("click", saveFuntion);
+	}
+
+	function saveFuntion() {
+		grpDescInpt.contentEditable = "false";
+		const grpDesc = grpDescInpt.innerText;
+		
+		grpDb.update({
+			GroupDesc: grpDesc
+		}).then(() => {
+			let uniqueConId = Date.now();
+			let changerInfo = `${usernameCookie} has Changed Group Description`;
+			fetchChat.child(`${uniqueConId}_contentInfo`).set({
+				contentInfo: changerInfo
+			});
+		});
+
+		grpEditBtn.innerText = `edit`;
+		grpEditBtn.addEventListener("click", editFuntion);
+		grpEditBtn.removeEventListener("click", saveFuntion);
+	}
+
+	grpEditBtn.addEventListener("click", editFuntion);
+
+	//function for Save Messages
+	function saveMsgPanel() {
+		let saveMsgMdl = document.getElementById("saveMsgModal");
+		saveMsgMdl.classList.toggle("show_saved_msg");
+	}
+
+	saveMsgBtn.addEventListener("click", saveMsgPanel);
+	saveMsgCls.addEventListener("click", saveMsgPanel);
+
+	grpFileReader.addEventListener("change", function(grpPicChg) {
+	    let grpFile = grpPicChg.target.files[0];
+	    let fileRead = new FileReader();
+
+	    let grpPic = cldStorage.ref(`Web Developers/Profile_pic`);
+	    let grpPrfImg = grpPic.put(grpFile, {contentType: grpFile.type});
+
+	    grpPrfImg.then(function(grpImgSnp) {
+	    	grpImgSnp.ref.getDownloadURL().then((url) => {
+	    		grpDb.update({GroupImg: url}).then(() => {
+					let uniquegrpImgId = Date.now();
+					let imgChangerInfo = `${usernameCookie} has Changed Group Profile Pic`;
+					fetchChat.child(`${uniquegrpImgId}_contentInfo`).set({
+						contentInfo: imgChangerInfo
+					});
+	    		});
+	    	});
+	    });
+	});
+
+	grpDb.on("value", function (grpInfo) {
+		let getGrpInfo = grpInfo.val();
+		let getGrpDesc = getGrpInfo.GroupDesc;
+
+		let grpImages = document.getElementsByClassName("$groupImg");
+		let grpImagesLen = grpImages.length;
+
+		for (let i = 0; i < grpImagesLen; ++i) {
+			grpImages[i].src = getGrpInfo.GroupImg;
+		}
+
+		grpDescInpt.innerText = getGrpDesc;
+	});
+
 	//Database Function => After Child is Removed
 	
 	fetchChat.on("child_removed", function(delSnpVal) {
@@ -1153,538 +1270,578 @@ function databaseFunction() {
 	fetchChat.on("child_added", function (dbChatSnp) {
 	    let dbFetch = dbChatSnp.val();
 
-	    let dbFetchMsg = dbFetch.msg;
-	    let dbFetchTime = dbFetch.usrTime;
-	    let dbFetchUser = dbFetch.usr;
-	    let dbFetchId = dbFetch.chgId;
-	    let dbFetchRply = dbFetch.replyStr;
-	    let dbFetchRplyImage = dbFetch.replyImage;
+	    if (!dbFetch.contentInfo) {
+			let dbFetchMsg = dbFetch.msg;
+		    let dbFetchTime = dbFetch.usrTime;
+		    let dbFetchUser = dbFetch.usr;
+		    let dbFetchId = dbFetch.chgId;
+		    let dbFetchRply = dbFetch.replyStr;
+		    let dbFetchRplyImage = dbFetch.replyImage;
 
-	    //Confirming User By Cookie
+		    //Confirming User By Cookie
 
-	    let getCookieDb = _$fetchCookie("username");
+		    let getCookieDb = _$fetchCookie("username");
 
-	    let lstMsg = document.getElementById("lastMsg");
-	    let lstMsgtime = document.getElementById("lastMsgTime");
-	    let chtRplyMsgTxt = document.getElementById("rplySpn").innerText;
+		    let lstMsg = document.getElementById("lastMsg");
+		    let lstMsgtime = document.getElementById("lastMsgTime");
+		    let chtRplyMsgTxt = document.getElementById("rplySpn").innerText;
 
-		let chatMsg = document.createElement("div");
-		let chtMsgProf = document.createElement("div");
-		let chtMsgdate = document.createElement("div");
-		
-	    let chtMsgCOnt = document.createElement("div");
-		let chtTxt = document.createElement("div");
-
-	    let chtReplyBtn = document.createElement("button");
-
-	    let chtusrOptH = document.createElement("div");
-
-	    let usroptBtnCopy = document.createElement("button");
-	    let usroptBtnCopyIco = document.createElement("i");
-
-	    let usrOptBtnPin = document.createElement("button");
-	    let usrOptBtnPinIco = document.createElement("i");
-
-	    let usroptBtnSave = document.createElement("button");
-	    let usroptBtnSaveIco = document.createElement("i");
-
-	    let chtMainMsg = document.createElement("div");
-
-		chatMsg.classList.add("chat-msg");
-	    chtReplyBtn.classList.add("reply_msg_btn");
-	    chtReplyBtn.classList.add("material-icons");
-		chtMsgProf.classList.add("chat-msg-profile");
-		chtMsgdate.classList.add("time");
-		chtMsgCOnt.classList.add("chat-msg-content");
-
-	    chtusrOptH.classList.add("usr_opts_h");
-
-	    usroptBtnCopy.classList.add("usr_opts_btn");
-	    usroptBtnCopyIco.classList.add("material-icons");
-
-	    usrOptBtnPin.classList.add("usr_opts_btn");
-	    usrOptBtnPinIco.classList.add("material-icons");
-
-	    usroptBtnSave.classList.add("usr_opts_btn");
-	    usroptBtnSaveIco.classList.add("material-icons");
-
-		chtTxt.classList.add("chat-msg-text");
-	    chtMainMsg.classList.add("usr_main_msg");
-
-	    chtMainMsg.setAttribute(`id`, `${dbFetch.chgId}`);
-
-		function fnReply(evtFn, elemTxt) {
-			evtFn.stopPropagation();
-			evtFn.preventDefault();
-
-			setReply(elemTxt);
-
-	    	let clsReplySet = setTimeout(function() {
-	    		chatMsg.classList.remove("replyingCurr");
-	    	}, 500);
-	    	chatMsg.classList.add("replyingCurr");
-	        openBoard(false);
-		}
-	    function selectRmvs() {
-	        let rmvChild = document.getElementsByClassName("chat-msg-text");
-	        let rmvChildLen = rmvChild.length;
-	        for (var i = 0; i < rmvChildLen; ++i) {
-	            rmvChild[i].classList.remove("one_select");
-	        }
-	    }
-	    function selectEvent() {
-	        selectElem({
-	        	Elemname: '.chat-msg-text', 
-	        	ClassName: 'one_select', 
-	        	TimeOut: 7500
-	        });
-	    }
-
-	    //if Current User is sending Message
-
-	    if (dbFetchUser === getCookieDb) {
-	    	chatMsg.classList.add("owner");
-	        
-	        let usrOptCls = document.getElementsByClassName("usr_opts_btn");
-	        let usrOptClsLen = usrOptCls.length;
-	        
-	        let msgOrininalVal;
-
-			let chtMsgStatus = document.createElement("div");
-
-			chtMsgStatus.classList.add("material-icons");
-			chtMsgStatus.classList.add("delivered_status");
-
-
-	        //Adding Edit Option for Current User Only
-
-	        let usroptBtnEdit = document.createElement("button");
-	        let usroptBtnEditIco = document.createElement("i");
-
-		    let usroptBtnDel = document.createElement("button");
-		    let usroptBtnDelIco = document.createElement("i");
-
-	        usroptBtnEdit.classList.add("usr_opts_btn");
-	        usroptBtnEditIco.classList.add("material-icons");
-
-		    usroptBtnDelIco.classList.add("material-icons");
-		    usroptBtnDel.classList.add("usr_opts_btn");
-		    usroptBtnDel.classList.add("red_btn");
-
-	        usroptBtnEditIco.innerText = 'brush';
-		    usroptBtnDelIco.innerText = 'remove_circle_outline';
-
-		    chtMsgStatus.innerText = 'done_all';
-
-		    usroptBtnDel.appendChild(usroptBtnDelIco);
-			chtusrOptH.appendChild(usroptBtnDel);
-
-	        usroptBtnEdit.appendChild(usroptBtnEditIco);
-	        chtusrOptH.appendChild(usroptBtnEdit);
-
-
-			chtMsgProf.appendChild(chtMsgStatus);
-	        
-	        //Edit Message Trigger
-	        usroptBtnEdit.addEventListener("click", function() {
-	            let grandParentELemtxt = this.parentElement.parentElement;
-	            grandParentELemtxt.removeEventListener("click", selectEvent);
-
-	            chtMainMsg.setAttribute('contentEditable', 'true');
-	            chtMainMsg.focus();
-	            
-	            grandParentELemtxt.classList.add("focused");
-	            selectRmvs();
-
-	            if (dbFetch.ImgUrl) {
-	            	if (!dbFetchMsg) {
-	            		chtMainMsg.style.display = 'inline-block';
-	            	}
-	            }
-	            
-	            chtTxt.addEventListener("click", function() {
-	                if (this.classList.contains("one_select")) this.classList.remove("one_select");
-	            });
-	        });
-
-	        //Database chat Options => Remove Message
-
-			usroptBtnDel.addEventListener("click", function() {
-				let rmvElemId = chtMainMsg.getAttribute("id");
-
-				fetchChat.child(`${rmvElemId}`).remove().then(function() {
-			        snackBarShow({icon: 'delete_forever', infoTxt: 'Bubble Deleted!'});
-			    }).catch(function() {
-			    	snackBarShow({icon: 'clear', infoTxt: 'Cannot Delete Bubble'})
-			    });
-
-			});
-
-	        //KeyDown Event => Editing Chat message
-	  	    chtMainMsg.addEventListener("keydown", function(entAttr) {
-	  	        if ((entAttr.key === 'Enter')&&(!entAttr.shiftKey)) {
-	  	            
-	                entAttr.preventDefault();
-	  	            
-	                let dataVId = this.getAttribute("id");
-	  	            let datavIdConn = fetchChat.child(`${dataVId}`);
-	  	            let inrTxt = this.innerText;
-
-	  	            datavIdConn.update({msg: `${inrTxt}`}).then(function() {
-	  	                snackBarShow({icon: 'brush', infoTxt: 'Edited Sucessfully!'});
-	  	                
-	  	                chtMainMsg.removeAttribute("contentEditable");
-	  	                chtMainMsg.parentElement.classList.remove("focused");
-
-	  	                if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal; 
-	  	                chtMainMsg.parentElement.addEventListener("click", selectEvent);
-
-	  	            });
-	  	        }
-	  	    });
-
-	        //Focus Lost Event
-	        chtMainMsg.addEventListener("blur", function() {
-	            if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal;
-
-
-	            this.removeAttribute("contentEditable");
-	            this.parentElement.classList.remove("focused");
-
-	            this.parentElement.addEventListener("click", selectEvent);
-	        });
-
-	    } else{
-
-	        //other Users Messages
-
-	        let chtMsgUsrName = document.createElement("div");
-
-	        chtMsgUsrName.classList.add("chat-msg-user");
-
-	        chatMsg.classList.add("otherU");
-
-	        chtTxt.appendChild(chtMsgUsrName);
-	        
-	        chtMsgUsrName.innerText = dbFetchUser;
-		    if (dbFetch.ImgUrl) {
-		    	if (!chtMainMsg.innerText) chtMainMsg.style.display = 'none';
-		    }
-	    }
-
-	    //For all Users Functions
-
-
-	    //if Dataase Has Reply Message
-
-	    if (dbFetchRply) {
-			let scpdDbRplyStr = dbFetch.replyStr;
-			let rplyDiv = document.createElement("div");
-			let rplyDivUser = document.createElement("span");
-			let rplyDivSpn = document.createElement("span");
-
-			rplyDiv.classList.add("reply_db");
+			let chatMsg = document.createElement("div");
+			let chtMsgProf = document.createElement("div");
+			let chtMsgdate = document.createElement("div");
 			
-	        rplyDivUser.classList.add("reply_spns");
-			rplyDivUser.classList.add("reply_db_user");
+		    let chtMsgCOnt = document.createElement("div");
+			let chtTxt = document.createElement("div");
 
-			rplyDivSpn.classList.add("reply_spns");
-			rplyDivSpn.classList.add("reply_db_spn");
+		    let chtReplyBtn = document.createElement("button");
 
-	        //If database reply also contains Image
+		    let chtusrOptH = document.createElement("div");
+		    let chtusrOptDiv = document.createElement("div");
 
-	        if (dbFetchRplyImage !== "") {
+		    let usroptBtnCopy = document.createElement("button");
+		    let usroptBtnCopyIco = document.createElement("i");
 
-	            let rplyImageH = document.createElement("div");
-	            let rplyImage = document.createElement("img");
+		    let usrOptBtnPin = document.createElement("button");
+		    let usrOptBtnPinIco = document.createElement("i");
 
-	            rplyImageH.classList.add("reply_db_image_holder");
-	            rplyImage.classList.add("reply_db_image");
+		    let usroptBtnSave = document.createElement("button");
+		    let usroptBtnSaveIco = document.createElement("i");
 
-	            rplyImage.src = dbFetchRplyImage;
+		    let chtMainMsg = document.createElement("div");
 
-	            rplyImageH.appendChild(rplyImage);
-	            rplyDiv.appendChild(rplyImageH);
-	        }
+			chatMsg.classList.add("chat-msg");
+		    chtReplyBtn.classList.add("reply_msg_btn");
+		    chtReplyBtn.classList.add("material-icons");
+			chtMsgProf.classList.add("chat-msg-profile");
+			chtMsgdate.classList.add("time");
+			chtMsgCOnt.classList.add("chat-msg-content");
 
-	        //From User's Message
+		    chtusrOptH.classList.add("usr_opts_h");
+		    chtusrOptDiv.classList.add("usr_opt_main_div");
 
-	        rplyDivUser.innerText = dbFetch.replyOfUser;
+		    usroptBtnCopy.classList.add("usr_opts_btn");
+		    usroptBtnCopyIco.classList.add("material-icons");
 
-	        //User Replied Message
+		    usrOptBtnPin.classList.add("usr_opts_btn");
+		    usrOptBtnPinIco.classList.add("material-icons");
 
-			rplyDivSpn.innerHTML = scpdDbRplyStr;
+		    usroptBtnSave.classList.add("usr_opts_btn");
+		    usroptBtnSaveIco.classList.add("material-icons");
 
-			rplyDiv.appendChild(rplyDivUser);
-			rplyDiv.appendChild(rplyDivSpn);
-			chtTxt.appendChild(rplyDiv);
-	    }
+			chtTxt.classList.add("chat-msg-text");
+		    chtMainMsg.classList.add("usr_main_msg");
 
-	    //If Chat message Has Image
+		    chtMainMsg.setAttribute(`id`, `${dbFetch.chgId}`);
 
-	    if (dbFetch.ImgUrl) {
-	    	let imgHolder = document.createElement("div");
-	    	let imgTag = document.createElement("img");
+			function fnReply(evtFn, elemTxt) {
+				evtFn.stopPropagation();
+				evtFn.preventDefault();
 
-	    	imgHolder.classList.add("cht_img_holder");
-	    	chtTxt.classList.add("is_img");
+				setReply(elemTxt);
 
-	        //Lazy Load to optimize 
+		    	let clsReplySet = setTimeout(function() {
+		    		chatMsg.classList.remove("replyingCurr");
+		    	}, 500);
+		    	chatMsg.classList.add("replyingCurr");
+		        openBoard(false);
+			}
+		    function selectRmvs() {
+		        let rmvChild = document.getElementsByClassName("chat-msg-text");
+		        let rmvChildLen = rmvChild.length;
+		        for (let i = 0; i < rmvChildLen; ++i) {
+		            rmvChild[i].classList.remove("one_select");
+		        }
+		    }
+		    function selectEvent() {
+		        selectElem({
+		        	Elemname: '.chat-msg-text', 
+		        	ClassName: 'one_select', 
+		        	TimeOut: 7500
+		        });
+		    }
 
-	        // dataBase.ref("Collo Chat/Group Chats").once("value", function() {
-	    	imgTag.setAttribute("loading", "lazy");
-		    	
-	    	imgTag.setAttribute("src", dbFetch.ImgUrl);
-	        // });
+		    //if Current User is sending Message
 
-	    	imgHolder.appendChild(imgTag);
-	    	chtTxt.appendChild(imgHolder);
+		    if (dbFetchUser === getCookieDb) {
+		    	chatMsg.classList.add("owner");
+		        
+		        let usrOptCls = document.getElementsByClassName("usr_opts_btn");
+		        let usrOptClsLen = usrOptCls.length;
+		        
+		        let msgOrininalVal;
 
-	    	if (!dbFetchMsg) chtMainMsg.style.display = 'none';
-	    }
+				let chtMsgStatus = document.createElement("div");
 
-	    //Check Valid Url
-
-	    function validURL(str) {
-	      let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
-	        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
-	        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
-	        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
-	        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
-	        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
-	      return !!pattern.test(str);
-	    }
-
-	    //If Database has Link
-
-	    if(validURL(dbFetchMsg)) {
-		   	let scpdDbMsg = dbFetch.msg;
-	   		let linkHold = document.createElement("div");
-	    	let linkAnchor = document.createElement("div");
-
-	    	linkHold.classList.add("link_hold");
-
-	   		if(!dbFetch.ImgUrl){
-				let data = {key: '1ab256542fce49dbedd2428c6e066973', q: scpdDbMsg}
-
-		    	chtTxt.classList.add("is_Link");
-
-		   		let linkUpperH = document.createElement("div");
-		   		let linkInlineDiv = document.createElement("div");
-		   		let linkFrame = document.createElement("img");
-		   		let linkText = document.createElement("div");
-		 
-		    	linkUpperH.classList.add("link_upper_hold");
-		    	linkAnchor.classList.add("link_text")
-				linkInlineDiv.classList.add("link_divs");
-
-		    	linkText.classList.add("link_divs");
-		    	linkText.classList.add("text_link_div");
-
-				fetch('https://api.linkpreview.net', {
-					method: 'POST',
-					mode: 'cors',
-					body: JSON.stringify(data),
-				}).then(res => {
-					if (res.status !==200) {
-						linkFrame.src = 'https://archive.org/download/placeholder-image/placeholder-image.jpg';
-					}
-					return res.json();
-				}).then(response => {
-					linkText.innerHTML = response.description;
-					if(response.image){
-						linkFrame.setAttribute("loading", "lazy");
-						linkFrame.src = response.image;
-					} else{
-						linkFrame.src = 'https://archive.org/download/placeholder-image/placeholder-image.jpg';
-					}
-					linkAnchor.innerText = response.url;
-				});
-				/*
-				linkText.innerHTML = 'No Sescription Available';
-				linkFrame.src = 'https://archive.org/download/placeholder-image/placeholder-image.jpg';
-				linkAnchor.innerText = scpdDbMsg;
-*/
-
-		    	linkUpperH.appendChild(linkInlineDiv);
-		    	linkInlineDiv.appendChild(linkFrame);
-		    	
-		  		linkHold.appendChild(linkUpperH);
-		    	linkUpperH.appendChild(linkText);
-		   	}
+				chtMsgStatus.classList.add("material-icons");
+				chtMsgStatus.classList.add("delivered_status");
 
 
-	  		linkHold.appendChild(linkAnchor);
-	    	chtMainMsg.appendChild(linkHold);
+		        //Adding Edit Option for Current User Only
 
-		    chtReplyBtn.addEventListener("click", function(rplyLinkEvt) {
-		    	let rplyLinkevtVr = rplyLinkEvt;
-		    	fnReply(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
-		    });
-	    } else{
+		        let usroptBtnEdit = document.createElement("button");
+		        let usroptBtnEditIco = document.createElement("i");
 
-	        //Simple Text Reply
+			    let usroptBtnDel = document.createElement("button");
+			    let usroptBtnDelIco = document.createElement("i");
 
-		    chtMainMsg.innerHTML = dbFetchMsg;
-		    chtReplyBtn.addEventListener("click", function(rplyEvt) {
-		    	let rplyEvtVar = rplyEvt;
-		    	fnReply(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
-		    });
-	    }
+		        usroptBtnEdit.classList.add("usr_opts_btn");
+		        usroptBtnEditIco.classList.add("material-icons");
 
-		chtReplyBtn.innerText = 'reply';
+			    usroptBtnDelIco.classList.add("material-icons");
+			    usroptBtnDel.classList.add("usr_opts_btn");
+			    usroptBtnDel.classList.add("red_btn");
 
-	    usroptBtnCopyIco.innerText = 'content_copy';
-		
-	    usrOptBtnPinIco.innerText = 'filter_1';
-		
-	    usroptBtnSaveIco.innerText = 'bookmark_outline';
+		        usroptBtnEditIco.innerText = 'brush';
+			    usroptBtnDelIco.innerText = 'remove_circle_outline';
 
-	    chtMsgdate.innerText = dbFetchTime;
+			    chtMsgStatus.innerText = 'done_all';
 
-		chtMsgProf.appendChild(chtMsgdate);
+			    usroptBtnDel.appendChild(usroptBtnDelIco);
+				chtusrOptDiv.appendChild(usroptBtnDel);
 
-	    usroptBtnCopy.appendChild(usroptBtnCopyIco);
-	    usrOptBtnPin.appendChild(usrOptBtnPinIco);
-	    usroptBtnSave.appendChild(usroptBtnSaveIco);
+		        usroptBtnEdit.appendChild(usroptBtnEditIco);
+		        chtusrOptDiv.appendChild(usroptBtnEdit);
 
-		chtusrOptH.appendChild(usrOptBtnPin);
-		chtusrOptH.appendChild(usroptBtnCopy);
-		chtusrOptH.appendChild(usroptBtnSave);
-		chtTxt.appendChild(chtusrOptH);
-		
-		chtTxt.appendChild(chtReplyBtn);
 
-		chtTxt.appendChild(chtMainMsg);
+				chtMsgProf.appendChild(chtMsgStatus);
+		        
+		        //Edit Message Trigger
+		        usroptBtnEdit.addEventListener("click", function() {
+		            let grandParentELemtxt = this.parentElement.parentElement;
+		            grandParentELemtxt.removeEventListener("click", selectEvent);
 
-		chtMsgCOnt.appendChild(chtTxt);
+		            chtMainMsg.setAttribute('contentEditable', 'true');
+		            chtMainMsg.focus();
+		            
+		            grandParentELemtxt.classList.add("focused");
+		            selectRmvs();
 
-		chatMsg.appendChild(chtMsgProf);	
-		chatMsg.appendChild(chtMsgCOnt);	
-
-		chtAreaMsg.appendChild(chatMsg);
-
-	    //Active class to chatTxt
-
-	    chtTxt.addEventListener("click", function(e) {
-	        e.preventDefault();
-	        selectEvent();
-	    });
-
-	    //Set Reply By Double Clicking on Board
-
-	    chatMsg.addEventListener("dblclick", function() {
-	    	let chtMsgInnerTxtGet = chtMainMsg.innerText;
-	        let chtMsgUsr = dbFetchUser;
-	    	
-	        let clsReplyChtMsg = setTimeout(function() {
-	    		chatMsg.classList.remove("replyingCurr");
-	    		clearInterval(clsReplyChtMsg);
-	    	}, 1000);
-	    	    	
-	        chatMsg.classList.add("replyingCurr");
-	    	
-	        openBoard(false);
-
-	        if (dbFetch.ImgUrl) {
-	            let imageIcon = `<i class="material-icons">camera_alt</i> Image`;
-	            setReply(imageIcon, chtMsgUsr, dbFetch.ImgUrl);
-	        } else if(validURL(dbFetchMsg)){
-	        	setReply(chtMainMsg.getElementsByClassName("link_hold")[0].getElementsByClassName("link_text")[0].innerText, chtMsgUsr);
-	        } else{
-	            setReply(chtMsgInnerTxtGet, chtMsgUsr);
-	        }
-	    });
-
-	    //Database chat Options => Copy Text
-
-	    usroptBtnCopy.addEventListener("click", function() {
-	        navigator.clipboard.writeText(chtMainMsg.innerText);
-	        snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
-	        selectRmvs();
-	    });
-
-	    //Database Chat Options => Pin Messages
-
-	    usrOptBtnPin.addEventListener("click", function() {
-	    	let pinMsgId = Date.now();
-	    	if(dbFetch.ImgUrl) {
-		    	pinMessageDb.child(`${pinMsgId}`).set({
-		    		PinMessage: dbFetchMsg,
-		    		PinImageUrl: dbFetch.ImgUrl,
-					PinByUser: dbFetchUser
-		    	}).then(()=>{
-		            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
-		    	});
-	    	} else{
-		    	pinMessageDb.child(`${pinMsgId}`).set({
-		    		PinMessage: dbFetchMsg,
-					PinByUser: dbFetchUser
-		    	}).then(()=>{
-		            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
-		    	});
-	    	}
-	    });
-
-	    //Database chat Options => Save Messages
-	    
-	    usroptBtnSave.addEventListener("click", function() {
-	        let msgUniqId = Date.now();
-	        //Toogle Bookmarked Option and Functions
-	        if (usroptBtnSaveIco.innerText === 'bookmark_outline') {
-	            usroptBtnSaveIco.innerText = 'bookmark';
-	            //Saving Image from message
-	            if (dbFetch.ImgUrl) {
-		            saveMsgGrp.child(`${msgUniqId}`).set({
-		            	fromUser: dbFetchUser,
-		            	savedMsg: dbFetchMsg,
-		            	// savedRplyStr: dbFetchRply,
-		            	savedImgUrl: dbFetch.ImgUrl,
-		            	savedUsrTime: dbFetchTime,
-		            	lastUpdate: `${msgUniqId}`
-		            }).then(function() {
-			            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+		            if (dbFetch.ImgUrl) {
+		            	if (!dbFetchMsg) {
+		            		chtMainMsg.style.display = 'inline-block';
+		            	}
+		            }
+		            
+		            chtTxt.addEventListener("click", function() {
+		                if (this.classList.contains("one_select")) this.classList.remove("one_select");
 		            });
-	            } else{
-		            if (dbFetchRply) {
+		        });
+
+		        //Database chat Options => Remove Message
+
+				usroptBtnDel.addEventListener("click", function() {
+					let rmvElemId = chtMainMsg.getAttribute("id");
+
+					fetchChat.child(`${rmvElemId}`).remove().then(function() {
+				        snackBarShow({icon: 'delete_forever', infoTxt: 'Bubble Deleted!'});
+				    }).catch(function() {
+				    	snackBarShow({icon: 'clear', infoTxt: 'Cannot Delete Bubble'})
+				    });
+
+				});
+
+		        //KeyDown Event => Editing Chat message
+		  	    chtMainMsg.addEventListener("keydown", function(entAttr) {
+		  	        if ((entAttr.key === 'Enter')&&(!entAttr.shiftKey)) {
+		  	            
+		                entAttr.preventDefault();
+		  	            
+		                let dataVId = this.getAttribute("id");
+		  	            let datavIdConn = fetchChat.child(`${dataVId}`);
+		  	            let inrTxt = this.innerText;
+
+		  	            datavIdConn.update({msg: `${inrTxt}`}).then(function() {
+		  	                snackBarShow({icon: 'brush', infoTxt: 'Edited Sucessfully!'});
+		  	                
+		  	                chtMainMsg.removeAttribute("contentEditable");
+		  	                chtMainMsg.parentElement.classList.remove("focused");
+
+		  	                if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal; 
+		  	                chtMainMsg.parentElement.addEventListener("click", selectEvent);
+
+		  	            });
+		  	        }
+		  	    });
+
+		        //Focus Lost Event
+		        chtMainMsg.addEventListener("blur", function() {
+		            if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal;
+
+
+		            this.removeAttribute("contentEditable");
+		            this.parentElement.classList.remove("focused");
+
+		            this.parentElement.addEventListener("click", selectEvent);
+		        });
+
+		    } else{
+
+		        //other Users Messages
+
+		        let chtMsgUsrName = document.createElement("div");
+
+		        chtMsgUsrName.classList.add("chat-msg-user");
+
+		        chatMsg.classList.add("otherU");
+
+		        chtTxt.appendChild(chtMsgUsrName);
+		        
+		        chtMsgUsrName.innerText = dbFetchUser;
+			    if (dbFetch.ImgUrl) {
+			    	if (!chtMainMsg.innerText) chtMainMsg.style.display = 'none';
+			    }
+		    }
+
+		    //For all Users Functions
+
+
+		    //if Dataase Has Reply Message
+
+		    if (dbFetchRply) {
+				let scpdDbRplyStr = dbFetch.replyStr;
+				let rplyDiv = document.createElement("div");
+				let rplyDivUser = document.createElement("span");
+				let rplyDivSpn = document.createElement("span");
+
+				rplyDiv.classList.add("reply_db");
+				
+		        rplyDivUser.classList.add("reply_spns");
+				rplyDivUser.classList.add("reply_db_user");
+
+				rplyDivSpn.classList.add("reply_spns");
+				rplyDivSpn.classList.add("reply_db_spn");
+
+		        //If database reply also contains Image
+
+		        if (dbFetchRplyImage !== "") {
+
+		            let rplyImageH = document.createElement("div");
+		            let rplyImage = document.createElement("img");
+
+		            rplyImageH.classList.add("reply_db_image_holder");
+		            rplyImage.classList.add("reply_db_image");
+
+		            rplyImage.src = dbFetchRplyImage;
+
+		            rplyImageH.appendChild(rplyImage);
+		            rplyDiv.appendChild(rplyImageH);
+		        }
+
+		        //From User's Message
+
+		        rplyDivUser.innerText = dbFetch.replyOfUser;
+
+		        //User Replied Message
+
+				rplyDivSpn.innerHTML = scpdDbRplyStr;
+
+				rplyDiv.appendChild(rplyDivUser);
+				rplyDiv.appendChild(rplyDivSpn);
+				chtTxt.appendChild(rplyDiv);
+		    }
+
+		    //If Chat message Has Image
+
+		    if (dbFetch.ImgUrl) {
+		    	let imgHolder = document.createElement("div");
+		    	let imgTag = document.createElement("img");
+
+		    	imgHolder.classList.add("cht_img_holder");
+		    	chtTxt.classList.add("is_img");
+
+		        //Lazy Load to optimize 
+
+		        // dataBase.ref("Collo Chat/Group Chats").once("value", function() {
+		    	imgTag.setAttribute("loading", "lazy");
+			    	
+		    	imgTag.setAttribute("src", dbFetch.ImgUrl);
+		        // });
+
+		    	imgHolder.appendChild(imgTag);
+		    	chtTxt.appendChild(imgHolder);
+
+		    	if (!dbFetchMsg) chtMainMsg.style.display = 'none';
+		    }
+
+		    //Check Valid Url
+
+		    function validURL(str) {
+		      let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+		        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+		        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+		        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+		        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+		        '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+		      return !!pattern.test(str);
+		    }
+
+		    //If Database has Link
+
+		    if(validURL(dbFetchMsg)) {
+			   	let scpdDbMsg = dbFetch.msg;
+		   		let linkHold = document.createElement("div");
+		    	let linkAnchor = document.createElement("div");
+
+		    	linkHold.classList.add("link_hold");
+
+		   		if(!dbFetch.ImgUrl){
+					let data = {key: '1ab256542fce49dbedd2428c6e066973', q: scpdDbMsg}
+
+			    	chtTxt.classList.add("is_Link");
+
+			   		let linkUpperH = document.createElement("div");
+			   		let linkInlineDiv = document.createElement("div");
+			   		let linkFrame = document.createElement("img");
+			   		let linkText = document.createElement("div");
+			 
+			    	linkUpperH.classList.add("link_upper_hold");
+			    	linkAnchor.classList.add("link_text")
+					linkInlineDiv.classList.add("link_divs");
+
+			    	linkText.classList.add("link_divs");
+			    	linkText.classList.add("text_link_div");
+
+					fetch('https://api.linkpreview.net', {
+						method: 'POST',
+						mode: 'cors',
+						body: JSON.stringify(data),
+					}).then(res => {
+						if (res.status !==200) {
+							linkFrame.src = 'https://archive.org/download/placeholder-image/placeholder-image.jpg';
+						}
+						return res.json();
+					}).then(response => {
+						linkText.innerHTML = response.description;
+						if(response.image){
+							linkFrame.setAttribute("loading", "lazy");
+							linkFrame.src = response.image;
+						} else{
+							linkFrame.src = 'https://archive.org/download/placeholder-image/placeholder-image.jpg';
+						}
+						linkAnchor.innerText = response.url;
+					});
+
+			    	linkUpperH.appendChild(linkInlineDiv);
+			    	linkInlineDiv.appendChild(linkFrame);
+			    	
+			  		linkHold.appendChild(linkUpperH);
+			    	linkUpperH.appendChild(linkText);
+			   	}
+
+
+		  		linkHold.appendChild(linkAnchor);
+		    	chtMainMsg.appendChild(linkHold);
+
+			    chtReplyBtn.addEventListener("click", function(rplyLinkEvt) {
+			    	let rplyLinkevtVr = rplyLinkEvt;
+			    	fnReply(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
+			    });
+		    } else{
+
+		        //Simple Text Reply
+
+			    chtMainMsg.innerHTML = dbFetchMsg;
+			    chtReplyBtn.addEventListener("click", function(rplyEvt) {
+			    	let rplyEvtVar = rplyEvt;
+			    	fnReply(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
+			    });
+		    }
+
+			chtReplyBtn.innerText = 'reply';
+
+		    usroptBtnCopyIco.innerText = 'content_copy';
+			
+		    usrOptBtnPinIco.innerText = 'star_border';
+			
+		    usroptBtnSaveIco.innerText = 'bookmark_outline';
+
+		    chtMsgdate.innerText = dbFetchTime;
+
+			chtMsgProf.appendChild(chtMsgdate);
+
+		    usroptBtnCopy.appendChild(usroptBtnCopyIco);
+		    usrOptBtnPin.appendChild(usrOptBtnPinIco);
+		    usroptBtnSave.appendChild(usroptBtnSaveIco);
+
+			chtusrOptDiv.appendChild(usrOptBtnPin);
+			chtusrOptDiv.appendChild(usroptBtnCopy);
+			chtusrOptDiv.appendChild(usroptBtnSave);
+			chtusrOptH.appendChild(chtusrOptDiv);
+			chtTxt.appendChild(chtusrOptH);
+			
+			chtTxt.appendChild(chtReplyBtn);
+
+			chtTxt.appendChild(chtMainMsg);
+
+			chtMsgCOnt.appendChild(chtTxt);
+
+			chatMsg.appendChild(chtMsgProf);	
+			chatMsg.appendChild(chtMsgCOnt);	
+
+			chtAreaMsg.appendChild(chatMsg);
+
+		    //Active class to chatTxt
+
+		    chtTxt.addEventListener("click", function(mseEvt) {
+		        // mseEvt.preventDefault();
+		        selectEvent();
+		    });
+
+		    //Set Reply By Double Clicking on Board
+
+		    chatMsg.addEventListener("dblclick", function() {
+		    	let chtMsgInnerTxtGet = chtMainMsg.innerText;
+		        let chtMsgUsr = dbFetchUser;
+		    	
+		        let clsReplyChtMsg = setTimeout(function() {
+		    		chatMsg.classList.remove("replyingCurr");
+		    		clearInterval(clsReplyChtMsg);
+		    	}, 1000);
+		    	    	
+		        chatMsg.classList.add("replyingCurr");
+		    	
+		        openBoard(false);
+
+		        if (dbFetch.ImgUrl) {
+		            let imageIcon = `<i class="material-icons">camera_alt</i> Image`;
+		            setReply(imageIcon, chtMsgUsr, dbFetch.ImgUrl);
+		        } else if(validURL(dbFetchMsg)){
+		        	setReply(chtMainMsg.getElementsByClassName("link_hold")[0].getElementsByClassName("link_text")[0].innerText, chtMsgUsr);
+		        } else{
+		            setReply(chtMsgInnerTxtGet, chtMsgUsr);
+		        }
+		    });
+
+		    //Database chat Options => Copy Text
+
+		    usroptBtnCopy.addEventListener("click", function() {
+		        navigator.clipboard.writeText(chtMainMsg.innerText);
+		        snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
+		        selectRmvs();
+		    });
+
+		    //Database Chat Options => Pin Messages
+
+		    usrOptBtnPin.addEventListener("click", function() {
+		    	function getBgImgUrl() {
+					let getStyle = chtarea.currentStyle || window.getComputedStyle(chtarea, false);
+					let rtrnStyle = getStyle.backgroundImage.slice(4, -1).replace(/"/g, "");
+
+					return rtrnStyle;
+		    	}
+
+		    	let pinMsgId = Date.now();
+		    	if(dbFetch.ImgUrl) {
+			    	pinMessageDb.child(`${pinMsgId}`).set({
+			    		PinMessage: dbFetchMsg,
+			    		PinImageUrl: dbFetch.ImgUrl,
+			    		PinUserImg: usrImgUrl.getAttribute("data-src") || usrImgUrl.src,
+			    		PinUserBgImg: getBgImgUrl(),
+						PinByUser: dbFetchUser
+			    	}).then(()=>{
+			            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
+						let imgPinUniqueId = Date.now();
+						let imgPinchangerInfo = `${usernameCookie} has Pinned Image in Group`;
+						fetchChat.child(`${imgPinUniqueId}_contentInfo`).set({
+							contentInfo: imgPinchangerInfo
+						});
+			    	});
+		    	} else{
+			    	pinMessageDb.child(`${pinMsgId}`).set({
+			    		PinMessage: dbFetchMsg,
+			    		PinUserImg: usrImgUrl.getAttribute("data-src") || usrImgUrl.src,
+			    		PinUserBgImg: getBgImgUrl(),
+						PinByUser: dbFetchUser
+			    	}).then(()=>{
+			            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
+						let pinUniqueId = Date.now();
+						let pinchangerInfo = `${usernameCookie} has Pinned Some Text in Group`;
+						fetchChat.child(`${pinUniqueId}_contentInfo`).set({
+							contentInfo: pinchangerInfo
+						});
+			    	});
+		    	}
+		    });
+
+		    //Database chat Options => Save Messages
+		    
+		    usroptBtnSave.addEventListener("click", function() {
+		        let msgUniqId = Date.now();
+		        //Toogle Bookmarked Option and Functions
+		        if (usroptBtnSaveIco.innerText === 'bookmark_outline') {
+		            usroptBtnSaveIco.innerText = 'bookmark';
+		            //Saving Image from message
+		            if (dbFetch.ImgUrl) {
 			            saveMsgGrp.child(`${msgUniqId}`).set({
 			            	fromUser: dbFetchUser,
 			            	savedMsg: dbFetchMsg,
-			            	savedRplyStr: dbFetchRply,
+			            	// savedRplyStr: dbFetchRply,
 			            	savedImgUrl: dbFetch.ImgUrl,
 			            	savedUsrTime: dbFetchTime,
 			            	lastUpdate: `${msgUniqId}`
 			            }).then(function() {
 				            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
-			            });	            	
-		            } else {
-    	                //Saving Txt from message
-    		            saveMsgGrp.child(`${msgUniqId}`).set({
-    		            	fromUser: dbFetchUser,
-    		            	savedMsg: dbFetchMsg,
-    		            	savedUsrTime: dbFetchTime,
-    		            	lastUpdate: `${msgUniqId}`
-    		            }).then(function() {
-    			            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
-    		            });
-					}
-	            }
-	        } else{
-	            usroptBtnSaveIco.innerText = 'bookmark_outline';
-	            snackBarShow({icon: 'star_outline', infoTxt: 'Bubble Unstarred!'});
-	        }
-	        selectRmvs();
-	    });
+			            });
+		            } else{
+			            if (dbFetchRply) {
+				            saveMsgGrp.child(`${msgUniqId}`).set({
+				            	fromUser: dbFetchUser,
+				            	savedMsg: dbFetchMsg,
+				            	savedRplyStr: dbFetchRply,
+				            	savedImgUrl: dbFetch.ImgUrl,
+				            	savedUsrTime: dbFetchTime,
+				            	lastUpdate: `${msgUniqId}`
+				            }).then(function() {
+					            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+				            });	            	
+			            } else {
+	    	                //Saving Txt from message
+	    		            saveMsgGrp.child(`${msgUniqId}`).set({
+	    		            	fromUser: dbFetchUser,
+	    		            	savedMsg: dbFetchMsg,
+	    		            	savedUsrTime: dbFetchTime,
+	    		            	lastUpdate: `${msgUniqId}`
+	    		            }).then(function() {
+	    			            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+	    		            });
+						}
+		            }
+		        } else{
+		            usroptBtnSaveIco.innerText = 'bookmark_outline';
+		            snackBarShow({icon: 'star_outline', infoTxt: 'Bubble Unstarred!'});
+		        }
+		        selectRmvs();
+		    });
 
 
-	    lstMsg.innerHTML = dbFetchMsg;
-	    lstMsgtime.innerText = dbFetchTime;
+		    lstMsg.innerHTML = dbFetchMsg;
+		    lstMsgtime.innerText = dbFetchTime;
 
-	    setTimeout(()=>{
-			chatMsg.classList.add("appear");
-	    }, 250);
+		    setTimeout(()=>{
+				chatMsg.classList.add("appear");
+		    }, 250);
 
-		chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
+			chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
+	    } else {
+	    	let dbFetchContentInfo = dbFetch.contentInfo;
+	    	
+	    	let chtMsgForContent = document.createElement("div");
+
+	    	let contentHold = document.createElement("div");
+
+	    	contentHold.classList.add("content_info_holder");
+	    	chtMsgForContent.classList.add("chat-msg");
+
+	    	contentHold.innerText = dbFetchContentInfo;
+
+	    	chtMsgForContent.appendChild(contentHold);
+			chtAreaMsg.appendChild(chtMsgForContent);
+			chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
+
+		    setTimeout(()=>{
+				chtMsgForContent.classList.add("appear");
+		    }, 250);
+	    }
 	});
 
 	//Database Chat => Pin Messaages
@@ -1694,18 +1851,27 @@ function databaseFunction() {
 
 		let pinMsg = pinMsgSnpVal.PinMessage;
 		let pinUserName = pinMsgSnpVal.PinByUser;
+		let pinUserImg = pinMsgSnpVal.PinUserImg;
+		let pinUserBgImg = pinMsgSnpVal.PinUserBgImg;
 
 		let mainPinDiv = document.getElementById("pinMsgSlideDiv");
 		let allSlides = document.getElementsByClassName("pin_message_slides");
+		let lstPinMsg = document.getElementById("pinnedLastMsg");
+
 		let allSlidesLen = allSlides.length;
+
+		let	pinSlideDef = 1;
 
 		let pinSlide = document.createElement("div");
 		let pinnedMsg = document.createElement("div");
-		let pinnedUserName = document.createElement("div");
+
+		let pinnedMsgFromUser = document.createElement("div");
+		let pinnedUserName = document.createElement("span");
+		let pinnedUserImg = document.createElement("img");
 
 		pinSlide.classList.add("pin_message_slides"); 
 		pinnedMsg.classList.add("pinned_msg"); 
-		pinnedUserName.classList.add("pinned_msg_from_user"); 
+		pinnedMsgFromUser.classList.add("pinned_msg_from_user"); 
 
 		if (pinMsgSnpVal.PinImageUrl) {
 			let pinImage = document.createElement("img");
@@ -1718,14 +1884,19 @@ function databaseFunction() {
 
 		pinnedMsg.innerHTML = pinMsg;
 		pinnedUserName.innerText = pinUserName;
+		pinnedUserImg.src = pinUserImg;
+		lstPinMsg.innerHTML = pinMsg;
+
+		pinSlide.style.backgroundImage = `url("${pinUserBgImg}")`;
 
 		pinSlide.appendChild(pinnedMsg);
-		pinSlide.appendChild(pinnedUserName);
+		pinnedMsgFromUser.appendChild(pinnedUserImg);
+		pinnedMsgFromUser.appendChild(pinnedUserName);
+		pinSlide.appendChild(pinnedMsgFromUser);
 		mainPinDiv.appendChild(pinSlide);
 
 		//SlideShow for Messages
 
-		let	pinSlideDef = 1;
 
 		PreviewSlides(allSlidesLen - 1);
 
