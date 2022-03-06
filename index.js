@@ -96,7 +96,7 @@ function blurAllInputs() {
 	let allDomInputs = document.querySelectorAll(`input[type="text"]`);
 	allDomInputs.forEach((input) => {
 		if (input.focus()) input.blur();
-	})
+	});
 }
 
 let onlineState = setInterval(function() {
