@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+	    <title>Chat</title>
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+		<link href="https://fonts.googleapis.com/css2?family=Urbanist&display=swap" rel="stylesheet" />
+        <link rel="stylesheet" type="text/css" href="chatapp.css">
+        <meta charset="utf-8" />
+    </head>
+
+<body translate="no" id="data_load_b" class="dark-mode" onload="_confirmCookie();">
+   
+    <div class="authUser-wrapper" id="authUserWrap">
+        <div class="authUser-holder" id="AuthBg">
+            <div class="main-auth-div">
+                <div class="top-loading-bar">
+                    <div class="top-loader" id="topLoader"></div>
+                </div>
+                <div class="auth-block-divs authLogo">
+                    <div class="auth-logo-elements">
+                        <div class="main-logo">
+                            <div class="arrow-rotated"></div>
+                            <div class="circle-fill"></div>
+                            <span class="main-logo-text">C</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-block-divs authText">
+                    <div class="login-signup-divs signup-auth">
+                        <div class="auth-text-box-holders" id="validationSignupUserName">
+                            <label class="auth-text-label">New Username</label>
+                            <input type="text" id="authNewUserName" autocomplete="off" class="auth-text-box" name="AuthEmailLoging" />
+                        </div>
+                        <div class="auth-text-box-holders" id="validationSignupPassword">
+                            <label class="auth-text-label">New Password</label>
+                            <input type="password" id="authNewPass" autocomplete="off" class="auth-text-box auth-password-box" name="AuthPassLoging" />
+                        </div>
+                        <div class="switching-auth-type-div">
+                            <span class="switching-auth-text">Already a member?</span>
+                            <button class="switching-auth-button" id="jmpSignUp">Log In</button>
+                        </div>
+                    </div>
+                    <div class="login-signup-divs login-auth">
+                        <div class="auth-text-box-holders" id="validationLoginUserName">
+                            <label class="auth-text-label">Username</label>
+                            <input type="text" id="authUserName" tabindex="1" autocomplete="off" class="auth-text-box" name="AuthEmailLoging" />
+                        </div>
+                        <div class="auth-text-box-holders" id="validationLoginPassword">
+                            <label class="auth-text-label">Password</label>
+                            <input type="password" id="authPass" tabindex="2" autocomplete="off" class="auth-text-box auth-password-box" name="AuthPassLoging" />
+                        </div>
+                        <div class="switching-auth-type-div">
+                            <span class="switching-auth-text">Not a member?</span>
+                            <button class="switching-auth-button" id="jmpLogIn">Sign Up</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="auth-block-divs authFinal">
+                    <div class="auth-final-two-blocks check-box-holder">
+                        <div class="custom-check-box-hold">
+                            <input type="checkbox" class="main-check-box" name="SignedIn">
+                            <div class="custom-check-box"></div>
+                        </div>
+                        <span class="check-box-text">Keep me Signed in?</span>
+                    </div>
+                    <div class="auth-final-two-blocks auth-confirmed">
+                        <div class="auth-confirm-box">
+                            <button class="auth-confirm-button" tabindex="2" id="authValidated">Login</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="app">
+        <div class="offline_div" id="offlineDiv"></div>
+        <div class="dark-light">
+            <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+            </svg>
+        </div>
+        <div class="wrapper" id="onlineState">
+            <!--Conversatoin Side Panel-->
+
+            <div class="conversation-area">
+                <div class="top_options_bar">
+                    <div class="inline_search_and_menu">    
+                        <button class="menu_icon material-icons" id="mdlShwBtn">menu</button>
+                    </div>
+                    <div class="inline_search_and_menu search_holder">
+                        <div class="search_conversation_hold">
+                            <div class="search_conversation_inlines">
+                                <i class="material-icons">search</i>
+                                <input type="text" class="search_input_conversation" autocomplete="off" placeholder="Search..." name="searchChats">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="msg" id="saveMsgBtn">
+                    <img class="msg-profile lazy_load" data-src="https://static10.tgstat.ru/channels/_0/3b/3bdc7810ebf4c3de0646923f39267695.jpg" />
+                    <div class="msg-detail">
+                        <div class="msg-username">Saved Messages</div>
+                    </div>
+                </div>
+                <div class="msg online" id="chatGroup">
+                    <img class="msg-profile $groupImg" alt="" />
+                    <div class="msg-detail">
+                        <div class="msg-username">Web Developers</div>
+                        <div class="msg-content">
+                            <span class="msg-message" id="lastMsg"></span>
+                            <span class="msg-date" id="lastMsgTime"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!--SnackBar for Notificatoins-->
+
+                <div class="snackbar_hold" id="snackBar">
+                    <div class="main_snackbar">
+                        <div class="width_ind_snack" id="widthInd"></div>
+                        <div class="snack_icon inline_snack_elem material-icons" id="snackIcon">brush</div>
+                        <div class="snack_info inline_snack_elem" id="snackInfo">Edited Sucessfully</div>
+                    </div>
+                </div>
+
+                <div class="main_mdl_user" id="mainUsrMdl">
+                    
+                    <div class="main_mdl_user-body">
+   
+                        <div class="main_mdl_user-content" id="mdlUsrCont">
+                            
+                            <div class="top_bar">
+                            <!--Settings Modal_Close-->
+                                <button class="top_bar_buttons material-icons" id="mdlClsBtn">arrow_back</button>
+                                <span>Settings</span>
+                                <button class="top_bar_buttons material-icons edit_button" id="editOpen">edit</button>
+                                <button class="top_bar_buttons material-icons more_button">more_vert</button>
+                            </div>
+
+                            <div class="edit_info_holder" id="editUsrMdl">
+                                <div class="top_bar">
+                                    <button class="top_bar_buttons material-icons" id="editCls">arrow_back</button>
+                                    <span>Edit Profile</span>  
+                                </div>
+                                <div class="edit_blocks">
+                                    <div class="edit_image_holder">
+                                        <div class="edit_image_main_holder">
+                                            <img class="usr_profile_edit_image" id="editImage">
+                                            <div class="edit_image_overlay" onclick="document.getElementById(`imageUpload`).click();">
+                                                <button class="material-icons edit_img_icon">monochrome_photos</button>
+                                                <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="edit_blocks">
+                                    <div class="user_detail_info_holder">
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">First Name (Required)</span>
+                                            <input type="text" class="user_detail_info_input" name="UserName">
+                                        </div>
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">Last Name (Optional)</span>
+                                            <input type="text" class="user_detail_info_input" name="UserLastName">
+                                        </div>
+                                        <div class="user_detail_info_txt_hold">
+                                            <span class="user_detail_info_span">Bio</span>
+                                            <input type="text" class="user_detail_info_input" id="usrAbout" autocomplete="off" name="UserBio">
+                                        </div>
+                                        <span class="bio_details">Any details such as age, occupation or city.
+                                        Example: 17 y.o. web-designer from Earth</span>
+                                    </div>
+                                </div>
+                                <div class="edit_blocks"></div>
+                            </div>
+
+                            <!--User Details and Info-->
+                            
+                            <div class="mdl_sub_contents image_user_owner">
+                                <div class="user_img_holder_main">
+                                    <div class="fallback_img" id="fallbackPhoto"></div>
+                                    <img class="user_changed_img" id="photo">
+                                    <div class="img_of_user_name">
+                                        <span class="img_usr_name" id="imageUserName">Shrey</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mdl_sub_contents about_user_owner">
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">person_outline</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span id="showUserName"></span>
+                                            <p>Username</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">call</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span>+91 </span>
+                                            <p>Phone</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="user_show_details_holder">
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_icon material-icons">info_outline</div>
+                                    </div>
+                                    <div class="user_show_details_inlines">
+                                        <div class="user_show_details_blocks">
+                                            <span id="showUserBio"></span>
+                                            <p>Bio</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="content_info">Chat Theme</div>
+
+                            <!--Chat Themes-->
+
+                            <div class="mdl_sub_contents chat_theme_user">
+                                <div class="chat_theme_clr_holder">
+                                    <div class="color blue selected" data-color="Themeblue"></div>
+                                    <div class="color purple" data-color="Themepurple"></div>
+                                    <div class="color green" data-color="Themegreen"></div>
+                                    <div class="color orange" data-color="Themeorange"></div>
+                                    <div class="color pink" data-color="Themepink"></div>
+                                    <div class="color skyBlue" data-color="ThemeskyBlue"></div>
+                                    <div class="color lightred" data-color="Themelightred"></div>
+                                    <div class="color lightgreen" data-color="Themelightgreen"></div>
+                                </div>
+                            </div>
+
+                            <div class="content_info">Chat Background</div>
+
+                            <!--Chat Backgrounds-->
+                            
+                            <div class="mdl_sub_contents background_user_change">
+                                <div class="tgle_tabs_bg">
+                                    <div class="tabs_blcks top_tabs_tgle">
+                                        <div class="center_tgle_bar">
+                                            <button class="pill_btns actvBgTag" id="evtTagLight">Light</button>
+                                            <button class="pill_btns" id="evtTagDark">Dark</button>
+                                            <button class="pill_btns" id="evtTagTextr">Texture</button>
+                                        </div>
+                                    </div>
+                                    <div class="tabs_blcks tabs_bg_holder">
+                                        <div class="swtch_bgs swtch_bgs_actv" id="tagLight">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/p7FgplN.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/GAjTwoj.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/8YbJNGx.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/DBXyJdk.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/yDpuXU0.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/pV6wotZ.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/HXlhj03.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/4h5uyOF.jpeg"/>
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/TZvQmee.jpeg" />
+
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/PZcvNdd.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/IRxhCaf.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/CNLG7Et.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/wRAOaAa.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/NC2G5if.jpeg" />
+                                            </div>
+                                        </div>
+                                        <div class="swtch_bgs" id="tagDark">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/WArfy9h.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/ANVqEuZ.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/uRrw6cC.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/3WsM0C8.png" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/Ao6Xylg.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/kwBzs5Q.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/e1VIUEl.jpeg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/29zP4Ur.jpeg" />
+                                            </div>
+                                        </div>
+                                        <div class="swtch_bgs" id="tagTextr">
+                                            <div class="grid_img_hold">
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/j2BcCaz.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/LrPnlOL.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/EQANrlK.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.imgur.com/gvKhEg9.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/ba/3a/91/ba3a91c6992e6519332dfc935fa6b1cc.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/b2/a2/48/b2a2482edeebd13053c788ceee62f695.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRXZ0JFpEVZSu1BRwnTmU_-vhVD0Cn55F57yJ_Dh3J0DPksEec-&usqp=CAU" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://images.pexels.com/photos/396547/pexels-photo-396547.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://images.unsplash.com/photo-1531685250784-7569952593d2?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=80" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://img.freepik.com/free-photo/brick-wall-painted-white_1194-7526.jpg?size=626&ext=jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://previews.123rf.com/images/svl861/svl8611704/svl861170400251/77092466-white-distressed-weathered-whitewashed-wall-texture-close-up-.jpg" />
+                                                <img class="bg_tags_imgs lazy_load_cdn" data-src="https://i.pinimg.com/originals/d0/4d/f1/d04df1fcd7069cc26c778ebcc3f37720.jpg" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!--Main Chatting Area-->
+            <div class="chat-area" id="chatArea">
+                <div class="chat-area-header">
+                	<div class="chat-main-profile-pic-hold">
+                		<img class="chat-main-profile-pic $groupImg">
+                	</div>
+                    <div class="chat-area-title" id="chatAreaTitle">
+                    	<span>Web Developers</span>
+                    	<br>
+                    	<span class="chat_user_status"><b id="MemNum"></b> Members, <b id="MemOnline"></b> Online</span>
+
+                        <div class="main_member_list">
+                            <input type="text" class="input_divs light-dark-divs-area" placeholder="Search Members" />
+                            <div class="member_hold_blck actual_members_holder" id="membersListHolder"></div>
+                        </div>
+                	</div>
+
+                    <button class="material-icons side_panel_btn" id="sidePanelBtn">view_quilt</button>
+
+                    <div class="pin_msg_trig">    
+                        <div class="pin_title">
+                            <i class="material-icons">star</i>
+                            <span class="pinned_msg_title">Pin Messages: </span>
+                            <div class="pin_lst_msg" id="pinnedLastMsg">Pinned Last Msg</div>
+                        </div>
+
+                        <div class="tooltip_pin_holder">
+                            <div class="pin_msg_holder">
+                                <div class="pin_msg_slideshow_div" id="pinMsgSlideDiv">
+                                    <button class="material-icons slide_navigate_buttons prev_button" id="nextSlideBtn">chevron_left</button>
+                                    <button class="material-icons slide_navigate_buttons next_button" id="PrevSlideBtn">chevron_right</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!--Chat Messages-->
+                <div class="chat-area-main" id="chtAreaMain"></div>
+                <div class="chat-area-footer" id="chatAreaFooter">
+                    <input type="file" name="file" id="attachment" style="display: none;" />
+
+                    <div class="file_attachment" id="fileAttachBtn">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather feather-paperclip">
+                            <path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48" />
+                        </svg>
+                    </div>
+                    <div class="writeMsg" id="mnTxtArea">
+                        <div class="textOthers">
+                            <div class="replyMsg" id="rplyClsEn">
+                                <div class="lftLine"></div>
+                                <div class="user_reply_holder">
+                                    <div class="user_msgs_blocks">
+                                        <span class="from_user_spn" id="rplyFrmUsr"></span>
+                                    </div>
+                                    <div class="user_msgs_blocks">
+                                        <div class="user_replied_msg" id="rplySpn"></div>
+                                    </div>
+                                </div>
+                                <div class="user_image_reply_holder" id="replYImageDiv">
+                                    <img id="repliedImage" class="replied_image">
+                                </div>
+                                <button class="clear_reply material-icons" id="rplyClr">close</button>
+                            </div>
+                            <div class="textArea" contenteditable="true" id="message"></div>
+                        </div>
+                        <button class="send_msg material-icons" id="sendMsg">arrow_upward</button>
+                    </div>
+                </div>
+
+
+                <!--File Drop Modal BOX-->
+                <div id="myModal" class="img_mdl">
+                    <div class="img_mdl_content">
+                        <div class="img_mdl_body">
+                            <button class="material-icons closeImgMdl" id="clsMdl">close</button>
+                            <div class="img-holds" id="imgWater"></div>
+                            <div class="image_info_holder">
+                                <div class="inline_images_divs main_image_attach" id="mainImgAttach">
+                                    <img class="lazy_load main_image" id="imageIsLoaded" data-src="https://i.imgur.com/pAfubEz.jpg">
+                                </div>
+                                <div class="inline_images_divs info_and_caption_holder">
+                                    <div class="flex_images_div image_name">
+                                        <span id="fileName">File Name</span>
+                                    </div>
+                                    <div class="flex_images_div text-box-hold">
+                                        <input type="text" id="captionTxt" class="cap-text inline_divs" name="caption" placeholder="Caption Here...">
+                                        <div class="img-send inline_divs material-icons" disabled="true" id="submit">send</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!--Save Message Modal-->
+
+                <div class="save_msg_modal" id="saveMsgModal">
+                  <div class="saved_msgs_div">
+                    <div class="save_msg_blcks saved_msgs_title_hold" id="saveMsgClose">
+                        <span class="material-icons saved_msg_title saved_msgs_icon">bookmark_outline</span>
+                        <span class="saved_msg_title saved_msgs_main_title">Saved Messages</span>
+                    </div>
+                    <div class="save_msg_blcks saved_msgs_holder" id="savedMsgHold"></div>
+                  </div>
+                </div>
+
+                <!--Group Details Modal-->
+
+                <div class="detail-area-overlay" id="sidePanel">
+                    <div class="detail-area">
+                        <button class="material-icons detail-area-back-btn" id="grpInfoBackBtn">arrow_back</button>
+                        <div class="group-info-holder">
+                            <div class="detail-area-header inline_group_infos light-dark-divs-area">
+                                <div class="msg-profile group">
+                                    <img class="$groupImg"/>
+                                </div>
+                                <div class="detail-title">Web Developers</div>
+                                <div class="detail-subtitle">Created By Shrey, 4 Mar 2020</div>
+                                <div class="detail-buttons">
+                                    <button class="detail-button">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle">
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M12 8v8M8 12h8" />
+                                        </svg>
+                                        Member
+                                    </button>
+                                    <button class="detail-button">
+                                        <svg viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor" stroke="currentColor" stroke-width="0" stroke-linecap="round" stroke-linejoin="round" class="feather feather-video">
+                                            <path d="M23 7l-7 5 7 5V7z" />
+                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2" />
+                                        </svg>
+                                        Call
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="group-description-holder inline_group_infos light-dark-divs-area">
+                                <div class="group-description-div">
+                                    <div class="inline-grids-divs">
+                                        <div class="group-image-holder">
+                                            <img class="$groupImg">
+                                            <div class="edit_overlay" id="editOverlay">
+                                                <button class="edit_grp_pic material-icons">camera_alt</button>
+                                                <input type="file" class="grp_profile_picker" id="grpProfileUpload" name="grpPic">
+                                            </div>
+                                        </div>
+                                        <div class="group-name-holder">Web Developer</div>
+                                    </div>
+                                    <div class="inline-grids-divs">
+                                        <div class="group-section-titles">Group Description</div>
+                                        <div class="edit_grp_desc" id="editedGrpDesc" contenteditable="false"></div>
+                                        <button class="save_desc_button material-icons" id="editGrpInfo">edit</button>
+                                    </div>
+                                    <div class="inline-grids-divs">
+                                        <div class="user_members_holder">
+                                            <div class="user_info_inline_divs">
+                                                <div class="grp_user_image_holder">
+                                                    <img class="lazy_load" data-src="https://cdn-icons-png.flaticon.com/512/4698/4698471.png">
+                                                </div>
+                                            </div>
+                                            <div class="user_info_inline_divs">
+                                                <div class="user_info_block_divs">
+                                                    <div class="grp_search_holder">
+                                                        <div class="search_elems">
+                                                            <i class="material-icons">search</i>
+                                                        </div>
+                                                        <div class="search_elems">
+                                                            <input class="user_search_bar" type="text" name="UserSearch" placeholder="Search Admins..." autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="user_info_block_divs">
+                                                    <div class="members_horizontal_div">
+                                                        <div class="main_member_div">
+                                                            <div class="member_info_holder">
+                                                                <div class="grp_member_img_div">
+                                                                    <img class="lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg">
+                                                                </div>
+                                                                <span class="user_name_span">Shrey</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="inline-grids-divs">
+                                        <div class="end-to-end-encrypt">
+                                            <i class="material-icons secure_icon">lock</i>
+                                            <div class="encrypt-info">
+                                                <span>Messages you send to this group are secured with end-to-end encryption, which means third parties can't read them.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
+    <!-- <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/9.6.7/firebase-analytics.js"></script> -->
+    <script src="chatapp.js"></script>
+</body>
+</html>
