@@ -1458,7 +1458,7 @@ html {
 
 .chat-area-title .main_member_list{
     position: absolute;
-    height: 150px;
+    height: 175px;
     width: 150px;
     top: 40px;
     left: -25px;
@@ -1506,6 +1506,7 @@ html {
     width: 100%;
     background-color: transparent;
     border-radius: 8px;
+    overflow-y: auto;
 }
 .chat-area-title .member_hold_blck.actual_members_holder::-webkit-scrollbar{
     width: 5px;
@@ -1587,9 +1588,12 @@ html {
     white-space: nowrap;
 }
 .chat-area-title .member_hold_blck.actual_members_holder .members_list .member_list_sections .member_name_holder{
+    position: relative;
     color: var(--member-list-clr-user);
     font-weight: bold;
     font-size: .8rem;
+    width: 70px;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
