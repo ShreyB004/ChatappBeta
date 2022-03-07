@@ -21,6 +21,11 @@ const cldStorage = firebase.storage();
 /* const messaging = firebase.messaging();*/
 
 //All declaratoins
+let loadDiv = document.getElementById("loadingHold");
+let loadingBar = document.getElementById("appLoading");
+let loadingCir = document.getElementById("loadCircle");
+let loadingDot = document.getElementById("loadDot"); 
+
 let chtarea = document.getElementById("chatArea");
 let usrImgUrl = document.getElementById("photo");
 let usrFallbackPic = document.getElementById("fallbackPhoto");
@@ -91,6 +96,14 @@ let offlineDiv = document.getElementById("offlineDiv")
 
 let imgUsrName = document.getElementById("imageUserName");
 let cUsrState = document.getElementById("currUsrState");
+
+loadingCir.addEventListener("animationend", function() {
+	loadDot.classList.add("loaded_dot");
+});
+loadingBar.addEventListener("animationend", function() {
+	wrapper.classList.add("appLoaded");
+	loadingHold.remove();
+});
 
 function blurAllInputs() {
 	let allDomInputs = document.querySelectorAll(`input[type="text"]`);
