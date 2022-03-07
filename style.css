@@ -1,3 +1,4 @@
+
 :root {
   --settings-icon-hover: #9fa7ac;
   --theme-bg-color: #fff;
@@ -781,7 +782,7 @@ html {
     filter: grayscale(100%);
 }
 .wrapper.appLoaded{
-    filter: none;
+    filter: blur(0px);
 }
 
 .main_mdl_user {
