@@ -4,7 +4,7 @@
 	    <title>Chat</title>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css2?family=Urbanist&display=swap" rel="stylesheet" />
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="chatapp.css">
         <meta charset="utf-8" />
     </head>
 
@@ -75,6 +75,25 @@
     
     <div class="app">
         <div class="offline_div" id="offlineDiv"></div>
+        <div class="loader" id="loadingHold">
+            <div class="loading_holder">
+                <div class="loading_svg_holder">
+                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
+                    width="96" height="96"
+                    viewBox="0 0 172 172"
+                    style=" fill:#000000;"><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g><path d="M136.16667,17.91667h-82.41667c-9.89358,0 -17.91667,8.02308 -17.91667,17.91667v96.75l24.95792,-25.08333h75.37542c9.89358,0 17.91667,-8.02308 17.91667,-17.91667v-53.75c0,-9.89358 -8.02308,-17.91667 -17.91667,-17.91667z" fill="#1565c0"></path><path d="M118.25,39.41667h-82.41667c-9.89358,0 -17.91667,8.02308 -17.91667,17.91667v96.75l24.95792,-25.08333h75.37542c9.89358,0 17.91667,-8.02308 17.91667,-17.91667v-53.75c0,-9.89358 -8.02308,-17.91667 -17.91667,-17.91667z" fill="#2196f3"></path></g></g></svg>
+                </div>
+                <div class="loading_bar">
+                    <div class="main_loader">
+                        <div class="loader_circle" id="loadCircle">
+                            <div class="loader_dot" id="loadDot"></div>
+                        </div>
+                    </div>
+                    <span>Loading</span>
+                    <div class="loading_line" id="appLoading"></div>
+                </div>
+            </div>
+        </div>
         <div class="dark-light">
             <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
@@ -222,8 +241,10 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div class="content_info">Chat Theme</div>
+                            
+                            <div class="content_info">Accent Color</div>
 
                             <!--Chat Themes-->
 
@@ -520,6 +541,6 @@
     <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-storage.js"></script>
     <!-- <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-messaging.js"></script> -->
     <!-- <script type="module" src="https://www.gstatic.com/firebasejs/9.6.7/firebase-analytics.js"></script> -->
-    <script src="index.js"></script>
+    <script src="chatapp.js"></script>
 </body>
 </html>
