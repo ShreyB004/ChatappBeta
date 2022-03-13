@@ -99,13 +99,13 @@
                 <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
             </svg>
         </div>
-        <div class="wrapper" id="onlineState">
+        <div class="wrapper appLoaded" id="onlineState">
             <!--Conversatoin Side Panel-->
 
             <div class="conversation-area">
                 <div class="top_options_bar">
                     <div class="inline_search_and_menu">    
-                        <button class="menu_icon material-icons" id="mdlShwBtn">menu</button>
+                        <button class="menu_icon material-icons rippled" id="mdlShwBtn">menu</button>
                     </div>
                     <div class="inline_search_and_menu search_holder">
                         <div class="search_conversation_hold">
@@ -116,13 +116,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="msg" id="saveMsgBtn">
+                <div class="msg rippled" id="saveMsgBtn">
                     <img class="msg-profile lazy_load" data-src="https://static10.tgstat.ru/channels/_0/3b/3bdc7810ebf4c3de0646923f39267695.jpg" />
                     <div class="msg-detail">
                         <div class="msg-username">Saved Messages</div>
                     </div>
                 </div>
-                <div class="msg online" id="chatGroup">
+                <div class="msg online rippled" id="chatGroup">
                     <img class="msg-profile $groupImg" alt="" />
                     <div class="msg-detail">
                         <div class="msg-username">Web Developers</div>
@@ -177,21 +177,21 @@
                                     <div class="user_detail_info_holder">
                                         <div class="user_detail_info_txt_hold">
                                             <span class="user_detail_info_span">First Name (Required)</span>
-                                            <input type="text" class="user_detail_info_input" name="UserName">
+                                            <input type="text" id="firstNameInput" disabled="true" class="user_detail_info_input" name="UserName">
                                         </div>
                                         <div class="user_detail_info_txt_hold">
                                             <span class="user_detail_info_span">Last Name (Optional)</span>
-                                            <input type="text" class="user_detail_info_input" name="UserLastName">
+                                            <input type="text" id="lastNameInput" disabled="true" class="user_detail_info_input" name="UserLastName">
                                         </div>
                                         <div class="user_detail_info_txt_hold">
                                             <span class="user_detail_info_span">Bio</span>
-                                            <input type="text" class="user_detail_info_input" id="usrAbout" autocomplete="off" name="UserBio">
+                                            <input type="text" class="user_detail_info_input" disabled="true" id="usrAbout" autocomplete="off" name="UserBio">
                                         </div>
                                         <span class="bio_details">Any details such as age, occupation or city.
                                         Example: 17 y.o. web-designer from Earth</span>
                                     </div>
                                 </div>
-                                <div class="edit_blocks"></div>
+                                <button class="save_user_changes_btn material-icons" id="editUserDetails">edit</button>
                             </div>
 
                             <!--User Details and Info-->
@@ -250,14 +250,14 @@
 
                             <div class="mdl_sub_contents chat_theme_user">
                                 <div class="chat_theme_clr_holder">
-                                    <div class="color blue selected" data-color="Themeblue"></div>
-                                    <div class="color purple" data-color="Themepurple"></div>
-                                    <div class="color green" data-color="Themegreen"></div>
-                                    <div class="color orange" data-color="Themeorange"></div>
-                                    <div class="color pink" data-color="Themepink"></div>
-                                    <div class="color skyBlue" data-color="ThemeskyBlue"></div>
-                                    <div class="color lightred" data-color="Themelightred"></div>
-                                    <div class="color lightgreen" data-color="Themelightgreen"></div>
+                                    <div class="color blue selected" data-color="AccentClrblue"></div>
+                                    <div class="color purple" data-color="AccentClrpurple"></div>
+                                    <div class="color green" data-color="AccentClrgreen"></div>
+                                    <div class="color orange" data-color="AccentClrorange"></div>
+                                    <div class="color pink" data-color="AccentClrpink"></div>
+                                    <div class="color skyBlue" data-color="AccentClrskyBlue"></div>
+                                    <div class="color lightred" data-color="AccentClrlightred"></div>
+                                    <div class="color lightgreen" data-color="AccentClrlightgreen"></div>
                                 </div>
                             </div>
 
@@ -343,14 +343,9 @@
                     	<span>Web Developers</span>
                     	<br>
                     	<span class="chat_user_status"><b id="MemNum"></b> Members, <b id="MemOnline"></b> Online</span>
-
-                        <div class="main_member_list">
-                            <input type="text" class="input_divs light-dark-divs-area" placeholder="Search Members" />
-                            <div class="member_hold_blck actual_members_holder" id="membersListHolder"></div>
-                        </div>
                 	</div>
 
-                    <button class="material-icons side_panel_btn" id="sidePanelBtn">view_quilt</button>
+                    <button class="material-icons side_panel_btn rippled" id="sidePanelBtn">view_quilt</button>
 
                     <div class="pin_msg_trig">    
                         <div class="pin_title">
@@ -500,20 +495,13 @@
                                                             <i class="material-icons">search</i>
                                                         </div>
                                                         <div class="search_elems">
-                                                            <input class="user_search_bar" type="text" name="UserSearch" placeholder="Search Admins..." autocomplete="off">
+                                                            <input class="user_search_bar" type="text" name="UserSearch" placeholder="Search Members..." autocomplete="off">
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div class="user_info_block_divs">
                                                     <div class="members_horizontal_div">
-                                                        <div class="main_member_div">
-                                                            <div class="member_info_holder">
-                                                                <div class="grp_member_img_div">
-                                                                    <img class="lazy_load" data-src="https://i.imgur.com/7K7CNap.jpg">
-                                                                </div>
-                                                                <span class="user_name_span">Shrey</span>
-                                                            </div>
-                                                        </div>
+                                                        <div class="main_member_div" id="membersListHolder"></div>
                                                     </div>
                                                 </div>
                                             </div>
