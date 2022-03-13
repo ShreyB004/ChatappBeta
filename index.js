@@ -75,8 +75,6 @@ let submit = document.getElementById("submit");
 
 let imgUpload = document.getElementById("imageUpload");
 
-let chtAreaTitle = document.getElementById("chatAreaTitle");
-
 let grpBtnBack = document.getElementById("grpInfoBackBtn");
 let grpEditBtn = document.getElementById("editGrpInfo");
 let grpDescInpt = document.getElementById("editedGrpDesc");
@@ -96,6 +94,29 @@ let offlineDiv = document.getElementById("offlineDiv")
 
 let imgUsrName = document.getElementById("imageUserName");
 let cUsrState = document.getElementById("currUsrState");
+
+let btn = document.querySelectorAll('.rippled');
+btn.forEach(el => {
+  el.addEventListener('click', function(e) {
+    let x = e.offsetX;
+    let y = e.offsetY;
+
+    let ripples = document.getElementsByClassName('ripple');
+
+    if (ripples.length < 10) { // this restricts the user from creating lots of ripples
+      let ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      ripple.style.left = x+'px';
+      ripple.style.top = y+'px';
+      this.prepend(ripple);
+
+      setTimeout(function() {
+        ripple.remove();
+      }, 1000);
+    }
+  });  
+})
+
 
 loadingCir.addEventListener("animationend", function() {
 	loadDot.classList.add("loaded_dot");
@@ -117,7 +138,7 @@ let onlineState = setInterval(function() {
 		wrapper.classList.add("offline_page");
 		offlineDiv.classList.add("isOffline");
 		blurAllInputs();
-		snackBarShow({icon: 'wifi', infoTxt: 'Reconnecting...'});
+		showSnackNotification({icon: 'wifi', notifAbout: 'Reconnecting...'});
 	} else{
 		wrapper.classList.remove("offline_page");
 		offlineDiv.classList.remove("isOffline");
@@ -355,7 +376,7 @@ function lazyLoadImg(imgsElems, imgsElemsLoded) {
 		let lazyLoadSrc = lazyLoads[i].getAttribute("data-src");
 		if (lazyLoads[i].src !== lazyLoadSrc) {
 			lazyLoads[i].setAttribute("src", `${lazyLoadSrc}`);
-			lazyLoads[i].removeAttribute("data-src");	
+			lazyLoads[i].removeAttribute("data-src");
 			lazyLoads[i].addEventListener("load", function() {
 				this.classList.add(`${imgsElemsLoded}`);
 				this.classList.remove(`${imgsElems}`);
@@ -423,14 +444,14 @@ eCls.addEventListener("click", function() {
 		bgTabOpen('tagTextr');
 	});
 	
-	selectElem({Elemname: ".grid_img_hold img.bg_tags_imgs", ClassName: "bg_img_setted"});
-	selectElem({Elemname: ".pill_btns", ClassName: "actvBgTag"});
+	selectElements({Elemname: ".grid_img_hold img.bg_tags_imgs", ClassName: "bg_img_setted"});
+	selectElements({Elemname: ".pill_btns", ClassName: "actvBgTag"});
 
 })();
 
 //CLIENT SIDE : Function Add Active Class Dynamically 
 
-function selectElem({Elemname: elemN, ClassName: clsName, TimeOut: timeCs}) {   
+function selectElements({Elemname: elemN, ClassName: clsName, TimeOut: timeCs}) {   
 	let elems = document.querySelectorAll(elemN);
 	let elemsLen = elems.length;
     let clsByTIme;
@@ -460,7 +481,7 @@ function selectElem({Elemname: elemN, ClassName: clsName, TimeOut: timeCs}) {
 
 //CLIENT SIDE : Function focus text Element
 
-function openBoard(wToogle) {
+function focusTextBox(wToogle) {
    if(wToogle) {
          msgInpt.focus();
     } else {
@@ -498,12 +519,12 @@ function setReply(txtReply, usrFrmRply, imgReply) {
     	}
     } else replyMainDiv.classList.remove("replyEnabled");
     
-    openBoard(true);
+    focusTextBox(true);
 }
 
 //CLIENT SIDE : Function Snackbar Function to Notify Actions
 
-function snackBarShow({icon: icn, infoTxt: infTxt}) {
+function showSnackNotification({icon: icn, notifAbout: infTxt}) {
 
     let snackBar = document.getElementById("snackBar");
     let snackIcon = document.getElementById("snackIcon");
@@ -530,7 +551,6 @@ function snackBarShow({icon: icn, infoTxt: infTxt}) {
 //CLIENT SIDE : Function for Modal of Image
 
 imgAttachBtn.addEventListener("click", function () {
-    
     let imgSrcReset = document.getElementById("imageIsLoaded");
     let imgCaptReset = document.getElementById("captionTxt");
 
@@ -541,7 +561,7 @@ imgAttachBtn.addEventListener("click", function () {
 
     document.getElementById('attachment').click();
     
-    openBoard(true);
+    focusTextBox(true);
 });
 
 //CLIENT SIDE : Function Send Message on Enter Event
@@ -604,7 +624,7 @@ let compressImg = {
 
         let drawnImg = (canvasDraw.getContext("2d").drawImage(imgSrc, 0, 0), canvasDraw.toDataURL(compImgType, imgQuality / 100));
 
-        return imgRtrn.src = drawnImg, imgRtrn
+        return imgRtrn.src = drawnImg, imgRtrn;
     }
 };
 
@@ -613,19 +633,40 @@ let compressImg = {
 function loadUsrInformation() {
 	const dbUsrsAbout = dataBase.ref(`Collo Chat/Users Info/${usernameCookie}/UserDetails`);
 
+	let usrFirstName = document.getElementById("firstNameInput");
+	let usrLastName = document.getElementById("lastNameInput");
 	let usrAboutStats = document.getElementById("usrAbout");
 	let usrImgfile = document.getElementById("usrImgByFile");
+	let editUsrChgBtn = document.getElementById("editUserDetails");
 
-    //User Status Update or Set
-
-	usrAboutStats.addEventListener("keyup", (evtUsrSts) => {
+	function usrDetailsEdit(){
+		usrFirstName.removeAttribute("disabled");
+		usrLastName.removeAttribute("disabled");
+		usrAboutStats.removeAttribute("disabled");
 		
-        if (evtUsrSts.code === 'Enter') {
-			dbUsrsAbout.update({UserBio: usrAboutStats.value});
-			usrAboutStats.blur();
-		}
+		editUsrChgBtn.removeEventListener("click", usrDetailsEdit);
+		editUsrChgBtn.addEventListener("click", usrDetailsSave);
 
-	});
+		editUsrChgBtn.innerText = "done";
+	}
+	function usrDetailsSave(){
+		usrFirstName.setAttribute("disabled", "true");
+		usrLastName.setAttribute("disabled", "true");
+		usrAboutStats.setAttribute("disabled", "true");
+
+		dbUsrsAbout.update({UserFirstName: usrFirstName.value});
+		dbUsrsAbout.update({UserLastName: usrLastName.value});
+		dbUsrsAbout.update({UserBio: usrAboutStats.value}).then(() => {
+			showSnackNotification({icon: "settings", notifAbout: "Changes Saved"})
+		});
+		
+		editUsrChgBtn.removeEventListener("click", usrDetailsSave);
+		editUsrChgBtn.addEventListener("click", usrDetailsEdit);
+
+		editUsrChgBtn.innerText = "edit";
+	}
+
+	editUserDetails.addEventListener("click", usrDetailsEdit);
 
     //User Profile Pic Change
 
@@ -646,10 +687,10 @@ function loadUsrInformation() {
     //Setting Profile Pic from Database
 
     let loadLazily = setTimeout(function() {
-		dbUsrsAbout.once('value', () => {
+		// dbUsrsAbout.once('value', () => {
 			lazyLoadImg('lazy_load', 'img_loaded');
 			lazyLoadImg('lazy_load_cdn', 'img_loaded_cdn');	
-		});
+		// });
 		clearTimeout(loadLazily);
     }, 2500);
 
@@ -658,7 +699,9 @@ function loadUsrInformation() {
 
 		let usrStatusExits = usrAbtSnp.child('UserBio').exists();
 		let userProfilePicExists = usrAbtSnp.child('UserProfileImage').exists();
-		
+		let usrFirstNameExists = usrAbtSnp.child('UserFirstName').exists();
+		let usrLastNameExists = usrAbtSnp.child('UserLastName').exists();
+
 		let editImage = document.getElementById("editImage");
 
 		userNamePrevw.innerText = usernameCookie;
@@ -668,6 +711,12 @@ function loadUsrInformation() {
         	usrAboutStats.value = usrDetailsSnp.UserBio;
         	userBioPrevw.innerText = usrDetailsSnp.UserBio;
         }
+        if (usrFirstNameExists){
+	         usrFirstName.value = usrDetailsSnp.UserFirstName;
+		}
+    	if (usrLastNameExists){
+        	 usrLastName.value = usrDetailsSnp.UserLastName;
+		}
 		
         if (userProfilePicExists) {
         	const userPic = usrDetailsSnp.UserProfileImage;
@@ -698,7 +747,7 @@ function loadUsrPreferences() {
     //Initializing Mode and Theme to avoid data type "undefined"
 
 	let dbTheme = 'light';
-	let chtClr = 'Themeblue';
+	let chtClr = 'blue';
 
     //For all Color Themed Divs
 
@@ -760,7 +809,9 @@ function loadUsrPreferences() {
         //Set Chat Background From Database and Lazy Load
 
 		if (dbBoolbgSrcExsits) {
-            chtarea.style.backgroundImage = `url(${themeSnap.ChatBackground})`;
+            chtarea.style.backgroundImage = `url("${themeSnap.ChatBackground}")`;
+        } else{
+        	chtarea.style.backgroundImage = `url("https://thumbs.dreamstime.com/z/social-media-doodle-seamless-pattern-social-media-doodle-seamless-pattern-repeated-ornament-hand-drawn-elements-white-162559147.jpg")`;
         }
 
         //Set Chat Theme From Database
@@ -772,14 +823,14 @@ function loadUsrPreferences() {
 				clrsDB.classList.remove("selected");
 			});
 
-			if (chtTheme === 'Themeblue') clrThemes[0].classList.add("selected");
-			else if (chtTheme === 'Themepurple') clrThemes[1].classList.add("selected");
-			else if (chtTheme === 'Themegreen') clrThemes[2].classList.add("selected");
-			else if (chtTheme === 'Themeorange') clrThemes[3].classList.add("selected");
-			else if (chtTheme === 'Themepink') clrThemes[4].classList.add("selected");
-			else if (chtTheme === 'ThemeskyBlue') clrThemes[5].classList.add("selected");
-			else if (chtTheme === 'Themelightred') clrThemes[6].classList.add("selected");
-			else if (chtTheme === 'Themelightgreen') clrThemes[7].classList.add("selected");
+			if (chtTheme === 'blue') clrThemes[0].classList.add("selected");
+			else if (chtTheme === 'purple') clrThemes[1].classList.add("selected");
+			else if (chtTheme === 'green') clrThemes[2].classList.add("selected");
+			else if (chtTheme === 'orange') clrThemes[3].classList.add("selected");
+			else if (chtTheme === 'pink') clrThemes[4].classList.add("selected");
+			else if (chtTheme === 'skyBlue') clrThemes[5].classList.add("selected");
+			else if (chtTheme === 'lightred') clrThemes[6].classList.add("selected");
+			else if (chtTheme === 'lightgreen') clrThemes[7].classList.add("selected");
 			else clrThemes[0].classList.add("selected");
 		}
 		
@@ -800,55 +851,20 @@ function userPresenceState() {
 		let dateOffline = new Date();
 		let usrLastHrs = dateOffline.getHours();
 		let usrLastMins = dateOffline.getMinutes();
+		let usrLastSecs = dateOffline.getSeconds();
 	    
+	    if(usrLastHrs < 10) usrLastHrs = `0${usrLastHrs}`;
+	    if(usrLastMins < 10) usrLastMins = `0${usrLastMins}`;
+	    if(usrLastSecs < 10) usrLastSecs = `0${usrLastSecs}`;
+
 	    userStatusRef.onDisconnect().update({
-		   Status: `Last Seen at ${usrLastHrs}:${usrLastMins}`
+		   Status: `Last Seen at ${usrLastHrs}:${usrLastMins}:${usrLastSecs}`
 	    });
 
 	});	
 }
 
-//Database Functions => RealTime All Users Presence States  
 
-(function() {
-	const allUserStatus = dataBase.ref("Collo Chat/Users Info");
-    
-    let memberOnline = document.getElementById("MemOnline");
-
-	allUserStatus.on("value", function(usrStatus) {
-		//Resetting array
-
-	    let memOnlineArr = [];
-	    let memOnlineNum = 0;
-
-		let allusrArr =  usrStatus.val();
-
-		let staticMemPresence = document.getElementsByClassName("member_about_details");
-		let staticMemPresenceLen = staticMemPresence.length;
-
-	    let allUsrs = Object.keys(usrStatus.val());
-
-	    for (let i = 0; i < staticMemPresenceLen; ++i) {
-			
-			let staticMemList = staticMemPresence[i].parentElement.parentElement.getElementsByClassName("member_list_sections")[0];
-			let staticMemImg = staticMemList.getElementsByClassName("member_img_holder")[0];
-
-			memOnlineArr.push(allusrArr[allUsrs[i]].Presence.Status);
-				
-			if (allusrArr[allUsrs[i]].Presence.Status === 'Online') memOnlineNum = (++memOnlineNum);
-
-			if (memOnlineNum > 1) memberOnline.innerText = memOnlineNum - 1;
-			else memberOnline.innerText = `No one is `;
-
-	    	staticMemPresence[i].innerText = memOnlineArr[i];
-
-	    	if (staticMemPresence[i].innerText === 'Online') {
-	    		staticMemPresence[i].classList.add("online_mem_spn");
-	    		// staticMemImg.add("online_mem");
-	    	} /*else staticMemImg.remove("online_mem");*/
-	    }
-	});
-})();
 
 //Database Functions => Default Online Members
 
@@ -876,7 +892,7 @@ function getOnlineUsers() {
         }
 	});
 }
-    getOnlineUsers();
+getOnlineUsers();
 
 //Database Functions => Members in Group
 
@@ -897,94 +913,140 @@ function getMembersLists() {
 
 		let userStatusArr = [];
 		let userImgUrlArr = [];
-	    // let userchtBgImg = [];
 	    
 	    let userPresence = [];
 
+		let membersListH = document.getElementById("membersListHolder");
 
         for (let i = 0; i < usrWebLen; ++i) {
 			let users = usrWeb[i];
 
-			let membersListH = document.getElementById("membersListHolder");
-
 			let mainListHold = document.createElement("div");
-			let memListsecImg = document.createElement("div");
 			let memImgHold = document.createElement("div");
 			let memImg = document.createElement("img");
 
-			let memListsecDetails = document.createElement("div");
 			let memNameHolder = document.createElement("span");
-			let memAbout = document.createElement("span");
+			let memStatus = document.createElement("span");
+			let memAbout = document.createElement("div");
+			let lastSeenIco = document.createElement("i");
 
-			mainListHold.classList.add("members_list");
-			memListsecImg.classList.add("member_list_sections");
-			memImgHold.classList.add("member_img_holder");
-			memImg.classList.add("member_image");
-			
-			memListsecDetails.classList.add("member_list_sections");
-			memNameHolder.classList.add("member_name_holder");
-			memNameHolder.classList.add("member_detail_blcks");
-			memAbout.classList.add("member_about_details");
-			memAbout.classList.add("member_detail_blcks");
+			mainListHold.classList.add("member_info_holder");
+			memImgHold.classList.add("grp_member_img_div");
+			lastSeenIco.classList.add("log_out_icon");
+			lastSeenIco.classList.add("material-icons");
+
+			memNameHolder.classList.add("user_name_span");
+			memAbout.classList.add("user_online_state");
 
             //Check Existence and Push Values in array
 
 			if(usersSnaps.child(`${users}/UserDetails/UserProfileImage`).exists()) userImgUrlArr.push(dbFetchKeys[users].UserDetails.UserProfileImage);
 			else userImgUrlArr.push('https://icons.iconarchive.com/icons/papirus-team/papirus-status/256/avatar-default-icon.png');
 			
-/*			if(usersSnaps.child(`${users}/UserSettings/ChatBackground`).exists()) userchtBgImg.push(dbFetchKeys[users].UserSettings.ChatBackground);
-			else userchtBgImg.push('https://blog.tubikstudio.com/wp-content/uploads/2020/04/Pennine-Alps-illustration-tubikarts-1024x768.png');*/
 
 			if(usersSnaps.child(`${users}/Presence`).exists()) userPresence.push(dbFetchKeys[users].Presence.Status);
 			else userPresence.push("Last Seen Recently");
 
-			memAbout.innerText = userPresence[i];
 
-			if (memAbout.innerText === 'Online') {
-				memAbout.classList.add("online_mem_spn");
-				// memImgHold.classList.add("online_mem");
-			} /*else{
-				if(memImgHold.classList.contains("online_mem")) memImgHold.classList.remove("online_mem");
-				if(memImgHold.classList.contains("online_mem_spn")) memImgHold.classList.remove("online_mem_spn");
-			}*/
+			// if (memAbout.innerText === 'Online') memAbout.classList.add("online_mem_spn");
 
 			if(usrWeb[i] === usernameCookie) memNameHolder.innerText = 'Me';
 			else memNameHolder.innerText = usrWeb[i];
 
-			memImg.setAttribute("loading", "lazy");
+			let slicedHrs = userPresence[i].slice(13, 15);
+			let slicedMins = userPresence[i].slice(16, 18);
 			
+			if (userPresence[i] !== "Online") {
+				lastSeenIco.innerText = "schedule";
+				memStatus.innerText = `${slicedHrs}:${slicedMins}`;
+			} else{
+				lastSeenIco.innerText = "public";
+				memStatus.innerText = "Online";
+				memAbout.classList.add("online_mem");
+			}
+
 			memImg.setAttribute("src", userImgUrlArr[i]);
-			// mainListHold.style.backgroundImage = `url(${userchtBgImg[i]})`;
 
 			memImgHold.appendChild(memImg);
-			memListsecImg.appendChild(memImgHold);
-
-			memListsecDetails.appendChild(memNameHolder);
-			memListsecDetails.appendChild(memAbout);
-
-			mainListHold.appendChild(memListsecImg);
-			mainListHold.appendChild(memListsecDetails);
-
+			mainListHold.appendChild(memImgHold);
+			
+			mainListHold.appendChild(memNameHolder);
+			memAbout.appendChild(lastSeenIco);
+			memAbout.appendChild(memStatus);
+			mainListHold.appendChild(memAbout);
 			membersListH.appendChild(mainListHold);
 		}
+		realTimeuserPresence();
 	});
 }
+
+getMembersLists();
+
+//Database Functions => RealTime All Users Presence States  
+
+function realTimeuserPresence() {
+	const allUserStatus = dataBase.ref("Collo Chat/Users Info");
+    
+    let memberOnline = document.getElementById("MemOnline");
+
+	allUserStatus.on("value", function(usrStatus) {
+		//Resetting array
+
+	    let memOnlineArr = [];
+	    let memOnlineNum = 0;
+
+		let allusrArr =  usrStatus.val();
+
+	    let allUsrs = Object.keys(usrStatus.val());
+	    let allUsrsLen = allUsrs.length; 
+
+		let staticMemPresence = document.getElementsByClassName("member_info_holder");
+		let staticMemPresenceLen = staticMemPresence.length;
+
+	    for (let i = 0; i < 4; ++i) {
+			memOnlineArr.push(allusrArr[allUsrs[i]].Presence.Status);
+
+			let realTimeSlcHrs = memOnlineArr[i].slice(13, 15);
+			let realTimeSlcMins = memOnlineArr[i].slice(16, 18)
+
+			let staticMemList = staticMemPresence[i].getElementsByClassName("user_online_state")[0];
+			let staticMemSpn = staticMemList.getElementsByTagName("span")[0];
+			let staticMemIcon = staticMemList.getElementsByClassName("log_out_icon")[0];
+				
+			if (allusrArr[allUsrs[i]].Presence.Status === 'Online') memOnlineNum = (++memOnlineNum);
+
+			if (memOnlineNum > 1) memberOnline.innerText = memOnlineNum - 1;
+			else memberOnline.innerText = `No one is `;
+
+			if(allusrArr[allUsrs[i]].Presence.Status === "Online") {
+				staticMemIcon.innerText = "public";
+				staticMemSpn.innerText = 'Online';
+		    	staticMemList.classList.add("online_mem");
+			} else{
+				staticMemIcon.innerText = "schedule";
+		    	staticMemSpn.innerText = `${realTimeSlcHrs}:${realTimeSlcMins}`;
+		    	staticMemList.classList.remove("online_mem");
+			}
+
+	    	/*if (staticMemPresence[i].innerText === 'Online') {
+	    		// staticMemPresence[i].classList.add("online_mem_spn");
+	    		// staticMemImg.add("online_mem");
+	    	}*/ /*else staticMemImg.remove("online_mem");*/
+	    }
+	});
+}
+
+
+// setTimeout(realTimeuser, 2500);
 
 //Function Event of Side panel where members are visible
 function groupPanel() {
 	let sidePnl = document.getElementById("sidePanel");
 	sidePnl.classList.toggle("show_panel");
 }
-function fetchMemOnce(){
-	getMembersLists();
-	chtAreaTitle.removeEventListener("mouseover", fetchMemOnce);
-}
 
 sidePnlBtn.addEventListener("click", groupPanel);
 grpBtnBack.addEventListener("click", groupPanel);
-
-chtAreaTitle.addEventListener("mouseover", fetchMemOnce);
-
 
 //Database Chat => Getting Time
 
@@ -1264,7 +1326,11 @@ function databaseFunction() {
 		const dbDeleteMsgId = dbDeleteMsg.chgId;
 
 		let rmvelem = document.getElementById(`${dbDeleteMsgId}`);
-		rmvelem.parentElement.parentElement.parentElement.remove();
+		rmvelem.parentElement.parentElement.parentElement.style.transform = 'scale(0)';
+		let rmvChat = setTimeout(function() {
+			rmvelem.parentElement.parentElement.parentElement.remove();
+			clearTimeout(rmvChat);
+		}, 500);
 	});
 
 	//Database Function => After Child is Edited
@@ -1346,29 +1412,31 @@ function databaseFunction() {
 
 		    chtMainMsg.setAttribute(`id`, `${dbFetch.chgId}`);
 
-			function fnReply(evtFn, elemTxt) {
+			function replyTxt(evtFn, elemTxt, frmUsr) {
 				evtFn.stopPropagation();
 				evtFn.preventDefault();
 
-				setReply(elemTxt);
+				setReply(elemTxt, frmUsr);
 
 		    	let clsReplySet = setTimeout(function() {
 		    		chatMsg.classList.remove("replyingCurr");
+		    		clearTimeout(clsReplySet);
 		    	}, 500);
+
 		    	chatMsg.classList.add("replyingCurr");
-		        openBoard(false);
+		        focusTextBox(false);
 			}
-		    function selectRmvs() {
-		        let rmvChild = document.getElementsByClassName("chat-msg-text");
+		
+		    function removeSelectClass() {
+		        let rmvChild = document.getElementsByClassName("chat-msg");
 		        let rmvChildLen = rmvChild.length;
-		        for (let i = 0; i < rmvChildLen; ++i) {
-		            rmvChild[i].classList.remove("one_select");
-		        }
+		        for (let i = 0; i < rmvChildLen; ++i) rmvChild[i].classList.remove("selected_message");
 		    }
-		    function selectEvent() {
-		        selectElem({
-		        	Elemname: '.chat-msg-text', 
-		        	ClassName: 'one_select', 
+
+		    function addSelectClass() {
+		        selectElements({
+		        	Elemname: '.chat-msg', 
+		        	ClassName: 'selected_message', 
 		        	TimeOut: 7500
 		        });
 		    }
@@ -1376,6 +1444,11 @@ function databaseFunction() {
 		    //if Current User is sending Message
 
 		    if (dbFetchUser === getCookieDb) {
+/*		    	dataBase.ref("Collo Chat/Web Developers/Group Chats").limitToLast(2).once("value", function(msgRnd) {
+		    		let msgRndVal = msgRnd.val();
+		    		if (msgRnd.) {}
+		    	});*/
+
 		    	chatMsg.classList.add("owner");
 		        
 		        let usrOptCls = document.getElementsByClassName("usr_opts_btn");
@@ -1421,13 +1494,13 @@ function databaseFunction() {
 		        //Edit Message Trigger
 		        usroptBtnEdit.addEventListener("click", function() {
 		            let grandParentELemtxt = this.parentElement.parentElement;
-		            grandParentELemtxt.removeEventListener("click", selectEvent);
+		            grandParentELemtxt.removeEventListener("click", addSelectClass);
 
 		            chtMainMsg.setAttribute('contentEditable', 'true');
 		            chtMainMsg.focus();
 		            
 		            grandParentELemtxt.classList.add("focused");
-		            selectRmvs();
+		            removeSelectClass();
 
 		            if (dbFetch.ImgUrl) {
 		            	if (!dbFetchMsg) {
@@ -1435,8 +1508,8 @@ function databaseFunction() {
 		            	}
 		            }
 		            
-		            chtTxt.addEventListener("click", function() {
-		                if (this.classList.contains("one_select")) this.classList.remove("one_select");
+		            chatMsg.addEventListener("click", function() {
+		                if (this.classList.contains("selected_message")) this.classList.remove("selected_message");
 		            });
 		        });
 
@@ -1446,9 +1519,9 @@ function databaseFunction() {
 					let rmvElemId = chtMainMsg.getAttribute("id");
 
 					fetchChat.child(`${rmvElemId}`).remove().then(function() {
-				        snackBarShow({icon: 'delete_forever', infoTxt: 'Bubble Deleted!'});
+				        showSnackNotification({icon: 'delete_forever', notifAbout: 'Bubble Deleted!'});
 				    }).catch(function() {
-				    	snackBarShow({icon: 'clear', infoTxt: 'Cannot Delete Bubble'})
+				    	showSnackNotification({icon: 'clear', notifAbout: 'Cannot Delete Bubble'})
 				    });
 
 				});
@@ -1464,13 +1537,13 @@ function databaseFunction() {
 		  	            let inrTxt = this.innerText;
 
 		  	            datavIdConn.update({msg: `${inrTxt}`}).then(function() {
-		  	                snackBarShow({icon: 'brush', infoTxt: 'Edited Sucessfully!'});
+		  	                showSnackNotification({icon: 'brush', notifAbout: 'Edited Sucessfully!'});
 		  	                
 		  	                chtMainMsg.removeAttribute("contentEditable");
 		  	                chtMainMsg.parentElement.classList.remove("focused");
 
 		  	                if (!chtMainMsg.innerText) chtMainMsg.innerText = msgOrininalVal; 
-		  	                chtMainMsg.parentElement.addEventListener("click", selectEvent);
+		  	                chtMainMsg.parentElement.addEventListener("click", addSelectClass);
 
 		  	            });
 		  	        }
@@ -1484,7 +1557,7 @@ function databaseFunction() {
 		            this.removeAttribute("contentEditable");
 		            this.parentElement.classList.remove("focused");
 
-		            this.parentElement.addEventListener("click", selectEvent);
+		            this.parentElement.addEventListener("click", addSelectClass);
 		        });
 
 		    } else{
@@ -1647,7 +1720,7 @@ function databaseFunction() {
 
 			    chtReplyBtn.addEventListener("click", function(rplyLinkEvt) {
 			    	let rplyLinkevtVr = rplyLinkEvt;
-			    	fnReply(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
+			    	replyTxt(rplyLinkevtVr, linkAnchor.innerText, dbFetchUser);
 			    });
 		    } else{
 
@@ -1656,7 +1729,7 @@ function databaseFunction() {
 			    chtMainMsg.innerHTML = dbFetchMsg;
 			    chtReplyBtn.addEventListener("click", function(rplyEvt) {
 			    	let rplyEvtVar = rplyEvt;
-			    	fnReply(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
+			    	replyTxt(rplyEvtVar, chtMainMsg.innerText, dbFetchUser);
 			    });
 		    }
 
@@ -1693,44 +1766,41 @@ function databaseFunction() {
 
 			chtAreaMsg.appendChild(chatMsg);
 
-		    //Active class to chatTxt
-
-		    chtTxt.addEventListener("click", function(mseEvt) {
-		        // mseEvt.preventDefault();
-		        selectEvent();
-		    });
-
 		    //Set Reply By Double Clicking on Board
 
-		    chatMsg.addEventListener("dblclick", function() {
+		    chatMsg.addEventListener("dblclick", function(dblReplyEvt) {
+		    	dblReplyEvt.preventDefault();
+		    	dblReplyEvt.stopPropagation();
 		    	let chtMsgInnerTxtGet = chtMainMsg.innerText;
 		        let chtMsgUsr = dbFetchUser;
+		        			    	    	
+		        chatMsg.classList.add("replyingCurr");
 		    	
 		        let clsReplyChtMsg = setTimeout(function() {
 		    		chatMsg.classList.remove("replyingCurr");
 		    		clearInterval(clsReplyChtMsg);
 		    	}, 1000);
-		    	    	
-		        chatMsg.classList.add("replyingCurr");
-		    	
-		        openBoard(false);
 
 		        if (dbFetch.ImgUrl) {
 		            let imageIcon = `<i class="material-icons">camera_alt</i> Image`;
 		            setReply(imageIcon, chtMsgUsr, dbFetch.ImgUrl);
-		        } else if(validURL(dbFetchMsg)){
-		        	setReply(chtMainMsg.getElementsByClassName("link_hold")[0].getElementsByClassName("link_text")[0].innerText, chtMsgUsr);
-		        } else{
-		            setReply(chtMsgInnerTxtGet, chtMsgUsr);
-		        }
+		        } else if(validURL(dbFetchMsg)) setReply(chtMainMsg.getElementsByClassName("link_hold")[0].getElementsByClassName("link_text")[0].innerText, chtMsgUsr);
+		        else setReply(chtMsgInnerTxtGet, chtMsgUsr);
+		        focusTextBox(false);
+		    });
+		    //Active class to chatTxt
+
+		    chatMsg.addEventListener("click", function(mseEvt) {
+		        mseEvt.preventDefault();
+		        addSelectClass();
 		    });
 
 		    //Database chat Options => Copy Text
 
 		    usroptBtnCopy.addEventListener("click", function() {
 		        navigator.clipboard.writeText(chtMainMsg.innerText);
-		        snackBarShow({icon: 'content_copy', infoTxt: 'Copied To ClipBoard'});
-		        selectRmvs();
+		        showSnackNotification({icon: 'content_copy', notifAbout: 'Copied To ClipBoard'});
+		        removeSelectClass();
 		    });
 
 		    //Database Chat Options => Pin Messages
@@ -1752,7 +1822,7 @@ function databaseFunction() {
 			    		PinUserBgImg: getBgImgUrl(),
 						PinByUser: dbFetchUser
 			    	}).then(()=>{
-			            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
+			            showSnackNotification({icon: 'chat_bubble_outline', notifAbout: 'Message Pinned!'});
 						let imgPinUniqueId = Date.now();
 						let imgPinchangerInfo = `${usernameCookie} has Pinned Image in Group`;
 						fetchChat.child(`${imgPinUniqueId}_contentInfo`).set({
@@ -1766,7 +1836,7 @@ function databaseFunction() {
 			    		PinUserBgImg: getBgImgUrl(),
 						PinByUser: dbFetchUser
 			    	}).then(()=>{
-			            snackBarShow({icon: 'chat_bubble_outline', infoTxt: 'Message Pinned!'});
+			            showSnackNotification({icon: 'chat_bubble_outline', notifAbout: 'Message Pinned!'});
 						let pinUniqueId = Date.now();
 						let pinchangerInfo = `${usernameCookie} has Pinned Some Text in Group`;
 						fetchChat.child(`${pinUniqueId}_contentInfo`).set({
@@ -1793,7 +1863,7 @@ function databaseFunction() {
 			            	savedUsrTime: dbFetchTime,
 			            	lastUpdate: `${msgUniqId}`
 			            }).then(function() {
-				            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+				            showSnackNotification({icon: 'star', notifAbout: 'Bubble Starred!'});
 			            });
 		            } else{
 			            if (dbFetchRply) {
@@ -1805,7 +1875,7 @@ function databaseFunction() {
 				            	savedUsrTime: dbFetchTime,
 				            	lastUpdate: `${msgUniqId}`
 				            }).then(function() {
-					            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+					            showSnackNotification({icon: 'star', notifAbout: 'Bubble Starred!'});
 				            });	            	
 			            } else {
 	    	                //Saving Txt from message
@@ -1815,23 +1885,24 @@ function databaseFunction() {
 	    		            	savedUsrTime: dbFetchTime,
 	    		            	lastUpdate: `${msgUniqId}`
 	    		            }).then(function() {
-	    			            snackBarShow({icon: 'star', infoTxt: 'Bubble Starred!'});
+	    			            showSnackNotification({icon: 'star', notifAbout: 'Bubble Starred!'});
 	    		            });
 						}
 		            }
 		        } else{
 		            usroptBtnSaveIco.innerText = 'bookmark_outline';
-		            snackBarShow({icon: 'star_outline', infoTxt: 'Bubble Unstarred!'});
+		            showSnackNotification({icon: 'star_outline', notifAbout: 'Bubble Unstarred!'});
 		        }
-		        selectRmvs();
+		        removeSelectClass();
 		    });
 
 
 		    lstMsg.innerHTML = dbFetchMsg;
 		    lstMsgtime.innerText = dbFetchTime;
 
-		    setTimeout(()=>{
+		    let chatAppearAnimation = setTimeout(()=>{
 				chatMsg.classList.add("appear");
+		    	clearTimeout(chatAppearAnimation);
 		    }, 250);
 
 			chtAreaMsg.scrollTop = chtAreaMsg.scrollHeight;
@@ -2002,7 +2073,7 @@ function databaseFunction() {
 
 		saveMsgInd.addEventListener("click", function() {
 			saveMsgGrp.child(`${savedMsgVal.lastUpdate}`).remove().then(function() {
-				snackBarShow({icon: 'bookmark_outline', infoTxt: 'Bubble Unstarred!'});
+				showSnackNotification({icon: 'bookmark_outline', notifAbout: 'Bubble Unstarred!'});
 			});		
 		});
 
