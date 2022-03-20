@@ -688,7 +688,7 @@ html {
 }
 .app .loader{
     position: absolute;
-    display: none;
+    display: flex;
     top: 0;
     left: 0;
     width: 100%;
@@ -799,7 +799,7 @@ html {
     height: 100%;
     overflow: hidden;
     transition: all 2s;
-    filter: blur(8px);
+    filter: blur(12px);
 }
 .wrapper.appLoaded{
     filter: blur(0px);
