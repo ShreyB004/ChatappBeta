@@ -129,8 +129,8 @@ loadingCir.addEventListener("animationend", function() {
 	loadDot.classList.add("loaded_dot");
 });
 loadingBar.addEventListener("animationend", function() {
-	wrapper.classList.add("appLoaded");
 	loadingHold.remove();
+	wrapper.classList.add("appLoaded");
 });
 
 function blurAllInputs() {
