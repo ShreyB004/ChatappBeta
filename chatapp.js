@@ -1045,7 +1045,7 @@ function getOnlineUsers() {
 	const applicationUsersdb = dataBase.ref("Collo Chat/Users Info");
 	applicationUsersdb.on('value', (userOnline) => {
 		let dbFetchOnline = userOnline.val();
-		  
+		  console.log(dbFetchOnline);
         let totalMembers = Object?.keys(dbFetchOnline);
         let totalMembersLen = totalMembers.length;
 
