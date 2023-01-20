@@ -1046,7 +1046,7 @@ function getOnlineUsers() {
 	applicationUsersdb.on('value', (userOnline) => {
 		let dbFetchOnline = userOnline.val();
 		  console.log(dbFetchOnline);
-        let totalMembers = Object?.keys(dbFetchOnline);
+        let totalMembers = Object?.keys(dbFetchOnline) || 0;
         let totalMembersLen = totalMembers.length;
 
         let memOnlineCnt = 0;
