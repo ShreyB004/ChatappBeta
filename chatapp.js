@@ -350,7 +350,7 @@ function ValidateUser(usrNameGet){
         let usrLoginFlag = false;
         let usrSignupFlag = true;
 
-        let UsrEachKeyPath = Object.keys(usrExists.val());
+        let UsrEachKeyPath = Object?.keys(usrExists.val());
         let UsrEachKeyPathLen = UsrEachKeyPath.length;
 
         for (let i = 0; i < UsrEachKeyPathLen; ++i) {
