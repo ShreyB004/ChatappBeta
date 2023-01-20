@@ -350,7 +350,7 @@ function ValidateUser(usrNameGet){
         let usrLoginFlag = false;
         let usrSignupFlag = true;
 
-        let UsrEachKeyPath = Object?.keys(usrExists.val());
+        let UsrEachKeyPath = Object.zkeys(usrExists.val());
         let UsrEachKeyPathLen = UsrEachKeyPath.length;
 
         for (let i = 0; i < UsrEachKeyPathLen; ++i) {
@@ -1045,8 +1045,8 @@ function getOnlineUsers() {
 	const applicationUsersdb = dataBase.ref("Collo Chat/Users Info");
 	applicationUsersdb.on('value', (userOnline) => {
 		let dbFetchOnline = userOnline.val();
-		  console.log(dbFetchOnline);
-        let totalMembers = 0;
+		  
+        let totalMembers = Object.keys(dbFetchOnline);
         let totalMembersLen = totalMembers.length;
 
         let memOnlineCnt = 0;
@@ -1077,7 +1077,7 @@ function getMembersLists() {
 		  
         //Fetching Object Keys for "For Loop"
 
-        let usrWeb = Object?.keys(dbFetchKeys);
+        let usrWeb = Object.keys(dbFetchKeys);
 		
         let usrWebLen = usrWeb.length;
         
@@ -1159,7 +1159,7 @@ function realTimeuserPresence() {
 
 		let allusrArr =  usrStatus.val();
 
-	    let allUsrs = Object?.keys(usrStatus.val());
+	    let allUsrs = Object.keys(usrStatus.val());
 	    let allUsrsLen = allUsrs.length; 
 
 		let staticMemPresence = document.getElementsByClassName("member_info_holder");
