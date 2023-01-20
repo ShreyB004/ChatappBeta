@@ -1046,7 +1046,7 @@ function getOnlineUsers() {
 	applicationUsersdb.on('value', (userOnline) => {
 		let dbFetchOnline = userOnline.val();
 		  
-        let totalMembers = Object.keys(dbFetchOnline);
+        let totalMembers = Object?.keys(dbFetchOnline);
         let totalMembersLen = totalMembers.length;
 
         let memOnlineCnt = 0;
@@ -1077,7 +1077,7 @@ function getMembersLists() {
 		  
         //Fetching Object Keys for "For Loop"
 
-        let usrWeb = Object.keys(dbFetchKeys);
+        let usrWeb = Object?.keys(dbFetchKeys);
 		
         let usrWebLen = usrWeb.length;
         
@@ -1159,7 +1159,7 @@ function realTimeuserPresence() {
 
 		let allusrArr =  usrStatus.val();
 
-	    let allUsrs = Object.keys(usrStatus.val());
+	    let allUsrs = Object?.keys(usrStatus.val());
 	    let allUsrsLen = allUsrs.length; 
 
 		let staticMemPresence = document.getElementsByClassName("member_info_holder");
